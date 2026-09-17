@@ -5,21 +5,26 @@ on:
   schedule:
     - cron: "17 */6 * * *"
 
-permissions:
-  actions: write
-  contents: write
-  issues: write
-  pull-requests: write
+permissions: {}
 
 concurrency:
   group: homeroute-autopilot-main
   cancel-in-progress: false
 
 jobs:
-  next-roadmap-task:
+  build_task:
     if: github.event_name == 'workflow_dispatch' || vars.HOMEROUTE_AUTOPILOT == 'enabled'
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    outputs:
+      branch: ${{ steps.issue.outputs.branch }}
+      issue_number: ${{ steps.issue.outputs.number }}
+      pr_url: ${{ steps.publish.outputs.pr_url }}
+      head_sha: ${{ steps.publish.outputs.head_sha }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -237,12 +242,29 @@ jobs:
           echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
           echo "head_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Run independent repository quality gate
-        if: steps.gate.outputs.run == 'true'
+      - name: Record blocked task
+        if: failure() && steps.gate.outputs.run == 'true' && steps.issue.outputs.number != ''
         env:
           GH_TOKEN: ${{ github.token }}
-          BRANCH: ${{ steps.issue.outputs.branch }}
-          HEAD_SHA: ${{ steps.publish.outputs.head_sha }}
+          ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --body "BLOCKED after the permitted automatic attempt(s). Inspect workflow: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+  quality_gate:
+    needs: build_task
+    if: needs.build_task.result == 'success' && needs.build_task.outputs.pr_url != ''
+    permissions:
+      actions: write
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Run independent repository quality gate
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ needs.build_task.outputs.branch }}
+          HEAD_SHA: ${{ needs.build_task.outputs.head_sha }}
         run: |
           gh workflow run quality.yml --ref "$BRANCH"
 
@@ -269,20 +291,42 @@ jobs:
 
           gh run watch "$run_id" --exit-status --interval 10
 
-      - name: Merge accepted PR
-        if: steps.gate.outputs.run == 'true'
+  merge_pr:
+    needs: [build_task, quality_gate]
+    if: needs.quality_gate.result == 'success'
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Merge the exact validated PR head
         env:
+          GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}
-          ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
-          PR_URL: ${{ steps.publish.outputs.pr_url }}
+          HEAD_SHA: ${{ needs.build_task.outputs.head_sha }}
+          ISSUE_NUMBER: ${{ needs.build_task.outputs.issue_number }}
+          PR_URL: ${{ needs.build_task.outputs.pr_url }}
         run: |
-          gh pr merge "$PR_URL" --squash --delete-branch
+          gh pr merge "$PR_URL" --squash --delete-branch --match-head-commit "$HEAD_SHA"
           gh issue close "$ISSUE_NUMBER" --comment "Merged after deterministic validation, Codex review, and an independent Repository quality run: $PR_URL"
 
-      - name: Record blocked task
-        if: failure() && steps.gate.outputs.run == 'true' && steps.issue.outputs.number != ''
+  record_downstream_block:
+    needs: [build_task, quality_gate, merge_pr]
+    if: >-
+      always() &&
+      needs.build_task.outputs.issue_number != '' &&
+      (needs.quality_gate.result == 'failure' || needs.merge_pr.result == 'failure')
+    permissions:
+      contents: read
+      issues: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Record blocked downstream gate
         env:
+          GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}
-          ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
+          ISSUE_NUMBER: ${{ needs.build_task.outputs.issue_number }}
         run: |
-          gh issue comment "$ISSUE_NUMBER" --body "BLOCKED after the permitted automatic attempt(s). Inspect workflow: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          gh issue comment "$ISSUE_NUMBER" --body "BLOCKED by the independent quality or exact-head merge gate. Inspect workflow: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
