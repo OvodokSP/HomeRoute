@@ -35,3 +35,22 @@
 
 - [`router-reference.example.txt`](router-reference.example.txt)
 - [`vps-reference.example.txt`](vps-reference.example.txt)
+
+## Рекомендуемый поток
+
+1. Запустить соответствующий read-only preflight.
+2. Сохранить сырой вывод вне Git.
+3. Нормализовать только allowlisted строки:
+
+   ```sh
+   python3 scripts/inventory/extract_inventory.py raw.txt > sanitized.json
+   ```
+
+4. Проверить полученный JSON вручную перед публикацией.
+5. При повторном измерении сравнить снимки:
+
+   ```sh
+   python3 scripts/inventory/compare_inventory.py old.json new.json --strict-type
+   ```
+
+6. Интерпретировать изменения по правилам [`../docs/inventory-evidence.md`](../docs/inventory-evidence.md), а не превращать отдельное наблюдение в общий hardware requirement.
