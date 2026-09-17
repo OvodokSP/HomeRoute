@@ -32,7 +32,7 @@ Inventory нужен для того, чтобы требования HomeRoute 
 - список установленных opkg packages;
 - путь и версия, если она определяется безопасно, для `awg`, `awg-quick`, `amneziawg-go`, `hrneo`, `nfqws` и `tg-ws-proxy`.
 
-Список пакетов используется для восстановления зависимостей, но сам по себе не означает, что каждый пакет обязателен для HomeRoute.
+Список пакетов используется для восстановления зависимостей, но сам по себе не означает, что каждый пакет обязателен для HomeRoute. Методика отделения `CORE / OPTIONAL / RESERVE / TRANSITIVE / UNCLASSIFIED / LEGACY` описана в [`package-baseline.md`](package-baseline.md).
 
 ## HomeRoute runtime
 
@@ -70,13 +70,21 @@ Inventory должен подтверждать без изменения сис
 - Последовательная процедура: [`evening-capture.md`](evening-capture.md)
 - Схема безопасных полей: [`../inventory/schema-v1.md`](../inventory/schema-v1.md)
 - Нормализатор allowlist: [`../scripts/inventory/extract_inventory.py`](../scripts/inventory/extract_inventory.py)
+- Извлечение Entware packages: [`../scripts/inventory/extract_packages.py`](../scripts/inventory/extract_packages.py)
 - Сравнение нормализованных снимков: [`../scripts/inventory/compare_inventory.py`](../scripts/inventory/compare_inventory.py)
+- Сравнение package snapshots: [`../scripts/inventory/compare_packages.py`](../scripts/inventory/compare_packages.py)
 - Markdown-рендерер для GitHub: [`../scripts/inventory/render_inventory.py`](../scripts/inventory/render_inventory.py)
 
 Оба preflight выдают человекочитаемый отчёт и строки:
 
 ```text
 HOMEROUTE_INVENTORY key=value
+```
+
+Router preflight дополнительно выдаёт строки:
+
+```text
+HOMEROUTE_PACKAGE name=<package> version=<version>
 ```
 
 Примеры без данных реальной инфраструктуры:
