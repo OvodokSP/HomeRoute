@@ -6,6 +6,7 @@ on:
     - cron: "17 */6 * * *"
 
 permissions:
+  actions: write
   contents: write
   issues: write
   pull-requests: write
@@ -212,7 +213,7 @@ jobs:
           python3 scripts/agent/roadmap.py complete "$TASK_ID"
           HOMEROUTE_ROOT="$GITHUB_WORKSPACE" python3 /tmp/homeroute-validate.py --base origin/main --protect-policy
 
-      - name: Commit, open PR, and merge
+      - name: Commit and open PR
         if: steps.gate.outputs.run == 'true'
         id: publish
         env:
@@ -233,9 +234,50 @@ jobs:
             --head "$BRANCH" \
             --title "$TASK_ID: $TASK_TITLE" \
             --body "Autonomous Roadmap implementation. Closes #$ISSUE_NUMBER. Deterministic validation: PASS. Independent Codex review: PASS. No production deployment was performed.")
-          gh pr merge "$pr_url" --squash --delete-branch
-          gh issue close "$ISSUE_NUMBER" --comment "Merged after deterministic validation and Codex review: $pr_url"
           echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Run independent repository quality gate
+        if: steps.gate.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ steps.issue.outputs.branch }}
+          HEAD_SHA: ${{ steps.publish.outputs.head_sha }}
+        run: |
+          gh workflow run quality.yml --ref "$BRANCH"
+
+          run_id=""
+          for attempt in $(seq 1 30); do
+            run_id=$(gh run list \
+              --workflow quality.yml \
+              --branch "$BRANCH" \
+              --event workflow_dispatch \
+              --limit 20 \
+              --json databaseId,headSha \
+              --jq ".[] | select(.headSha == \"$HEAD_SHA\") | .databaseId" \
+              | head -n 1)
+            if [ -n "$run_id" ]; then
+              break
+            fi
+            sleep 2
+          done
+
+          if [ -z "$run_id" ]; then
+            echo "::error::Independent Repository quality run did not start"
+            exit 1
+          fi
+
+          gh run watch "$run_id" --exit-status --interval 10
+
+      - name: Merge accepted PR
+        if: steps.gate.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
+          PR_URL: ${{ steps.publish.outputs.pr_url }}
+        run: |
+          gh pr merge "$PR_URL" --squash --delete-branch
+          gh issue close "$ISSUE_NUMBER" --comment "Merged after deterministic validation, Codex review, and an independent Repository quality run: $PR_URL"
 
       - name: Record blocked task
         if: failure() && steps.gate.outputs.run == 'true' && steps.issue.outputs.number != ''
