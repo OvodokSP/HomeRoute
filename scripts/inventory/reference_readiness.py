@@ -16,6 +16,7 @@ ROUTER_REQUIRED = (
     "keenetic_release",
     "uname_machine",
     "ram_total",
+    "ram_available",
     "opt_total",
     "opt_free",
     "opkg_arch",
@@ -29,6 +30,7 @@ VPS_REQUIRED = (
     "uname_machine",
     "vcpu_count",
     "ram_total",
+    "ram_available",
     "root_total",
     "root_free",
     "component_docker",
@@ -108,6 +110,7 @@ def assess(router: dict[str, Any], vps: dict[str, Any]) -> tuple[list[str], bool
     if vps.get("awg_interface_present") not in {"yes", "true", "1", "present", "NOT_VALIDATED", None}:
         lines.append(f"[WARN] AWG interface presence reported as {vps.get('awg_interface_present')}")
 
+    lines.append("[INFO] ram_available is an observed runtime headroom value, not a minimum/recommended threshold.")
     lines.append("[INFO] Hardware minimum/recommended thresholds remain NOT_VALIDATED until measured evidence is interpreted.")
     lines.append("[INFO] One reference inventory does not establish compatibility of other router or VPS models.")
     if blocked:
