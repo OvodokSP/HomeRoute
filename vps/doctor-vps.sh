@@ -8,12 +8,22 @@ ROUTER_PEER_ALLOWED_IP=${ROUTER_PEER_ALLOWED_IP:-CHANGE_ME}
 LEGACY_WG_CONTAINER=${LEGACY_WG_CONTAINER:-}
 LEGACY_PEER_ALLOWED_IP=${LEGACY_PEER_ALLOWED_IP:-}
 
-pass() { printf '[PASS] %s\n' "$*"; }
-warn() { printf '[WARN] %s\n' "$*"; }
-fail() { printf '[FAIL] %s\n' "$*"; failures=$((failures + 1)); }
+passes=0
+warnings=0
+failures=0
+
+pass() { passes=$((passes + 1)); printf '[PASS] %s\n' "$*"; }
+warn() { warnings=$((warnings + 1)); printf '[WARN] %s\n' "$*"; }
+fail() { failures=$((failures + 1)); printf '[FAIL] %s\n' "$*"; }
 info() { printf '[INFO] %s\n' "$*"; }
 has() { command -v "$1" >/dev/null 2>&1; }
 container_running() { docker inspect -f '{{.State.Running}}' "$1" 2>/dev/null | grep -Fxq true; }
+doctor_summary() {
+    result=PASS
+    [ "$failures" -gt 0 ] && result=FAIL
+    printf 'HOMEROUTE_DOCTOR schema=1 type=vps pass=%s warn=%s fail=%s result=%s\n' \
+        "$passes" "$warnings" "$failures" "$result"
+}
 awg_exec() {
     if [ "$AWG_CONTAINER" != CHANGE_ME_AWG2_CONTAINER ] && container_running "$AWG_CONTAINER"; then
         docker exec "$AWG_CONTAINER" awg "$@"
@@ -24,7 +34,6 @@ awg_exec() {
     fi
 }
 
-failures=0
 info "HomeRoute VPS doctor (read-only)"
 
 if has docker && docker info >/dev/null 2>&1; then pass "Docker is working"; else fail "Docker is unavailable or not working"; fi
@@ -119,5 +128,10 @@ else
     fi
 fi
 
-if [ "$failures" -gt 0 ]; then info "$failures required check(s) failed"; exit 1; fi
+if [ "$failures" -gt 0 ]; then
+    info "$failures required check(s) failed"
+    doctor_summary
+    exit 1
+fi
 pass "all configured VPS checks passed"
+doctor_summary

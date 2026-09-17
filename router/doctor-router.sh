@@ -6,13 +6,22 @@ LAN_INTERFACE=${LAN_INTERFACE:-br0}
 ROUTING_MARK=${ROUTING_MARK:-0x3001}
 ROUTING_TABLE=${ROUTING_TABLE:-301}
 
-pass() { printf '[PASS] %s\n' "$*"; }
-warn() { printf '[WARN] %s\n' "$*"; }
-fail() { printf '[FAIL] %s\n' "$*"; failures=$((failures + 1)); }
+passes=0
+warnings=0
+failures=0
+
+pass() { passes=$((passes + 1)); printf '[PASS] %s\n' "$*"; }
+warn() { warnings=$((warnings + 1)); printf '[WARN] %s\n' "$*"; }
+fail() { failures=$((failures + 1)); printf '[FAIL] %s\n' "$*"; }
 info() { printf '[INFO] %s\n' "$*"; }
 has() { command -v "$1" >/dev/null 2>&1; }
+doctor_summary() {
+    result=PASS
+    [ "$failures" -gt 0 ] && result=FAIL
+    printf 'HOMEROUTE_DOCTOR schema=1 type=router pass=%s warn=%s fail=%s result=%s\n' \
+        "$passes" "$warnings" "$failures" "$result"
+}
 
-failures=0
 info "HomeRoute router doctor (read-only)"
 
 if has ip && ip link show dev "$ROUTER_AWG_INTERFACE" >/dev/null 2>&1; then
@@ -111,6 +120,8 @@ if has ipset && ipset list -n 2>/dev/null | grep -Ei '^HydraRoute'; then fail "l
 
 if [ "$failures" -gt 0 ]; then
     info "$failures required check(s) failed"
+    doctor_summary
     exit 1
 fi
 pass "all required router checks passed"
+doctor_summary
