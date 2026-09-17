@@ -16,6 +16,9 @@
 | Real VPS inventory | NOT YET CAPTURED |
 | Hardware thresholds | NOT VALIDATED |
 | Compatibility matrix | NOT VALIDATED |
+| Router installer design | PREPARED |
+| Router plan-only mode | TESTED, READ-ONLY |
+| Router apply-mode | BLOCKED / NOT IMPLEMENTED |
 | Installer | NOT VALIDATED |
 | Clean-device reproduction | NOT YET TESTED |
 | AWG 3.x | NOT YET ADOPTED |
@@ -25,3 +28,5 @@
 Статусы PASS относятся к фактически проверенной reference-инсталляции, а не гарантируют переносимость на произвольное оборудование.
 
 Phase 1 подготовил формат безопасного inventory, router/VPS preflight, allowlisted schema и методику классификации. Числовые требования и совместимость моделей должны опираться на отдельные фактические измерения.
+
+Router `plan` допускает только read-only оценку. Реальный `apply` останется заблокирован до reference inventory, точного dependency mapping, backup/verify/rollback реализации и clean-device validation.
