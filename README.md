@@ -44,6 +44,7 @@ Golden State подтверждён после перезагрузки Keenetic
 - [VPS installer design](docs/vps-installer-design.md)
 - [Structured doctor report](docs/doctor-report.md)
 - [Backup / restore contract](docs/backup-restore-contract.md)
+- [Clean-device reproduction protocol](docs/clean-device-reproduction.md)
 - [Архитектура](docs/architecture.md)
 - [Эталонное состояние v0.1](docs/reference-state-v0.1.md)
 - [Сценарий развёртывания](docs/setup-flow.md)
