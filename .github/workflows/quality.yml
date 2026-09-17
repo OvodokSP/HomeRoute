@@ -20,3 +20,8 @@ jobs:
         run: python3 scripts/ci/validate_repo.py
       - name: Test inventory tooling
         run: python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Test installer contracts
+        run: |
+          sh tests/router-install-plan.sh
+          sh tests/vps-install-plan.sh
+          sh tests/backup-restore-contract.sh

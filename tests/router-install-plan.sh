@@ -17,6 +17,23 @@ sh "$INSTALLER" plan >"$OUT" 2>"$ERR" || fail 'plan mode returned non-zero'
 grep -F '[PASS] Plan completed; no system changes were made.' "$OUT" >/dev/null || fail 'plan success marker missing'
 grep -F '[BLOCKED] Exact package names' "$OUT" >/dev/null || fail 'plan must preserve inventory dependency gate'
 
+for expected in \
+    'HOMEROUTE_PLAN schema=1' \
+    'HOMEROUTE_PLAN target=router' \
+    'HOMEROUTE_PLAN mode=plan' \
+    'HOMEROUTE_PLAN apply_available=false' \
+    'HOMEROUTE_PLAN awg_baseline=AmneziaWG_2.x' \
+    'HOMEROUTE_PLAN awg_interface=opkgtun0' \
+    'HOMEROUTE_PLAN routing_mark=0x3001' \
+    'HOMEROUTE_PLAN routing_table=301' \
+    'HOMEROUTE_PLAN orchestrator=HRNeo' \
+    'HOMEROUTE_PLAN dependency_state=NOT_VALIDATED' \
+    'HOMEROUTE_PLAN resource_thresholds=NOT_VALIDATED' \
+    'HOMEROUTE_PLAN clean_device_validation=NOT_VALIDATED'
+do
+    grep -Fx "$expected" "$OUT" >/dev/null || fail "missing plan contract field: $expected"
+done
+
 if sh "$INSTALLER" apply >"$OUT" 2>"$ERR"; then
     fail 'apply mode unexpectedly succeeded'
 fi
