@@ -29,13 +29,7 @@ Inventory нужен для того, чтобы требования HomeRoute 
 
 - opkg architecture;
 - список установленных opkg packages;
-- путь и версия, если она определяется безопасно, для:
-  - `awg`;
-  - `awg-quick`;
-  - `amneziawg-go`;
-  - `hrneo`;
-  - `nfqws`;
-  - `tg-ws-proxy`.
+- путь и версия, если она определяется безопасно, для `awg`, `awg-quick`, `amneziawg-go`, `hrneo`, `nfqws` и `tg-ws-proxy`.
 
 Список пакетов используется для восстановления зависимостей, но сам по себе не означает, что каждый пакет обязателен для HomeRoute.
 
@@ -55,29 +49,40 @@ Inventory должен подтверждать без изменения сис
 
 ## VPS environment
 
-Для VPS предусматривается отдельный обезличенный inventory:
+Для VPS собираются:
 
 - OS и kernel;
 - vCPU/CPU architecture;
 - RAM;
-- storage;
+- root storage;
 - Docker version;
-- состояние AWG2;
+- состояние AWG2 container;
 - состояние AdGuard Home;
-- обязательные runtime-зависимости.
+- наличие AWG interface внутри AWG2.
 
-Реальный hostname, SSH credentials, публичный адрес VPS, ключи и peer secrets не входят в публичный inventory, если они не нужны для доказательства совместимости.
+Реальный hostname, SSH credentials, публичный адрес VPS, ключи и peer secrets в публичный inventory не входят.
 
-## Формат результата
+## Инструменты сбора
 
-Read-only preflight может выдавать как человекочитаемый отчёт, так и безопасные строки:
+- Router: [`../router/preflight-router.sh`](../router/preflight-router.sh)
+- VPS: [`../vps/preflight-vps.sh`](../vps/preflight-vps.sh)
+- Последовательная процедура: [`evening-capture.md`](evening-capture.md)
+- Схема безопасных полей: [`../inventory/schema-v1.md`](../inventory/schema-v1.md)
+- Нормализатор allowlist: [`../scripts/inventory/extract_inventory.py`](../scripts/inventory/extract_inventory.py)
+
+Оба preflight выдают человекочитаемый отчёт и строки:
 
 ```text
 HOMEROUTE_INVENTORY key=value
 ```
 
-Такие строки предназначены для последующего разбора без публикации секретов. Пример обезличенного результата находится в [`../inventory/router-reference.example.txt`](../inventory/router-reference.example.txt).
+Примеры без данных реальной инфраструктуры:
+
+- [`../inventory/router-reference.example.txt`](../inventory/router-reference.example.txt)
+- [`../inventory/vps-reference.example.txt`](../inventory/vps-reference.example.txt)
+
+Нормализатор публикует только поля, явно разрешённые schema v1. Неизвестный ключ приводит к ошибке, а не переносится автоматически в JSON.
 
 ## Acceptance criteria Phase 1
 
-Phase 1 не считается завершённой только из-за появления этой схемы. Для числовых аппаратных требований необходим реальный inventory reference-router, а для утверждения совместимости модели — отдельное воспроизводимое подтверждение на этой модели.
+Подготовка схемы, примеров и capture tooling не создаёт числовых аппаратных требований сама по себе. Для этого необходим реальный inventory reference-router и VPS. Для утверждения совместимости конкретной модели требуется отдельное воспроизводимое подтверждение на этой модели.
