@@ -21,7 +21,7 @@
 
 ## Phase 3 — VPS installer
 
-- [x] HL-301 — Спроектировать идемпотентный VPS installer с plan/apply, backup, verify и rollback.
+- [x] HL-301 — Спроектировать идемпотентный VPS installer с режимами plan/apply, backup, verify и rollback.
 - [x] HL-302 — Реализовать plan-only этап VPS installer без подключения к реальному VPS.
 - [x] HL-303 — Добавить тестовый стенд и негативные проверки VPS installer.
 
@@ -32,7 +32,7 @@
 
 ## Phase 5 — Clean-device reproduction
 
-- [ ] HL-501 — Подготовить протокол ручного подтверждения чистого воспроизведения.
+- [x] HL-501 — Подготовить протокол ручного подтверждения чистого воспроизведения.
 - [ ] HL-502 — Зафиксировать результаты первого чистого воспроизведения и только после этого пересмотреть статус installers.
 
 ## Phase 6 — Compatibility matrix
