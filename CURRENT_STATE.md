@@ -16,14 +16,25 @@ This document contains only the current reference state confirmed during the Hom
 - TCP and UDP DNS redirection on port 53 for AWG clients is present.
 - Persistence hooks restore the working route after a controlled restart and a normal Keenetic reboot.
 - A full VPS reboot and a normal Keenetic reboot were completed successfully.
+- Live router and VPS doctor checks were completed on 2026-09-17; the router FORWARD false-negative was isolated to the checker and fixed with a regression test.
 
-## VERIFIED — component roles
+## VERIFIED — component roles and package roots
 
 - AmneziaWG 2.x is the current baseline.
 - HRNeo owns selective policy routing.
 - `nfqws` is an independent optional component.
 - `tg-ws-proxy` is retained only as a reserve path.
 - Every deployment must use a separate working VPS controlled by that deployment's user.
+- The evidence-backed router core install roots are `chur-amneziawg` and `hrneo`.
+- `chur-amneziawg` upstream metadata resolves the AWG userspace/runtime packages; HRNeo upstream metadata resolves its runtime dependencies.
+- Optional/reserve package profiles are disabled by default; `UNCLASSIFIED` reference packages are never promoted to install roots automatically.
+
+## VERIFIED — supported floor policy
+
+- The current working router/VPS resource profile is the `Verified baseline` supported floor for v1.
+- Less-resourced systems are `Not validated`, not declared incompatible.
+- Equal-or-higher resource systems are only `Expected compatible` when the required platform/software architecture is compatible.
+- This policy is not a claim about the physical minimum required to run HomeRoute.
 
 ## DEPRECATED — must remain absent
 
@@ -36,9 +47,10 @@ This document contains only the current reference state confirmed during the Hom
 
 ## NOT VALIDATED
 
-- Automated installation on a clean router or VPS.
-- Minimum and recommended router CPU, RAM, and storage requirements.
-- A complete hardware compatibility matrix.
+- Automated live apply on a clean router or VPS.
+- Deterministic feed provisioning and live backup/restore rollback.
+- Physical minimum router/VPS resource requirements below the supported floor.
+- A complete clean-device-verified hardware compatibility matrix.
 - Generic Netis flashing instructions for specific models.
 - Stable production installers.
 - AmneziaWG 3.x on the target Keenetic/KeeneticOS environment.

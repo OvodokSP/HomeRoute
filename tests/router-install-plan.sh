@@ -15,7 +15,7 @@ fail() {
 
 sh "$INSTALLER" plan >"$OUT" 2>"$ERR" || fail 'plan mode returned non-zero'
 grep -F '[PASS] Plan completed; no system changes were made.' "$OUT" >/dev/null || fail 'plan success marker missing'
-grep -F '[BLOCKED] Exact package names' "$OUT" >/dev/null || fail 'plan must preserve inventory dependency gate'
+grep -F '[BLOCKED] Live apply remains disabled' "$OUT" >/dev/null || fail 'live apply gate missing'
 
 for expected in \
     'HOMEROUTE_PLAN schema=1' \
@@ -27,8 +27,11 @@ for expected in \
     'HOMEROUTE_PLAN routing_mark=0x3001' \
     'HOMEROUTE_PLAN routing_table=301' \
     'HOMEROUTE_PLAN orchestrator=HRNeo' \
-    'HOMEROUTE_PLAN dependency_state=NOT_VALIDATED' \
-    'HOMEROUTE_PLAN resource_thresholds=NOT_VALIDATED' \
+    'HOMEROUTE_PLAN dependency_state=VALIDATED_REFERENCE_MANIFEST' \
+    'HOMEROUTE_PLAN core_install_roots=chur-amneziawg,hrneo' \
+    'HOMEROUTE_PLAN resource_thresholds=SUPPORTED_FLOOR_DEFINED' \
+    'HOMEROUTE_PLAN feed_provisioning=NOT_VALIDATED' \
+    'HOMEROUTE_PLAN backup_restore=LIVE_NOT_VALIDATED' \
     'HOMEROUTE_PLAN clean_device_validation=NOT_VALIDATED'
 do
     grep -Fx "$expected" "$OUT" >/dev/null || fail "missing plan contract field: $expected"
@@ -37,7 +40,7 @@ done
 if sh "$INSTALLER" apply >"$OUT" 2>"$ERR"; then
     fail 'apply mode unexpectedly succeeded'
 fi
-grep -F '[BLOCKED] HomeRoute router apply-mode is not implemented or validated.' "$OUT" >/dev/null || fail 'apply block marker missing'
+grep -F '[BLOCKED] HomeRoute router live apply-mode is not implemented or validated.' "$OUT" >/dev/null || fail 'apply block marker missing'
 
 if sh "$INSTALLER" definitely-not-a-mode >"$OUT" 2>"$ERR"; then
     fail 'unknown mode unexpectedly succeeded'
