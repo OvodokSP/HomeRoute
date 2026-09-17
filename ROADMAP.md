@@ -15,9 +15,9 @@
 
 ## Phase 2 — Router installer
 
-- [ ] HL-201 — Спроектировать идемпотентный router installer с режимами plan/apply, backup, verify и rollback.
-- [ ] HL-202 — Реализовать plan-only этап router installer без изменения устройства.
-- [ ] HL-203 — Добавить тестовый стенд и негативные проверки router installer.
+- [x] HL-201 — Спроектировать идемпотентный router installer с режимами plan/apply, backup, verify и rollback.
+- [x] HL-202 — Реализовать plan-only этап router installer без изменения устройства.
+- [x] HL-203 — Добавить тестовый стенд и негативные проверки router installer.
 
 ## Phase 3 — VPS installer
 
