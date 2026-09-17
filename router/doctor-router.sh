@@ -21,6 +21,37 @@ doctor_summary() {
     printf 'HOMEROUTE_DOCTOR schema=1 type=router pass=%s warn=%s fail=%s result=%s\n' \
         "$passes" "$warnings" "$failures" "$result"
 }
+forward_rule_present() {
+    awk -v lan="$LAN_INTERFACE" -v awg="$ROUTER_AWG_INTERFACE" '
+        $1 == "-A" && $2 == "FORWARD" {
+            input_ok=0
+            output_ok=0
+            for (i=3; i<=NF; i++) {
+                if ($i == "-i" && (i+1) <= NF && $(i+1) == lan) input_ok=1
+                if ($i == "-o" && (i+1) <= NF && $(i+1) == awg) output_ok=1
+            }
+            if (input_ok && output_ok) found=1
+        }
+        END { exit(found ? 0 : 1) }
+    '
+}
+
+if [ "${HOMEROUTE_DOCTOR_SELFTEST:-0}" = 1 ]; then
+    if ! printf '%s\n' '-A FORWARD -s 192.168.1.0/24 -i br0 -o opkgtun0 -j ACCEPT' | forward_rule_present; then
+        printf '%s\n' '[FAIL] FORWARD matcher rejected the observed Golden State rule'
+        exit 1
+    fi
+    if ! printf '%s\n' '-A FORWARD -o opkgtun0 -m state --state NEW -i br0 -j ACCEPT' | forward_rule_present; then
+        printf '%s\n' '[FAIL] FORWARD matcher depends on option ordering'
+        exit 1
+    fi
+    if printf '%s\n' '-A FORWARD -i br1 -o opkgtun0 -j ACCEPT' | forward_rule_present; then
+        printf '%s\n' '[FAIL] FORWARD matcher accepted the wrong LAN interface'
+        exit 1
+    fi
+    printf '%s\n' '[PASS] router FORWARD matcher self-test'
+    exit 0
+fi
 
 info "HomeRoute router doctor (read-only)"
 
@@ -87,7 +118,7 @@ else
     fail "default dev $ROUTER_AWG_INTERFACE is missing from table $ROUTING_TABLE"
 fi
 
-if has iptables && iptables-save -t filter 2>/dev/null | grep '^-A FORWARD ' | grep -q -- "-i $LAN_INTERFACE .* -o $ROUTER_AWG_INTERFACE\|-o $ROUTER_AWG_INTERFACE .* -i $LAN_INTERFACE"; then
+if has iptables && iptables-save -t filter 2>/dev/null | forward_rule_present; then
     pass "FORWARD $LAN_INTERFACE to $ROUTER_AWG_INTERFACE is present"
 else
     fail "FORWARD $LAN_INTERFACE to $ROUTER_AWG_INTERFACE was not found"
