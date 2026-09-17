@@ -39,6 +39,22 @@ SECRET_PATTERNS = {
     "OpenAI key": re.compile(r"\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}\b"),
     "GitHub token": re.compile(r"\b(?:ghp|github_pat)_[A-Za-z0-9_]{20,}\b"),
     "Slack token": re.compile(r"\bxox[baprs]-[A-Za-z0-9-]{20,}\b"),
+    "WireGuard/AWG key": re.compile(
+        r"(?im)^[ \t]*(?:PrivateKey|PublicKey|PresharedKey)[ \t]*=[ \t]*[A-Za-z0-9+/]{43}=[ \t]*$"
+    ),
+    "literal credential assignment": re.compile(
+        r"(?im)^[ \t]*[\"']?[A-Z0-9_]*(?:PASSWORD|TOKEN|SECRET|PSK|PRIVATE_KEY)[\"']?"
+        r"[ \t]*[:=][ \t]*"
+        r"[\"']?(?!CHANGE_ME|REDACTED|PLACEHOLDER|EXAMPLE|\$\{\{|[\"']?[ \t]*$)"
+        r"[^\"'\s#][^\"'\r\n]{7,}"
+    ),
+    "private infrastructure endpoint": re.compile(
+        r"(?im)^[ \t]*[\"']?(?:VPS_HOST|SSH_HOST|NAS_HOST|ROUTER_HOST)[\"']?"
+        r"[ \t]*[:=][ \t]*"
+        r"[\"']?(?!CHANGE_ME|REDACTED|PLACEHOLDER|EXAMPLE|[\"']?[ \t]*$)"
+        r"[^\"'\s#]+"
+    ),
+    "credential in URL": re.compile(r"https?://[^\s/:@]+:(?!\$\{)[^\s/@]+@[^\s/]+"),
 }
 LINK = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 FORBIDDEN_WORKFLOW = re.compile(
@@ -132,6 +148,13 @@ def changed_files(base: str) -> set[str]:
     unstaged = subprocess.run(
         ["git", "diff", "--name-only"], cwd=ROOT, text=True, check=True, capture_output=True
     )
+    staged = subprocess.run(
+        ["git", "diff", "--cached", "--name-only"],
+        cwd=ROOT,
+        text=True,
+        check=True,
+        capture_output=True,
+    )
     untracked = subprocess.run(
         ["git", "ls-files", "--others", "--exclude-standard"],
         cwd=ROOT,
@@ -142,6 +165,7 @@ def changed_files(base: str) -> set[str]:
     return (
         set(result.stdout.splitlines())
         | set(unstaged.stdout.splitlines())
+        | set(staged.stdout.splitlines())
         | set(untracked.stdout.splitlines())
     )
 
