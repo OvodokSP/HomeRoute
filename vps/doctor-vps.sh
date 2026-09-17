@@ -91,7 +91,14 @@ fi
 if [ "$nat_source_available" -eq 1 ]; then
     printf '%s\n' "$nat_rules" | grep -E -- '(-p tcp|--protocol tcp).*--dport 53.*(REDIRECT|DNAT)' >/dev/null && pass "DNS redirect TCP 53 is present" || fail "DNS redirect TCP 53 was not found"
     printf '%s\n' "$nat_rules" | grep -E -- '(-p udp|--protocol udp).*--dport 53.*(REDIRECT|DNAT)' >/dev/null && pass "DNS redirect UDP 53 is present" || fail "DNS redirect UDP 53 was not found"
-    printf '%s\n' "$nat_rules" | grep -q 'WG443_TEST' && fail "legacy WG443_TEST rule exists" || pass "legacy WG443_TEST rule is absent"
+fi
+
+if ! has iptables-save; then
+    warn "host iptables-save is unavailable; legacy WG443_TEST check skipped"
+elif host_iptables_rules=$(iptables-save 2>/dev/null); then
+    printf '%s\n' "$host_iptables_rules" | grep -q 'WG443_TEST' && fail "legacy WG443_TEST rule exists on host" || pass "legacy WG443_TEST rule is absent from host"
+else
+    fail "cannot read host iptables rules for legacy WG443_TEST check"
 fi
 
 if [ -z "$LEGACY_WG_CONTAINER" ]; then
