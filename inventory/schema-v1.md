@@ -14,6 +14,7 @@ HOMEROUTE_INVENTORY key=value
 - `inventory_type` принимает `router` или `vps`.
 - Неизвестное или безопасно не определяемое значение записывается как `NOT_VALIDATED`.
 - Размеры ресурсов передаются в KiB с суффиксом `_KiB`.
+- `ram_available` берётся только из Linux `/proc/meminfo: MemAvailable`; если ядро его не предоставляет, значение остаётся `NOT_VALIDATED` вместо эвристического расчёта.
 - Пути к исполняемым файлам допустимы; содержимое конфигурационных файлов — нет.
 - Hostname, WAN/public IP, SSH-данные, private/public peer keys, PSK, токены, пароли и proxy secrets в схему не входят.
 - Неизвестные ключи не должны автоматически попадать в публичный нормализованный inventory.
@@ -28,6 +29,7 @@ HOMEROUTE_INVENTORY key=value
 - `keenetic_release` — поле `release` из read-only `show version`
 - `uname_machine`
 - `ram_total`
+- `ram_available` — наблюдаемый доступный объём RAM в момент capture
 - `opt_total`
 - `opt_free`
 - `opkg_arch`
@@ -51,6 +53,7 @@ HOMEROUTE_INVENTORY key=value
 - `uname_machine`
 - `vcpu_count`
 - `ram_total`
+- `ram_available` — наблюдаемый доступный объём RAM в момент capture
 - `root_total`
 - `root_free`
 - `component_docker`

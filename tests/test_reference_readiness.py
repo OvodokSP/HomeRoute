@@ -23,6 +23,7 @@ def complete_router() -> dict[str, str]:
         "keenetic_release": "EXAMPLE_RELEASE",
         "uname_machine": "mipsel",
         "ram_total": "262144_KiB",
+        "ram_available": "131072_KiB",
         "opt_total": "1048576_KiB",
         "opt_free": "524288_KiB",
         "opkg_arch": "mipsel-3.4",
@@ -45,6 +46,7 @@ def complete_vps() -> dict[str, str]:
         "uname_machine": "x86_64",
         "vcpu_count": "1",
         "ram_total": "2097152_KiB",
+        "ram_available": "1048576_KiB",
         "root_total": "31457280_KiB",
         "root_free": "15728640_KiB",
         "component_docker": "/usr/bin/docker",
@@ -64,6 +66,7 @@ class ReferenceReadinessTests(unittest.TestCase):
             lines,
         )
         self.assertTrue(any("thresholds remain NOT_VALIDATED" in line for line in lines))
+        self.assertTrue(any("ram_available is an observed runtime headroom" in line for line in lines))
 
     def test_missing_router_identity_blocks(self) -> None:
         router = complete_router()
@@ -71,6 +74,13 @@ class ReferenceReadinessTests(unittest.TestCase):
         lines, blocked = MODULE.assess(router, complete_vps())
         self.assertTrue(blocked)
         self.assertIn("[BLOCKED] router.router_model=NOT_VALIDATED", lines)
+
+    def test_missing_ram_available_blocks_analysis(self) -> None:
+        router = complete_router()
+        router["ram_available"] = "NOT_VALIDATED"
+        lines, blocked = MODULE.assess(router, complete_vps())
+        self.assertTrue(blocked)
+        self.assertIn("[BLOCKED] router.ram_available=NOT_VALIDATED", lines)
 
     def test_optional_components_do_not_block(self) -> None:
         router = complete_router()

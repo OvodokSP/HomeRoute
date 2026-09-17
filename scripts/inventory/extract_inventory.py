@@ -11,7 +11,7 @@ from pathlib import Path
 
 LINE = re.compile(r"^HOMEROUTE_INVENTORY ([a-z0-9_]+)=(.*)$")
 
-COMMON = {"inventory_schema", "inventory_type", "uname_machine", "ram_total"}
+COMMON = {"inventory_schema", "inventory_type", "uname_machine", "ram_total", "ram_available"}
 ROUTER = COMMON | {
     "router_model",
     "keenetic_release",

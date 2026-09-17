@@ -20,6 +20,7 @@ HOMEROUTE_INVENTORY router_model=EXAMPLE_ROUTER
 HOMEROUTE_INVENTORY keenetic_release=EXAMPLE_RELEASE
 HOMEROUTE_INVENTORY uname_machine=mipsel
 HOMEROUTE_INVENTORY ram_total=262144_KiB
+HOMEROUTE_INVENTORY ram_available=131072_KiB
 HOMEROUTE_INVENTORY opt_total=1048576_KiB
 HOMEROUTE_INVENTORY opt_free=524288_KiB
 HOMEROUTE_INVENTORY opkg_arch=mipsel-3.4
@@ -41,6 +42,7 @@ HOMEROUTE_INVENTORY kernel_release=EXAMPLE_KERNEL
 HOMEROUTE_INVENTORY uname_machine=x86_64
 HOMEROUTE_INVENTORY vcpu_count=1
 HOMEROUTE_INVENTORY ram_total=2097152_KiB
+HOMEROUTE_INVENTORY ram_available=1048576_KiB
 HOMEROUTE_INVENTORY root_total=31457280_KiB
 HOMEROUTE_INVENTORY root_free=15728640_KiB
 HOMEROUTE_INVENTORY component_docker=/usr/bin/docker
@@ -79,6 +81,7 @@ class ProcessReferenceTests(unittest.TestCase):
             self.assertEqual({p.name for p in out.iterdir()}, expected)
             router_json = json.loads((out / "router-reference.json").read_text(encoding="utf-8"))
             self.assertEqual(router_json["router_model"], "EXAMPLE_ROUTER")
+            self.assertEqual(router_json["ram_available"], "131072_KiB")
             packages = json.loads((out / "router-packages.json").read_text(encoding="utf-8"))
             self.assertEqual(packages, [{"name": "busybox", "version": "1.37.0-1"}])
             self.assertIn("[PASS] Reference inventory", (out / "reference-readiness.txt").read_text(encoding="utf-8"))
