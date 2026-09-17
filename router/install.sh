@@ -23,6 +23,12 @@ presence() {
     fi
 }
 
+plan_field() {
+    key=$1
+    value=$2
+    printf 'HOMEROUTE_PLAN %s=%s\n' "$key" "$value"
+}
+
 case "$mode" in
     help|--help|-h)
         show_help
@@ -52,6 +58,20 @@ printf '%s\n' '  router interface: opkgtun0'
 printf '%s\n' '  routing mark: 0x3001'
 printf '%s\n' '  routing table: 301'
 printf '%s\n' '  policy orchestrator: HRNeo'
+
+printf '%s\n' '[PLAN] Machine-readable contract:'
+plan_field schema 1
+plan_field target router
+plan_field mode plan
+plan_field apply_available false
+plan_field awg_baseline 'AmneziaWG_2.x'
+plan_field awg_interface opkgtun0
+plan_field routing_mark 0x3001
+plan_field routing_table 301
+plan_field orchestrator HRNeo
+plan_field dependency_state NOT_VALIDATED
+plan_field resource_thresholds NOT_VALIDATED
+plan_field clean_device_validation NOT_VALIDATED
 
 printf '%s\n' '[PLAN] Observed component availability:'
 for component in opkg awg awg-quick amneziawg-go hrneo nfqws tg-ws-proxy; do
