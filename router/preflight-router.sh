@@ -108,7 +108,9 @@ uname_machine=$(uname -m 2>/dev/null || true)
 inventory uname_machine "$uname_machine"
 
 ram_total=$(awk '/^MemTotal:/ {print $2 "_KiB"; exit}' /proc/meminfo 2>/dev/null || true)
+ram_available=$(awk '/^MemAvailable:/ {print $2 "_KiB"; exit}' /proc/meminfo 2>/dev/null || true)
 inventory ram_total "$ram_total"
+inventory ram_available "$ram_available"
 
 if command -v df >/dev/null 2>&1 && [ -d /opt ]; then
     opt_total=$(df -kP /opt 2>/dev/null | awk 'NR==2 {print $2 "_KiB"}')
