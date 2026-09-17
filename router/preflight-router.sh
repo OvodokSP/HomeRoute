@@ -112,4 +112,20 @@ for name in awg awg-quick amneziawg-go hrneo nfqws tg-ws-proxy; do
     inventory "component_$key" "$path"
 done
 
+section "Machine-readable opkg package inventory"
+if command -v opkg >/dev/null 2>&1; then
+    opkg list-installed 2>/dev/null | awk -F ' - ' '
+        NF >= 2 {
+            name=$1
+            version=$2
+            gsub(/^[ \t]+|[ \t]+$/, "", name)
+            gsub(/^[ \t]+|[ \t]+$/, "", version)
+            if (name != "" && version != "")
+                print "HOMEROUTE_PACKAGE name=" name " version=" version
+        }
+    '
+else
+    printf '[WARN] package inventory unavailable because opkg is missing\n'
+fi
+
 printf '[INFO] Preflight complete; configuration contents and secrets were not read\n'
