@@ -22,6 +22,8 @@ class InventoryExtractTests(unittest.TestCase):
                 "noise",
                 "HOMEROUTE_INVENTORY inventory_schema=1",
                 "HOMEROUTE_INVENTORY inventory_type=router",
+                "HOMEROUTE_INVENTORY router_model=EXAMPLE_ROUTER",
+                "HOMEROUTE_INVENTORY keenetic_release=EXAMPLE_RELEASE",
                 "HOMEROUTE_INVENTORY uname_machine=mipsel",
                 "HOMEROUTE_INVENTORY ram_total=262144_KiB",
                 "HOMEROUTE_INVENTORY opt_total=1048576_KiB",
@@ -31,6 +33,8 @@ class InventoryExtractTests(unittest.TestCase):
             ]
         )
         self.assertEqual(data["inventory_type"], "router")
+        self.assertEqual(data["router_model"], "EXAMPLE_ROUTER")
+        self.assertEqual(data["keenetic_release"], "EXAMPLE_RELEASE")
         self.assertEqual(data["component_awg"], "/opt/bin/awg")
 
     def test_vps_allowlist(self) -> None:
