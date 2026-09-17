@@ -18,3 +18,5 @@ jobs:
           persist-credentials: false
       - name: Validate repository
         run: python3 scripts/ci/validate_repo.py
+      - name: Test inventory tooling
+        run: python3 -m unittest discover -s tests -p 'test_*.py'

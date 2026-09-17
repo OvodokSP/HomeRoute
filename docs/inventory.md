@@ -8,6 +8,7 @@ Inventory нужен для того, чтобы требования HomeRoute 
 - Отсутствующее значение не угадывается и помечается `NOT VALIDATED`.
 - Inventory одной установки не доказывает совместимость других моделей.
 - Реальные credentials, private keys, PSK, токены, пароли, proxy secrets, приватные VPN-конфиги и ненужные публичные инфраструктурные адреса не публикуются.
+- Формальная трактовка `VERIFIED / OBSERVED / NOT VALIDATED / DEPRECATED` описана в [`inventory-evidence.md`](inventory-evidence.md).
 
 ## Router identity
 
@@ -31,7 +32,7 @@ Inventory нужен для того, чтобы требования HomeRoute 
 - список установленных opkg packages;
 - путь и версия, если она определяется безопасно, для `awg`, `awg-quick`, `amneziawg-go`, `hrneo`, `nfqws` и `tg-ws-proxy`.
 
-Список пакетов используется для восстановления зависимостей, но сам по себе не означает, что каждый пакет обязателен для HomeRoute.
+Список пакетов используется для восстановления зависимостей, но сам по себе не означает, что каждый пакет обязателен для HomeRoute. Методика отделения `CORE / OPTIONAL / RESERVE / TRANSITIVE / UNCLASSIFIED / LEGACY` описана в [`package-baseline.md`](package-baseline.md).
 
 ## HomeRoute runtime
 
@@ -69,11 +70,21 @@ Inventory должен подтверждать без изменения сис
 - Последовательная процедура: [`evening-capture.md`](evening-capture.md)
 - Схема безопасных полей: [`../inventory/schema-v1.md`](../inventory/schema-v1.md)
 - Нормализатор allowlist: [`../scripts/inventory/extract_inventory.py`](../scripts/inventory/extract_inventory.py)
+- Извлечение Entware packages: [`../scripts/inventory/extract_packages.py`](../scripts/inventory/extract_packages.py)
+- Сравнение нормализованных снимков: [`../scripts/inventory/compare_inventory.py`](../scripts/inventory/compare_inventory.py)
+- Сравнение package snapshots: [`../scripts/inventory/compare_packages.py`](../scripts/inventory/compare_packages.py)
+- Markdown-рендерер для GitHub: [`../scripts/inventory/render_inventory.py`](../scripts/inventory/render_inventory.py)
 
 Оба preflight выдают человекочитаемый отчёт и строки:
 
 ```text
 HOMEROUTE_INVENTORY key=value
+```
+
+Router preflight дополнительно выдаёт строки:
+
+```text
+HOMEROUTE_PACKAGE name=<package> version=<version>
 ```
 
 Примеры без данных реальной инфраструктуры:
@@ -82,6 +93,20 @@ HOMEROUTE_INVENTORY key=value
 - [`../inventory/vps-reference.example.txt`](../inventory/vps-reference.example.txt)
 
 Нормализатор публикует только поля, явно разрешённые schema v1. Неизвестный ключ приводит к ошибке, а не переносится автоматически в JSON.
+
+После нормализации два снимка одного типа можно сравнить без чтения исходного полного лога:
+
+```sh
+python3 scripts/inventory/compare_inventory.py before.json after.json --strict-type
+```
+
+Готовую Markdown-таблицу для документации можно получить автоматически:
+
+```sh
+python3 scripts/inventory/render_inventory.py router-reference.json \
+  --title "Reference router inventory" \
+  --output router-reference.md
+```
 
 ## Acceptance criteria Phase 1
 
