@@ -4,6 +4,7 @@
 
 - Автопилот теперь запускает и дожидается отдельного `Repository quality` workflow на точном head-коммите PR.
 - Squash merge выполняется только после успешного завершения этого независимого CI-запуска.
+- Merge привязан к проверенному head SHA, а `actions: write` изолирован от jobs, в которых запускается Codex.
 
 ## 0.2.0 — autonomous repository workflow
 
