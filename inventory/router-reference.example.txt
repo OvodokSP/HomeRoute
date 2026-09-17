@@ -1,10 +1,12 @@
 # HomeRoute router inventory example
 # EXAMPLE ONLY — does not describe a real router.
 
+HOMEROUTE_INVENTORY inventory_schema=1
+HOMEROUTE_INVENTORY inventory_type=router
 HOMEROUTE_INVENTORY uname_machine=EXAMPLE_ARCH
-HOMEROUTE_INVENTORY ram_total=EXAMPLE_VALUE
-HOMEROUTE_INVENTORY opt_total=EXAMPLE_VALUE
-HOMEROUTE_INVENTORY opt_free=EXAMPLE_VALUE
+HOMEROUTE_INVENTORY ram_total=NOT_VALIDATED
+HOMEROUTE_INVENTORY opt_total=NOT_VALIDATED
+HOMEROUTE_INVENTORY opt_free=NOT_VALIDATED
 HOMEROUTE_INVENTORY opkg_arch=EXAMPLE_ARCH
 HOMEROUTE_INVENTORY component_awg=/opt/usr/bin/awg
 HOMEROUTE_INVENTORY component_awg_quick=/opt/usr/bin/awg-quick
