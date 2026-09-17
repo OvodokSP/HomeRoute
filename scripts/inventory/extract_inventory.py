@@ -13,6 +13,8 @@ LINE = re.compile(r"^HOMEROUTE_INVENTORY ([a-z0-9_]+)=(.*)$")
 
 COMMON = {"inventory_schema", "inventory_type", "uname_machine", "ram_total"}
 ROUTER = COMMON | {
+    "router_model",
+    "keenetic_release",
     "opt_total",
     "opt_free",
     "opkg_arch",
