@@ -6,7 +6,7 @@
 
 ## Контур доверия
 
-Автопилот имеет право записи только в GitHub-репозиторий. У него нет SSH-ключей, адресов или credentials реального Keenetic, NAS либо VPS. `scripts/ci/validate_repo.py --protect-policy` запрещает обычной Roadmap-задаче изменять правила, security policy, CI и сам workflow автопилота.
+Автопилот имеет право записи только в GitHub-репозиторий. У него нет SSH-ключей, адресов или credentials реального Keenetic, NAS либо VPS. `scripts/ci/validate_repo.py --protect-policy` запрещает обычной Roadmap-задаче изменять правила, security policy, CI и сам workflow автопилота. Право `actions: write` изолировано в отдельном job без Codex; merge выполняется другим job и только при совпадении текущего PR head с проверенным SHA.
 
 ```text
 ROADMAP
