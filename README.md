@@ -30,7 +30,7 @@ HRNeo управляет выборочной маршрутизацией, `opk
 
 Golden State подтверждён после перезагрузки Keenetic и полного reboot VPS. Проверены восстановление AWG2, выборочная маршрутизация HRNeo, таблица `301`, mark `0x3001`, NAT/FORWARD, DNS redirect TCP/UDP 53 и удаление legacy-конфигурации.
 
-Пока **не подтверждены** установка на чистое устройство, числовые аппаратные требования и полноценный apply installer. Router installer имеет только безопасный PRE-ALPHA `plan` mode; `apply` явно заблокирован. AWG 3.x не входит в baseline.
+Пока **не подтверждены** установка на чистое устройство, числовые аппаратные требования и полноценный apply installer. Router/VPS installers имеют только безопасный PRE-ALPHA `plan` mode; оба `apply` явно заблокированы. AWG 3.x не входит в baseline.
 
 ## Документы
 
@@ -41,6 +41,7 @@ Golden State подтверждён после перезагрузки Keenetic
 - [Аппаратные требования](docs/hardware-requirements.md)
 - [Матрица совместимости](docs/compatibility-matrix.md)
 - [Router installer design](docs/router-installer-design.md)
+- [VPS installer design](docs/vps-installer-design.md)
 - [Архитектура](docs/architecture.md)
 - [Эталонное состояние v0.1](docs/reference-state-v0.1.md)
 - [Сценарий развёртывания](docs/setup-flow.md)
