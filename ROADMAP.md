@@ -1,6 +1,6 @@
 # План развития
 
-Автопилот обрабатывает первый незавершённый пункт формата `- [ ] HL-NNN — ...`. Пункт отмечается выполненным только после детерминированных проверок и отдельного Codex-review.
+Автопилот обрабатывает первый незавершённый пункт формата `- [ ] HL-NNN — ...`. Пункт отмечается выполненным только после детерминированных проверок и отдельного review.
 
 ## Phase 0 — Foundation
 
@@ -9,26 +9,31 @@
 
 ## Phase 1 — Inventory & requirements
 
-- [ ] HL-101 — Описать воспроизводимый сбор обезличенного hardware/package inventory для Keenetic/Entware и VPS.
+- [x] HL-101 — Описать и фактически проверить воспроизводимый сбор обезличенного hardware/package inventory для Keenetic/Entware и VPS.
 - [x] HL-102 — Добавить схемы результатов inventory и примеры без реальных адресов, ключей и конфигураций.
-- [x] HL-103 — Определить методику классов «не подходит / достаточно / рекомендуется» без неподтверждённых числовых порогов.
+- [x] HL-103 — Определить методику классов `Verified baseline / Expected compatible / Not validated / Not suitable` без выдачи supported floor за физический минимум.
+- [ ] HL-104 — Классифицировать reference Entware package snapshot на CORE / OPTIONAL / RESERVE / TRANSITIVE / UNCLASSIFIED / LEGACY и сформировать доказуемый install manifest.
 
 ## Phase 2 — Router installer
 
 - [x] HL-201 — Спроектировать идемпотентный router installer с режимами plan/apply, backup, verify и rollback.
 - [x] HL-202 — Реализовать plan-only этап router installer без изменения устройства.
 - [x] HL-203 — Добавить тестовый стенд и негативные проверки router installer.
+- [ ] HL-204 — Реализовать router apply-mode только после завершения HL-104 и безопасного backup/verify/rollback implementation.
 
 ## Phase 3 — VPS installer
 
 - [x] HL-301 — Спроектировать идемпотентный VPS installer с режимами plan/apply, backup, verify и rollback.
 - [x] HL-302 — Реализовать plan-only этап VPS installer без подключения к реальному VPS.
 - [x] HL-303 — Добавить тестовый стенд и негативные проверки VPS installer.
+- [ ] HL-304 — Реализовать VPS apply-mode с параметризуемыми AWG2/AdGuard settings, backup/verify/rollback и без embedded secrets.
 
 ## Phase 4 — Doctor, backup, restore
 
 - [x] HL-401 — Расширить doctor-скрипты структурированным отчётом без секретов.
 - [x] HL-402 — Описать и протестировать локальные backup/restore-контракты на фиктивных данных.
+- [ ] HL-403 — Провести live read-only doctor capture и проверить отчёт на Golden State.
+- [ ] HL-404 — Провести контролируемую live backup/restore validation до разрешения installer apply-mode.
 
 ## Phase 5 — Clean-device reproduction
 
@@ -37,7 +42,7 @@
 
 ## Phase 6 — Compatibility matrix
 
-- [ ] HL-601 — Опубликовать матрицу только для моделей и конфигураций с проверяемыми доказательствами.
+- [ ] HL-601 — Опубликовать матрицу с `Verified baseline` и документарно обоснованными `Expected` моделями; повышать другую модель до `Verified` только после clean reproduction.
 
 ## Future
 
