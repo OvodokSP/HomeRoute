@@ -1,0 +1,4 @@
+# Reference data v0.1. Проверяйте и обновляйте список перед применением.
+telegram.org
+t.me
+telegra.ph
