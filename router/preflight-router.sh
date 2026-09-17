@@ -31,6 +31,25 @@ else
 fi
 run_if_available "RAM" free -h
 
+section "Safe Keenetic identity"
+keenetic_release=
+router_model=
+if command -v ndmc >/dev/null 2>&1; then
+    version_out=$(ndmc -c 'show version' 2>/dev/null || true)
+    keenetic_release=$(printf '%s\n' "$version_out" | awk -F: '/^[[:space:]]*release:/ {sub(/^[[:space:]]*/, "", $2); sub(/[[:space:]]*$/, "", $2); print $2; exit}')
+    router_model=$(printf '%s\n' "$version_out" | awk -F: '/^[[:space:]]*model:/ {sub(/^[[:space:]]*/, "", $2); sub(/[[:space:]]*$/, "", $2); print $2; exit}')
+    if [ -z "$router_model" ]; then
+        router_model=$(printf '%s\n' "$version_out" | awk -F: '/^[[:space:]]*device:/ {sub(/^[[:space:]]*/, "", $2); sub(/[[:space:]]*$/, "", $2); print $2; exit}')
+    fi
+else
+    printf '%s\n' '[WARN] ndmc is unavailable; Keenetic release/model may remain NOT_VALIDATED'
+fi
+if [ -z "$router_model" ] && [ -r /proc/device-tree/model ]; then
+    router_model=$(tr -d '\000' < /proc/device-tree/model 2>/dev/null | sed -n '1p' || true)
+fi
+printf '[INFO] Keenetic release: %s\n' "${keenetic_release:-NOT_VALIDATED}"
+printf '[INFO] Router model: %s\n' "${router_model:-NOT_VALIDATED}"
+
 section "Filesystems"
 run_if_available "Mounted filesystems" mount
 if command -v df >/dev/null 2>&1; then
@@ -82,6 +101,8 @@ done
 section "Machine-readable safe inventory"
 inventory inventory_schema 1
 inventory inventory_type router
+inventory router_model "$router_model"
+inventory keenetic_release "$keenetic_release"
 
 uname_machine=$(uname -m 2>/dev/null || true)
 inventory uname_machine "$uname_machine"
