@@ -56,20 +56,20 @@ for name in awg awg-quick amneziawg-go hrneo nfqws tg-ws-proxy; do
     fi
 done
 
-section "Init scripts and hooks"
-for directory in /opt/etc/init.d /opt/etc/ndm /opt/etc/ndm/netfilter.d /opt/etc/ndm/ifstatechanged.d; do
+section "Relevant file names (contents intentionally omitted)"
+for directory in /opt/etc/HydraRoute /opt/etc/telegram-awg; do
     if [ -d "$directory" ]; then
-        printf '[INFO] files in %s\n' "$directory"
         find "$directory" -maxdepth 2 -type f -print 2>/dev/null | sort
-    else
-        printf '[WARN] directory absent: %s\n' "$directory"
     fi
 done
-
-section "Configuration file names (contents intentionally omitted)"
-for directory in /opt/etc/awg /opt/etc/wireguard /opt/etc/hrneo /opt/etc/AdGuardHome; do
-    if [ -d "$directory" ]; then
-        find "$directory" -maxdepth 2 -type f -print 2>/dev/null | sort
-    fi
+for path in \
+    /opt/etc/init.d/S98telegram-awg \
+    /opt/etc/init.d/S99hrneo \
+    /opt/etc/ndm/netfilter.d/014-telegram-awg.sh \
+    /opt/etc/ndm/netfilter.d/015-hrneo.sh \
+    /opt/etc/ndm/ifstatechanged.d/014-telegram-awg.sh \
+    /opt/etc/ndm/ifstatechanged.d/015-hrneo.sh
+do
+    [ -e "$path" ] && printf '%s\n' "$path"
 done
 printf '[INFO] Preflight complete; configuration contents and secrets were not read\n'
