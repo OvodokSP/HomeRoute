@@ -37,6 +37,7 @@ Golden State подтверждён после перезагрузки Keenetic
 - [Текущее подтверждённое состояние](CURRENT_STATE.md)
 - [Требования](docs/requirements.md)
 - [Inventory эталонной системы](docs/inventory.md)
+- [Вечерний сбор inventory](docs/evening-capture.md)
 - [Аппаратные требования](docs/hardware-requirements.md)
 - [Матрица совместимости](docs/compatibility-matrix.md)
 - [Архитектура](docs/architecture.md)

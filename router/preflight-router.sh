@@ -21,7 +21,7 @@ inventory() {
 
 printf '[INFO] HomeRoute router preflight (read-only; no secret contents)\n'
 section "System"
-run_if_available "Kernel" uname -a
+run_if_available "Kernel" uname -sr
 run_if_available "CPU architecture" uname -m
 printf '[INFO] CPU summary\n'
 if [ -r /proc/cpuinfo ]; then
@@ -80,6 +80,9 @@ do
 done
 
 section "Machine-readable safe inventory"
+inventory inventory_schema 1
+inventory inventory_type router
+
 uname_machine=$(uname -m 2>/dev/null || true)
 inventory uname_machine "$uname_machine"
 

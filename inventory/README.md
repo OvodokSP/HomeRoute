@@ -27,4 +27,11 @@
 
 Перед публикацией inventory необходимо просмотреть на предмет секретов и лишних инфраструктурных данных.
 
-Файл [`router-reference.example.txt`](router-reference.example.txt) показывает только формат и не описывает реальное устройство.
+## Schema v1
+
+Разрешённые машиночитаемые поля описаны в [`schema-v1.md`](schema-v1.md). Нормализатор `scripts/inventory/extract_inventory.py` отклоняет неизвестные ключи вместо их автоматической публикации.
+
+Примеры описывают только формат и не относятся к реальной инфраструктуре:
+
+- [`router-reference.example.txt`](router-reference.example.txt)
+- [`vps-reference.example.txt`](vps-reference.example.txt)
