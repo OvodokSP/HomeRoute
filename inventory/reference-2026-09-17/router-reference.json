@@ -1,0 +1,18 @@
+{
+  "component_amneziawg_go": "/opt/bin/amneziawg-go",
+  "component_awg": "/opt/bin/awg",
+  "component_awg_quick": "/opt/bin/awg-quick",
+  "component_hrneo": "/opt/bin/hrneo",
+  "component_nfqws": "/opt/usr/bin/nfqws",
+  "component_tg_ws_proxy": "/opt/bin/tg-ws-proxy",
+  "inventory_schema": "1",
+  "inventory_type": "router",
+  "keenetic_release": "5.00.C.9.0-1",
+  "opkg_arch": "all,mipsel-3.4,mipsel-3.4_kn",
+  "opt_free": "22428_KiB",
+  "opt_total": "47480_KiB",
+  "ram_available": "94936_KiB",
+  "ram_total": "254664_KiB",
+  "router_model": "Netis N6 v1 AX1800",
+  "uname_machine": "mips"
+}
