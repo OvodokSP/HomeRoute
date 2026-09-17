@@ -25,3 +25,5 @@ jobs:
           sh tests/router-install-plan.sh
           sh tests/vps-install-plan.sh
           sh tests/backup-restore-contract.sh
+      - name: Test router doctor matcher
+        run: HOMEROUTE_DOCTOR_SELFTEST=1 sh router/doctor-router.sh
