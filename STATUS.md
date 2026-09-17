@@ -25,8 +25,9 @@
 | Structured doctor summary | IMPLEMENTED, LIVE CAPTURE PENDING |
 | Backup/restore contract | TESTED ON FICTITIOUS DATA |
 | Live backup/restore | NOT VALIDATED |
+| Clean-device reproduction protocol | PREPARED |
+| First clean-device reproduction | NOT YET TESTED |
 | Installer | NOT VALIDATED |
-| Clean-device reproduction | NOT YET TESTED |
 | AWG 3.x | NOT YET ADOPTED |
 | Repository CI | CONFIGURED |
 | Repository autopilot | CONFIGURED, DISABLED UNTIL SECRET/VARIABLE SETUP |
@@ -38,3 +39,5 @@ Phase 1 подготовил формат безопасного inventory, rout
 Router и VPS `plan` допускают только read-only оценку. Реальный `apply` останется заблокирован до reference inventory, точного dependency mapping/provisioning requirements, backup/verify/rollback реализации и clean-device validation.
 
 Doctor structured summary содержит только агрегированные счётчики. Backup/restore transaction model прошёл тест только в фиктивном временном дереве и не означает готовность live restore.
+
+Clean-device protocol и evidence-template подготовлены, но воспроизводимость на чистом устройстве не считается подтверждённой до фактического run без незадокументированных ручных исправлений.
