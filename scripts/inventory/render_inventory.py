@@ -13,6 +13,8 @@ ORDER = {
     "router": [
         "inventory_schema",
         "inventory_type",
+        "router_model",
+        "keenetic_release",
         "uname_machine",
         "ram_total",
         "opt_total",
