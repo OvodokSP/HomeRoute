@@ -11,13 +11,11 @@
 3. Закрыть или отложить окно Keenetic.
 4. VPS.
 5. Сохранить/передать его вывод.
-6. Нормализовать только безопасные машинные строки.
+6. На ПК обработать оба файла одной командой.
 
 Ни один из preflight-скриптов не должен менять routing, firewall, VPN, Docker containers или установленные пакеты.
 
 ## 1. Keenetic
-
-После попадания этого документа в `main` можно получить актуальный скрипт из публичного репозитория.
 
 В Entware shell:
 
@@ -31,15 +29,7 @@ sh ./homeroute-preflight-router.sh 2>&1 | tee homeroute-router-inventory.txt
 
 Если `wget` недоступен, скрипт можно открыть в GitHub и вставить/передать на устройство другим способом. Не устанавливайте новые пакеты только ради preflight.
 
-После выполнения передаётся файл/вывод `homeroute-router-inventory.txt`. Перед публикацией в Git следует использовать только обезличенные поля из схемы inventory.
-
-Router preflight также выдаёт отдельные безопасные строки:
-
-```text
-HOMEROUTE_PACKAGE name=<package> version=<version>
-```
-
-Они нужны только для анализа состава Entware и не означают, что каждый обнаруженный пакет является зависимостью HomeRoute.
+После выполнения передаётся файл/вывод `homeroute-router-inventory.txt`. Router preflight выдаёт только отдельные безопасные машиночитаемые поля и список package/version; содержимое VPN-конфигов он не читает.
 
 ## 2. VPS
 
@@ -57,41 +47,53 @@ sh ./homeroute-preflight-vps.sh 2>&1 | tee homeroute-vps-inventory.txt
 
 По умолчанию скрипт ожидает контейнеры `amnezia-awg2` и `adguard-home`, а AWG-интерфейс внутри AWG2 — `awg0`. При другой схеме имена можно передать через локальные environment variables без сохранения их в Git.
 
-## 3. Нормализация
+## 3. Обработка на ПК — одна команда
 
-На обычном ПК с Python 3 сырой вывод можно превратить в allowlisted JSON:
-
-```sh
-python3 scripts/inventory/extract_inventory.py homeroute-router-inventory.txt > router-reference.json
-python3 scripts/inventory/extract_inventory.py homeroute-vps-inventory.txt > vps-reference.json
-```
-
-Нормализатор принимает только ключи, перечисленные в [`../inventory/schema-v1.md`](../inventory/schema-v1.md). Неизвестный ключ приводит к ошибке вместо автоматической публикации значения.
-
-Отдельный список установленных Entware-пакетов извлекается так:
+Имея локальную копию репозитория и Python 3:
 
 ```sh
-python3 scripts/inventory/extract_packages.py \
-  homeroute-router-inventory.txt > router-packages.json
+python3 scripts/inventory/process_reference.py \
+  homeroute-router-inventory.txt \
+  homeroute-vps-inventory.txt \
+  --out-dir reference-output
 ```
 
-Для документации JSON можно автоматически отрисовать в Markdown:
+Команда создаёт:
 
-```sh
-python3 scripts/inventory/render_inventory.py router-reference.json \
-  --title "Reference router inventory" \
-  --output router-reference.md
+- `reference-output/router-reference.json` — allowlisted router inventory;
+- `reference-output/vps-reference.json` — allowlisted VPS inventory;
+- `reference-output/router-packages.json` — package/version из Entware;
+- `reference-output/router-reference.md` — готовая Markdown-таблица;
+- `reference-output/vps-reference.md` — готовая Markdown-таблица;
+- `reference-output/reference-readiness.txt` — список PASS/WARN/BLOCKED для полноты evidence.
 
-python3 scripts/inventory/render_inventory.py vps-reference.json \
-  --title "Reference VPS inventory" \
-  --output vps-reference.md
-```
+Неизвестный `HOMEROUTE_INVENTORY` key блокируется нормализатором вместо автоматической публикации. Полный raw log не копируется в output-dir автоматически.
 
-## Что прислать для анализа
+Если каталог output уже содержит файлы, обработчик откажется перезаписывать их без явного `--force`.
 
-Для первого эталонного аудита полезен полный вывод обоих read-only preflight в чате. В публичный Git после проверки должны попасть только обезличенные результаты, достаточные для доказательства требований и совместимости.
+## Readiness не является hardware verdict
 
-Для работы в двух PuTTY-окнах не требуется переключаться туда-сюда: сначала полностью выполняется блок Keenetic и передаётся его результат, затем отдельно VPS.
+`reference-readiness.txt` отвечает только на вопрос: **достаточно ли безопасных полей собрано для анализа требований?**
+
+Он намеренно не выдаёт:
+
+- минимальную RAM;
+- рекомендуемый CPU;
+- минимальный размер storage;
+- статус совместимости другой модели.
+
+Числовые thresholds появляются только после интерпретации фактически измеренного reference evidence.
+
+## Что прислать для первого аудита
+
+Самый простой вариант — прислать мне по очереди два raw-вывода:
+
+1. Keenetic целиком;
+2. после его разбора — VPS целиком.
+
+Я сам выполню нормализацию и зафиксирую в Git только безопасные результаты.
+
+Для работы в двух PuTTY-окнах не требуется переключаться туда-сюда: сначала полностью выполняется Keenetic, затем отдельно VPS.
 
 ## Что НЕ делать
 
