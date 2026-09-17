@@ -36,7 +36,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TASK_ID: ${{ steps.task.outputs.task_id }}
         run: |
-          existing=$(gh issue list --state open --search "[AUTOPILOT] $TASK_ID in:title" --json number,title --jq 'map(select(.title | contains(env.TASK_ID))) | .[0].number // empty')
+          existing=$(gh issue list --state open --search "$TASK_ID in:title" --json number,title --jq 'map(select(.title | contains(env.TASK_ID))) | .[0].number // empty')
           if [ -n "$existing" ]; then
             echo "run=false" >> "$GITHUB_OUTPUT"
             echo "::notice::Roadmap task $TASK_ID is already blocked in issue #$existing"
@@ -108,7 +108,7 @@ jobs:
         run: |
           HOMEROUTE_ROOT="$GITHUB_WORKSPACE" python3 /tmp/homeroute-validate.py --base origin/main --protect-policy
           cmp -s ROADMAP.md /tmp/homeroute-ROADMAP.md || { echo "::error::Codex changed the orchestrator-owned Roadmap"; exit 1; }
-          changed=$(git diff --name-only | grep -v '^ROADMAP.md$' || true)
+          changed=$({ git diff --name-only; git diff --cached --name-only; git ls-files --others --exclude-standard; } | sort -u | grep -v '^ROADMAP.md$' || true)
           if [ -z "$changed" ]; then
             echo "::error::Codex produced no task implementation"
             exit 1

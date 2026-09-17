@@ -195,6 +195,11 @@ def main() -> int:
     diff_check = subprocess.run(["git", "diff", "--check"], cwd=ROOT, text=True, capture_output=True)
     if diff_check.returncode:
         errors.append(diff_check.stdout.strip() or "git diff --check failed")
+    cached_diff_check = subprocess.run(
+        ["git", "diff", "--cached", "--check"], cwd=ROOT, text=True, capture_output=True
+    )
+    if cached_diff_check.returncode:
+        errors.append(cached_diff_check.stdout.strip() or "git diff --cached --check failed")
 
     if errors:
         for error in errors:
