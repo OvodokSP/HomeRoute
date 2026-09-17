@@ -71,6 +71,7 @@ Inventory должен подтверждать без изменения сис
 - Схема безопасных полей: [`../inventory/schema-v1.md`](../inventory/schema-v1.md)
 - Нормализатор allowlist: [`../scripts/inventory/extract_inventory.py`](../scripts/inventory/extract_inventory.py)
 - Сравнение нормализованных снимков: [`../scripts/inventory/compare_inventory.py`](../scripts/inventory/compare_inventory.py)
+- Markdown-рендерер для GitHub: [`../scripts/inventory/render_inventory.py`](../scripts/inventory/render_inventory.py)
 
 Оба preflight выдают человекочитаемый отчёт и строки:
 
@@ -89,6 +90,14 @@ HOMEROUTE_INVENTORY key=value
 
 ```sh
 python3 scripts/inventory/compare_inventory.py before.json after.json --strict-type
+```
+
+Готовую Markdown-таблицу для документации можно получить автоматически:
+
+```sh
+python3 scripts/inventory/render_inventory.py router-reference.json \
+  --title "Reference router inventory" \
+  --output router-reference.md
 ```
 
 ## Acceptance criteria Phase 1
