@@ -39,6 +39,12 @@ jobs:
             exit 1
           fi
 
+      - name: Snapshot trusted guard and Roadmap
+        if: steps.task.outputs.found == 'true'
+        run: |
+          install -m 0555 scripts/ci/validate_repo.py /tmp/homeroute-validate.py
+          install -m 0444 ROADMAP.md /tmp/homeroute-ROADMAP.md
+
       - name: Create audit issue and task branch
         if: steps.task.outputs.found == 'true'
         id: issue
@@ -85,7 +91,8 @@ jobs:
       - name: Validate implementation
         if: steps.task.outputs.found == 'true'
         run: |
-          python3 scripts/ci/validate_repo.py --base origin/main --protect-policy
+          HOMEROUTE_ROOT="$GITHUB_WORKSPACE" python3 /tmp/homeroute-validate.py --base origin/main --protect-policy
+          cmp -s ROADMAP.md /tmp/homeroute-ROADMAP.md || { echo "::error::Codex changed the orchestrator-owned Roadmap"; exit 1; }
           changed=$(git diff --name-only | grep -v '^ROADMAP.md$' || true)
           if [ -z "$changed" ]; then
             echo "::error::Codex produced no task implementation"
@@ -146,7 +153,8 @@ jobs:
         if: steps.task.outputs.found == 'true' && steps.review1_result.outputs.decision != 'PASS'
         run: |
           sudo chown -R "$(id -u):$(id -g)" "$GITHUB_WORKSPACE"
-          python3 scripts/ci/validate_repo.py --base origin/main --protect-policy
+          HOMEROUTE_ROOT="$GITHUB_WORKSPACE" python3 /tmp/homeroute-validate.py --base origin/main --protect-policy
+          cmp -s ROADMAP.md /tmp/homeroute-ROADMAP.md || { echo "::error::Codex changed the orchestrator-owned Roadmap"; exit 1; }
 
       - name: Review repaired implementation
         if: steps.task.outputs.found == 'true' && steps.review1_result.outputs.decision != 'PASS'
@@ -187,7 +195,7 @@ jobs:
         run: |
           sudo chown -R "$(id -u):$(id -g)" "$GITHUB_WORKSPACE"
           python3 scripts/agent/roadmap.py complete "$TASK_ID"
-          python3 scripts/ci/validate_repo.py --base origin/main --protect-policy
+          HOMEROUTE_ROOT="$GITHUB_WORKSPACE" python3 /tmp/homeroute-validate.py --base origin/main --protect-policy
 
       - name: Commit, open PR, and merge
         if: steps.task.outputs.found == 'true'

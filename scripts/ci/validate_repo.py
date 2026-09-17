@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import subprocess
 import sys
@@ -11,7 +12,7 @@ from pathlib import Path
 from urllib.parse import unquote
 
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(os.environ.get("HOMEROUTE_ROOT", Path(__file__).resolve().parents[2])).resolve()
 REQUIRED = {
     "AGENTS.md",
     "CURRENT_STATE.md",
@@ -23,12 +24,16 @@ REQUIRED = {
     "docs/reference-state-v0.1.md",
 }
 PROTECTED = {
+    ".gitignore",
     "AGENTS.md",
+    "CURRENT_STATE.md",
     "SECURITY.md",
-    ".github/workflows/autopilot.yml",
-    ".github/workflows/quality.yml",
+    "docs/architecture.md",
+    "docs/decision-log.md",
+    "scripts/agent/roadmap.py",
     "scripts/ci/validate_repo.py",
 }
+PROTECTED_PREFIXES = (".github/workflows/", "agent/prompts/")
 SECRET_PATTERNS = {
     "private key": re.compile(r"-----BEGIN (?:OPENSSH |RSA |EC |DSA )?PRIVATE KEY-----"),
     "OpenAI key": re.compile(r"\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}\b"),
@@ -143,7 +148,7 @@ def changed_files(base: str) -> set[str]:
 
 def check_protected(base: str, errors: list[str]) -> None:
     for relative in sorted(changed_files(base)):
-        if relative in PROTECTED or relative.startswith("agent/prompts/"):
+        if relative in PROTECTED or relative.startswith(PROTECTED_PREFIXES):
             errors.append(f"ordinary autopilot task changed protected policy: {relative}")
 
 
