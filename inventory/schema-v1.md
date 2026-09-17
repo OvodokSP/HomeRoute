@@ -24,6 +24,8 @@ HOMEROUTE_INVENTORY key=value
 
 - `inventory_schema`
 - `inventory_type`
+- `router_model` — только модель/устройство из безопасно отфильтрованного `show version` или device-tree; без serial/MAC/hostname
+- `keenetic_release` — поле `release` из read-only `show version`
 - `uname_machine`
 - `ram_total`
 - `opt_total`
