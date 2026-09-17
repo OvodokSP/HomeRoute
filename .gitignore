@@ -17,6 +17,9 @@ dumps/
 *.dump
 *.bak
 
+__pycache__/
+*.py[cod]
+
 *wg*.conf
 *awg*.conf
 !*wg*.conf.example

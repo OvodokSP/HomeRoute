@@ -1,5 +1,13 @@
 # История изменений
 
+## 0.2.0 — autonomous repository workflow
+
+- Добавлены `AGENTS.md` и `CURRENT_STATE.md` как правила и фактическая точка для агентов.
+- Roadmap преобразован в машиночитаемую очередь задач.
+- Добавлены dependency-free repository validation и GitHub Actions CI.
+- Добавлен отключённый по умолчанию Codex-autopilot с независимым review, одной автоматической доработкой и стоп-условиями.
+- Production deployment остаётся вне полномочий автопилота.
+
 ## 0.1.0 — bootstrap
 
 - Зафиксировано подтверждённое состояние HomeRoute Golden State v0.1.

@@ -12,5 +12,7 @@
 | Installer | NOT VALIDATED |
 | Clean-device reproduction | NOT YET TESTED |
 | AWG 3.x | NOT YET ADOPTED |
+| Repository CI | CONFIGURED |
+| Repository autopilot | CONFIGURED, DISABLED UNTIL SECRET/VARIABLE SETUP |
 
 Статусы PASS относятся к фактически проверенной reference-инсталляции, а не гарантируют переносимость на произвольное оборудование.

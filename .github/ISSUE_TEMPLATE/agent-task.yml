@@ -1,0 +1,37 @@
+name: Agent task
+description: Auditable repository-only task for HomeRoute automation
+title: "[AGENT] "
+body:
+  - type: markdown
+    attributes:
+      value: "Do not include credentials, real private configuration, or production access details."
+  - type: textarea
+    id: objective
+    attributes:
+      label: Objective
+      description: One bounded repository outcome.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Verified evidence
+      description: Facts and primary sources the task may rely on.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Checks that decide PASS or BLOCKED.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety boundary
+      options:
+        - label: Repository changes only; no router, NAS, VPS, DNS, firewall, or VPN deployment.
+          required: true
+        - label: No real secrets, endpoints, keys, PSKs, tokens, or private configs are included.
+          required: true

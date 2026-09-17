@@ -1,0 +1,223 @@
+name: HomeRoute Autopilot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: homeroute-autopilot-main
+  cancel-in-progress: false
+
+jobs:
+  next-roadmap-task:
+    if: github.event_name == 'workflow_dispatch' || vars.HOMEROUTE_AUTOPILOT == 'enabled'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Select next Roadmap task
+        id: task
+        run: python3 scripts/agent/roadmap.py next >> "$GITHUB_OUTPUT"
+
+      - name: Require API credential
+        if: steps.task.outputs.found == 'true'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::Repository secret OPENAI_API_KEY is missing"
+            exit 1
+          fi
+
+      - name: Create audit issue and task branch
+        if: steps.task.outputs.found == 'true'
+        id: issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TASK_ID: ${{ steps.task.outputs.task_id }}
+          TASK_TITLE: ${{ steps.task.outputs.title }}
+        run: |
+          branch="agent/${TASK_ID,,}-${GITHUB_RUN_ID}"
+          git switch -c "$branch"
+          issue_url=$(gh issue create \
+            --title "[AUTOPILOT] $TASK_ID — $TASK_TITLE" \
+            --body "Automated execution of Roadmap task **$TASK_ID**. Workflow: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID")
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          echo "number=${issue_url##*/}" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare unprivileged Codex account
+        if: steps.task.outputs.found == 'true'
+        run: |
+          sudo useradd --create-home --shell /bin/bash codex-runner
+          sudo install -d -o codex-runner -g codex-runner /tmp/homeroute-codex-home
+          sudo chown -R codex-runner:codex-runner "$GITHUB_WORKSPACE"
+
+      - name: Implement task with Codex
+        if: steps.task.outputs.found == 'true'
+        id: developer
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          permission-profile: ":workspace"
+          safety-strategy: unprivileged-user
+          codex-user: codex-runner
+          codex-home: /tmp/homeroute-codex-home
+          prompt: |
+            Read and follow agent/prompts/developer.md.
+            Implement Roadmap task ${{ steps.task.outputs.task_id }}:
+            ${{ steps.task.outputs.title }}
+            Do not mark the Roadmap item complete.
+
+      - name: Restore workspace ownership
+        if: steps.task.outputs.found == 'true'
+        run: sudo chown -R "$(id -u):$(id -g)" "$GITHUB_WORKSPACE"
+
+      - name: Validate implementation
+        if: steps.task.outputs.found == 'true'
+        run: |
+          python3 scripts/ci/validate_repo.py --base origin/main --protect-policy
+          changed=$(git diff --name-only | grep -v '^ROADMAP.md$' || true)
+          if [ -z "$changed" ]; then
+            echo "::error::Codex produced no task implementation"
+            exit 1
+          fi
+
+      - name: Review implementation with Codex
+        if: steps.task.outputs.found == 'true'
+        id: review1
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          permission-profile: ":read-only"
+          safety-strategy: unprivileged-user
+          codex-user: codex-runner
+          codex-home: /tmp/homeroute-codex-home
+          output-schema: |
+            {"type":"object","properties":{"decision":{"type":"string","enum":["PASS","CHANGES_REQUIRED"]},"summary":{"type":"string"},"required_fixes":{"type":"array","items":{"type":"string"}}},"required":["decision","summary","required_fixes"],"additionalProperties":false}
+          prompt: |
+            Read and follow agent/prompts/reviewer.md.
+            Review Roadmap task ${{ steps.task.outputs.task_id }}:
+            ${{ steps.task.outputs.title }}
+
+      - name: Parse first review
+        if: steps.task.outputs.found == 'true'
+        id: review1_result
+        env:
+          REVIEW_JSON: ${{ steps.review1.outputs.final-message }}
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          review = json.loads(os.environ["REVIEW_JSON"])
+          print(f"decision={review['decision']}")
+          PY
+
+      - name: Return workspace to Codex for repair
+        if: steps.task.outputs.found == 'true' && steps.review1_result.outputs.decision != 'PASS'
+        run: sudo chown -R codex-runner:codex-runner "$GITHUB_WORKSPACE"
+
+      - name: Repair review findings
+        if: steps.task.outputs.found == 'true' && steps.review1_result.outputs.decision != 'PASS'
+        id: repair
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          permission-profile: ":workspace"
+          safety-strategy: unprivileged-user
+          codex-user: codex-runner
+          codex-home: /tmp/homeroute-codex-home
+          prompt: |
+            Read and follow agent/prompts/developer.md.
+            Repair the current implementation of ${{ steps.task.outputs.task_id }}.
+            The independent review returned:
+            ${{ steps.review1.outputs.final-message }}
+            Do not mark the Roadmap item complete.
+
+      - name: Revalidate repaired implementation
+        if: steps.task.outputs.found == 'true' && steps.review1_result.outputs.decision != 'PASS'
+        run: |
+          sudo chown -R "$(id -u):$(id -g)" "$GITHUB_WORKSPACE"
+          python3 scripts/ci/validate_repo.py --base origin/main --protect-policy
+
+      - name: Review repaired implementation
+        if: steps.task.outputs.found == 'true' && steps.review1_result.outputs.decision != 'PASS'
+        id: review2
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          permission-profile: ":read-only"
+          safety-strategy: unprivileged-user
+          codex-user: codex-runner
+          codex-home: /tmp/homeroute-codex-home
+          output-schema: |
+            {"type":"object","properties":{"decision":{"type":"string","enum":["PASS","CHANGES_REQUIRED"]},"summary":{"type":"string"},"required_fixes":{"type":"array","items":{"type":"string"}}},"required":["decision","summary","required_fixes"],"additionalProperties":false}
+          prompt: |
+            Read and follow agent/prompts/reviewer.md.
+            Re-review Roadmap task ${{ steps.task.outputs.task_id }} after the automatic repair:
+            ${{ steps.task.outputs.title }}
+
+      - name: Enforce final review result
+        if: steps.task.outputs.found == 'true'
+        env:
+          REVIEW_ONE: ${{ steps.review1.outputs.final-message }}
+          REVIEW_TWO: ${{ steps.review2.outputs.final-message }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          raw = os.environ.get("REVIEW_TWO") or os.environ["REVIEW_ONE"]
+          review = json.loads(raw)
+          if review["decision"] != "PASS":
+              raise SystemExit("Codex review did not pass: " + review["summary"])
+          print("[PASS] Codex review")
+          PY
+
+      - name: Complete Roadmap and validate final tree
+        if: steps.task.outputs.found == 'true'
+        env:
+          TASK_ID: ${{ steps.task.outputs.task_id }}
+        run: |
+          sudo chown -R "$(id -u):$(id -g)" "$GITHUB_WORKSPACE"
+          python3 scripts/agent/roadmap.py complete "$TASK_ID"
+          python3 scripts/ci/validate_repo.py --base origin/main --protect-policy
+
+      - name: Commit, open PR, and merge
+        if: steps.task.outputs.found == 'true'
+        id: publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ steps.issue.outputs.branch }}
+          ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
+          TASK_ID: ${{ steps.task.outputs.task_id }}
+          TASK_TITLE: ${{ steps.task.outputs.title }}
+        run: |
+          git config user.name "HomeRoute Autopilot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "$TASK_ID: $TASK_TITLE"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push --set-upstream origin "$BRANCH"
+          pr_url=$(gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "$TASK_ID: $TASK_TITLE" \
+            --body "Autonomous Roadmap implementation. Closes #$ISSUE_NUMBER. Deterministic validation: PASS. Independent Codex review: PASS. No production deployment was performed.")
+          gh pr merge "$pr_url" --squash --delete-branch
+          gh issue close "$ISSUE_NUMBER" --comment "Merged after deterministic validation and Codex review: $pr_url"
+          echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
+
+      - name: Record blocked task
+        if: failure() && steps.task.outputs.found == 'true' && steps.issue.outputs.number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --body "BLOCKED after the permitted automatic attempt(s). Inspect workflow: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
