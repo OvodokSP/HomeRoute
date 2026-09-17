@@ -19,6 +19,9 @@
 | Router installer design | PREPARED |
 | Router plan-only mode | TESTED, READ-ONLY |
 | Router apply-mode | BLOCKED / NOT IMPLEMENTED |
+| VPS installer design | PREPARED |
+| VPS plan-only mode | TESTED, READ-ONLY |
+| VPS apply-mode | BLOCKED / NOT IMPLEMENTED |
 | Installer | NOT VALIDATED |
 | Clean-device reproduction | NOT YET TESTED |
 | AWG 3.x | NOT YET ADOPTED |
@@ -29,4 +32,4 @@
 
 Phase 1 подготовил формат безопасного inventory, router/VPS preflight, allowlisted schema и методику классификации. Числовые требования и совместимость моделей должны опираться на отдельные фактические измерения.
 
-Router `plan` допускает только read-only оценку. Реальный `apply` останется заблокирован до reference inventory, точного dependency mapping, backup/verify/rollback реализации и clean-device validation.
+Router и VPS `plan` допускают только read-only оценку. Реальный `apply` останется заблокирован до reference inventory, точного dependency mapping/provisioning requirements, backup/verify/rollback реализации и clean-device validation.

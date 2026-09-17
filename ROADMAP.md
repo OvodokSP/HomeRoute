@@ -21,9 +21,9 @@
 
 ## Phase 3 — VPS installer
 
-- [ ] HL-301 — Спроектировать идемпотентный VPS installer с plan/apply, backup, verify и rollback.
-- [ ] HL-302 — Реализовать plan-only этап VPS installer без подключения к реальному VPS.
-- [ ] HL-303 — Добавить тестовый стенд и негативные проверки VPS installer.
+- [x] HL-301 — Спроектировать идемпотентный VPS installer с plan/apply, backup, verify и rollback.
+- [x] HL-302 — Реализовать plan-only этап VPS installer без подключения к реальному VPS.
+- [x] HL-303 — Добавить тестовый стенд и негативные проверки VPS installer.
 
 ## Phase 4 — Doctor, backup, restore
 
