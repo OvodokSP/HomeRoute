@@ -29,11 +29,16 @@ class InventoryRenderTests(unittest.TestCase):
         data = {
             "inventory_schema": "1",
             "inventory_type": "router",
+            "router_model": "EXAMPLE_ROUTER",
+            "keenetic_release": "EXAMPLE_RELEASE",
             "uname_machine": "mipsel",
             "ram_total": "262144_KiB",
         }
         text = MODULE.render(data, "Reference router")
         self.assertIn("# Reference router", text)
+        self.assertIn("`router_model`", text)
+        self.assertIn("`EXAMPLE_ROUTER`", text)
+        self.assertIn("`keenetic_release`", text)
         self.assertIn("`uname_machine`", text)
         self.assertIn("`mipsel`", text)
         self.assertNotIn("public_ip", text)
