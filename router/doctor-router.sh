@@ -36,6 +36,23 @@ forward_rule_present() {
     '
 }
 
+if [ "${HOMEROUTE_DOCTOR_SELFTEST:-0}" = 1 ]; then
+    if ! printf '%s\n' '-A FORWARD -s 192.168.1.0/24 -i br0 -o opkgtun0 -j ACCEPT' | forward_rule_present; then
+        printf '%s\n' '[FAIL] FORWARD matcher rejected the observed Golden State rule'
+        exit 1
+    fi
+    if ! printf '%s\n' '-A FORWARD -o opkgtun0 -m state --state NEW -i br0 -j ACCEPT' | forward_rule_present; then
+        printf '%s\n' '[FAIL] FORWARD matcher depends on option ordering'
+        exit 1
+    fi
+    if printf '%s\n' '-A FORWARD -i br1 -o opkgtun0 -j ACCEPT' | forward_rule_present; then
+        printf '%s\n' '[FAIL] FORWARD matcher accepted the wrong LAN interface'
+        exit 1
+    fi
+    printf '%s\n' '[PASS] router FORWARD matcher self-test'
+    exit 0
+fi
+
 info "HomeRoute router doctor (read-only)"
 
 if has ip && ip link show dev "$ROUTER_AWG_INTERFACE" >/dev/null 2>&1; then
