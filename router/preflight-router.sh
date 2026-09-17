@@ -12,6 +12,12 @@ run_if_available() {
         printf '[WARN] command unavailable: %s\n' "$1"
     fi
 }
+inventory() {
+    key=$1
+    value=$2
+    [ -n "$value" ] || value=NOT_VALIDATED
+    printf 'HOMEROUTE_INVENTORY %s=%s\n' "$key" "$value"
+}
 
 printf '[INFO] HomeRoute router preflight (read-only; no secret contents)\n'
 section "System"
@@ -72,4 +78,35 @@ for path in \
 do
     [ -e "$path" ] && printf '%s\n' "$path"
 done
+
+section "Machine-readable safe inventory"
+uname_machine=$(uname -m 2>/dev/null || true)
+inventory uname_machine "$uname_machine"
+
+ram_total=$(awk '/^MemTotal:/ {print $2 "_KiB"; exit}' /proc/meminfo 2>/dev/null || true)
+inventory ram_total "$ram_total"
+
+if command -v df >/dev/null 2>&1 && [ -d /opt ]; then
+    opt_total=$(df -kP /opt 2>/dev/null | awk 'NR==2 {print $2 "_KiB"}')
+    opt_free=$(df -kP /opt 2>/dev/null | awk 'NR==2 {print $4 "_KiB"}')
+else
+    opt_total=
+    opt_free=
+fi
+inventory opt_total "$opt_total"
+inventory opt_free "$opt_free"
+
+if command -v opkg >/dev/null 2>&1; then
+    opkg_arch=$(opkg print-architecture 2>/dev/null | awk 'NF >= 2 {printf "%s%s", sep, $2; sep=","}')
+else
+    opkg_arch=
+fi
+inventory opkg_arch "$opkg_arch"
+
+for name in awg awg-quick amneziawg-go hrneo nfqws tg-ws-proxy; do
+    path=$(command -v "$name" 2>/dev/null || true)
+    key=$(printf '%s' "$name" | tr '-' '_')
+    inventory "component_$key" "$path"
+done
+
 printf '[INFO] Preflight complete; configuration contents and secrets were not read\n'
