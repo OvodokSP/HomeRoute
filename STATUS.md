@@ -22,6 +22,9 @@
 | VPS installer design | PREPARED |
 | VPS plan-only mode | TESTED, READ-ONLY |
 | VPS apply-mode | BLOCKED / NOT IMPLEMENTED |
+| Structured doctor summary | IMPLEMENTED, LIVE CAPTURE PENDING |
+| Backup/restore contract | TESTED ON FICTITIOUS DATA |
+| Live backup/restore | NOT VALIDATED |
 | Installer | NOT VALIDATED |
 | Clean-device reproduction | NOT YET TESTED |
 | AWG 3.x | NOT YET ADOPTED |
@@ -33,3 +36,5 @@
 Phase 1 подготовил формат безопасного inventory, router/VPS preflight, allowlisted schema и методику классификации. Числовые требования и совместимость моделей должны опираться на отдельные фактические измерения.
 
 Router и VPS `plan` допускают только read-only оценку. Реальный `apply` останется заблокирован до reference inventory, точного dependency mapping/provisioning requirements, backup/verify/rollback реализации и clean-device validation.
+
+Doctor structured summary содержит только агрегированные счётчики. Backup/restore transaction model прошёл тест только в фиктивном временном дереве и не означает готовность live restore.
