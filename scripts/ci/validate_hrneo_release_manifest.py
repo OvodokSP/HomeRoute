@@ -70,6 +70,18 @@ def main() -> int:
         fail("GPG verification must not be claimed before evidence exists")
     if integrity.get("github_release_assets") != "NOT_PRESENT_AT_REVIEW_TIME":
         fail("GitHub release availability boundary drifted")
+    if integrity.get("observation_date") != "2026-09-18":
+        fail("integrity observation date drifted")
+    if integrity.get("release_repository_commit_signature") != "UNSIGNED":
+        fail("release repository commit signature evidence drifted")
+    if integrity.get("github_releases_api") != "EMPTY_AT_OBSERVATION_TIME":
+        fail("GitHub Releases API observation drifted")
+    if integrity.get("signing_key_main") != "NOT_FOUND_AT_OBSERVATION_TIME":
+        fail("signing key main-branch observation drifted")
+    if integrity.get("signing_key_pinned_source_commit") != "NOT_FOUND":
+        fail("signing key pinned-commit observation drifted")
+    if integrity.get("signing_key_file") != "README_REFERENCES_KEY_BUT_FILE_NOT_AVAILABLE_AT_OBSERVATION_TIME":
+        fail("signing key availability boundary drifted")
 
     provenance = data.get("provenance_boundary", {})
     if provenance.get("package_version_matches_reviewed_source_version") is not True:
