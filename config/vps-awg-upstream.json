@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "source_repository": "amnezia-vpn/amnezia-client",
+  "source_commit": "de93650a90739b87bb47a632872ea9d0adc9412f",
+  "files": {
+    "dockerfile": {
+      "path": "client/server_scripts/awg/Dockerfile",
+      "blob_sha": "2287a23ca0531af764277c121d257b058ddccbac"
+    },
+    "run_container": {
+      "path": "client/server_scripts/awg/run_container.sh",
+      "blob_sha": "af2a1e17c616bb3b82e408f9160b61e385eb8c0e"
+    },
+    "configure_container": {
+      "path": "client/server_scripts/awg/configure_container.sh",
+      "blob_sha": "d551e00249e002e8cd57d05ce2d7ff264b0a5d53"
+    },
+    "start": {
+      "path": "client/server_scripts/awg/start.sh",
+      "blob_sha": "7c60ed6078bf5c8bb20b7eb0a5b462dee2305927"
+    },
+    "build_container": {
+      "path": "client/server_scripts/build_container.sh",
+      "blob_sha": "b996237fcccd766e3953d5b6194424eed8fa2315"
+    }
+  },
+  "confirmed_upstream_shape": {
+    "container_name_variable": "$CONTAINER_NAME",
+    "restart_policy": "always",
+    "privileged": true,
+    "capabilities": [
+      "NET_ADMIN",
+      "SYS_MODULE"
+    ],
+    "published_port_pattern": "$AWG_SERVER_PORT:$AWG_SERVER_PORT/udp",
+    "module_mount": "/lib/modules:/lib/modules",
+    "sysctl": "net.ipv4.conf.all.src_valid_mark=1",
+    "dns_network": "amnezia-dns-net",
+    "state_directory": "/opt/amnezia/awg",
+    "startup_script": "/opt/amnezia/start.sh",
+    "server_config": "/opt/amnezia/awg/awg0.conf"
+  },
+  "determinism": {
+    "source_scripts_pinned_to_commit": true,
+    "dockerfile_base_image": "amneziavpn/amneziawg-go:latest",
+    "base_image_pinned": false,
+    "exact_reference_image_provenance_verified": false,
+    "clean_build_deterministic": false
+  },
+  "policy": {
+    "pinned_source_recipe_is_not_a_pinned_image": true,
+    "floating_base_blocks_deterministic_clean_build": true,
+    "reference_runtime_image_id_is_observed_evidence_only": true
+  }
+}
