@@ -30,6 +30,8 @@
 | AWG upstream recipe | PINNED SOURCE COMMIT; BASE IMAGE `latest` STILL FLOATING |
 | AWG state backup | LIVE PASS 2026-09-18; SHA256 VERIFY PASS |
 | AWG restore algorithm | SANDBOX APPLY + VERIFY + ROLLBACK TESTED; LIVE RESTORE BLOCKED |
+| Exact Docker image rescue | TOOLING CI TESTED; LIVE EXPORT NOT YET RUN |
+| AdGuard state backup | TOOLING CI TESTED; LIVE BACKUP NOT YET RUN |
 | Реальный apply VPS | BLOCKED |
 | Live backup/restore | VPS FILESYSTEM CANARY PASS; AWG LIVE BACKUP PASS; LIVE RESTORE + ROUTER PENDING |
 | Протокол чистого воспроизведения | PREPARED |
