@@ -53,8 +53,12 @@ chmod 700 "$dest" "$dest/awg"
 docker cp "$AWG_CONTAINER:$STATE_PATH/." "$dest/awg/" >/dev/null
 docker cp "$AWG_CONTAINER:$START_PATH" "$dest/start.sh" >/dev/null
 
-find "$dest" -type d -exec chmod 700 {} ;
-find "$dest" -type f -exec chmod 600 {} ;
+find "$dest" -type d -print | while IFS= read -r path; do
+    chmod 700 "$path"
+done
+find "$dest" -type f -print | while IFS= read -r path; do
+    chmod 600 "$path"
+done
 
 [ -f "$dest/awg/awg0.conf" ] || fail 'backup is incomplete: awg0.conf is missing'
 [ -f "$dest/start.sh" ] || fail 'backup is incomplete: start.sh is missing'
