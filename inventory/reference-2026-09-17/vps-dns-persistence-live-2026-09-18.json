@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "captured_at": "2026-09-18",
+  "scope": "sanitized_live_dns_persistence",
+  "rescue_set": {
+    "result": "PASS",
+    "artifacts": 4,
+    "awg_image_id": "sha256:37314a32abb8ce2283e087f69e3ef020dd0eac655350313b860d82059c425d2d",
+    "adguard_image_id": "sha256:aba9e3bf0613be3ba3755e1fc311b126e2c24bec25e18b6483894a88283074f0",
+    "image_load_performed": false,
+    "state_restore_performed": false
+  },
+  "dns_target": {
+    "result": "PASS",
+    "network": "amnezia-dns-net",
+    "adguard_ip_exposed": false,
+    "resolution": "runtime_docker_inspect"
+  },
+  "persistence": {
+    "timer": "awg-adguard-dns.timer",
+    "service": "awg-adguard-dns.service",
+    "timer_active": "active",
+    "timer_enabled": "enabled",
+    "service_active": "inactive",
+    "timer_calendar": "NOT_VALIDATED",
+    "next_elapse_state": "NOT_SET",
+    "exec_path": "/usr/local/sbin/awg-adguard-dns.sh",
+    "exec_sha256": "96766c14d26edb63877aaf8f2bff5de577e42683b99b86b1b2b7bc382424c2b0",
+    "helper_contents_committed": false
+  },
+  "interpretation": {
+    "inactive_oneshot_between_timer_runs_is_not_failure": true,
+    "schedule_kind_not_yet_identified": true,
+    "helper_semantics_not_yet_captured": true
+  }
+}

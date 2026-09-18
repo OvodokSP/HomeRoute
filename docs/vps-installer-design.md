@@ -43,12 +43,14 @@
 - закреплённый upstream contract сети `amnezia-dns-net`;
 - динамическое разрешение AdGuard target через Docker без публикации внутреннего IP;
 - CI-tested renderer TCP/UDP 53 DNAT для AWG2;
-- read-only preflight `awg-adguard-dns.timer` для фиксации текущего persistence-механизма.
+- live-confirmed active+enabled `awg-adguard-dns.timer`, service identity, helper path и helper SHA256;
+- calendar/monotonic-aware read-only timer preflight;
+- CI-tested sanitized semantic analyzer DNS helper без публикации содержимого.
 
 ## Что ещё блокирует live-apply
 
 - immutable image/base-image pin для новой установки;
-- детерминированное создание Docker network/container state и live-фиксация текущего DNS persistence helper;
+- детерминированное создание Docker network/container state и live semantic fingerprint текущего DNS persistence helper;
 - безопасная генерация и доставка credentials;
 - транзакционный учёт firewall/DNS;
 - live backup/restore validation;

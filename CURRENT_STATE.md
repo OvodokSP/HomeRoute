@@ -34,7 +34,11 @@ This document contains only the current reference state confirmed during the Hom
 - The local rescue-set contract consists of four artifacts: AWG state, AdGuard state, exact AWG2 image and exact AdGuard image. Repository tooling can verify all four together without loading images or restoring state.
 - The official Amnezia `prepare_host.sh` at the pinned source commit creates `amnezia-dns-net` as a bridge network on subnet `172.29.172.0/24` with host bridge name `amn0`; this network contract is now pinned separately from the AWG container recipe.
 - The official Amnezia DNS container uses a fixed `172.29.172.254`, but HomeRoute does not use that upstream DNS role: AdGuard Home is the DNS target. HomeRoute therefore resolves the AdGuard IPv4 from Docker at runtime and does not treat the upstream `.254` address as an AdGuard invariant.
-- HomeRoute's desired DNS interception remains TCP/UDP port 53 DNAT inside the AWG2 container. A read-only target resolver and a non-mutating rule renderer are CI-tested. The exact live persistence implementation behind `awg-adguard-dns.timer` is still awaiting sanitized capture.
+- HomeRoute's desired DNS interception remains TCP/UDP port 53 DNAT inside the AWG2 container. A read-only target resolver and a non-mutating rule renderer are CI-tested.
+- On 2026-09-18 the complete four-artifact VPS rescue set re-verified PASS, and dynamic AdGuard target resolution re-verified PASS without exposing the runtime IP.
+- The live persistence timer `awg-adguard-dns.timer` is active and enabled; it targets `awg-adguard-dns.service`, whose ExecStart resolves to `/usr/local/sbin/awg-adguard-dns.sh` with SHA256 `96766c14d26edb63877aaf8f2bff5de577e42683b99b86b1b2b7bc382424c2b0`.
+- The first schedule probe did not identify a calendar schedule and reported no next realtime elapse. This is not treated as failure: the timer may be monotonic. Preflight schema 2 now distinguishes calendar and monotonic timer metadata.
+- A sanitized semantic-fingerprint tool is CI-tested for the DNS helper; live helper semantics remain pending until that tool is run against the captured SHA.
 
 ## VERIFIED — component roles and package roots
 
