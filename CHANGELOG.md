@@ -17,7 +17,7 @@
 - Controlled live AdGuard same-state restore validation прошёл PASS: quiescent conf/work snapshot, exact byte round-trip, UDP/TCP DNS probes PASS, validation window 10 секунд; final restore-readiness PASS.
 - Router doctor повторно прошёл live 26/26 PASS; подтверждены `mipsel-3.4`, core package versions и feeds. Live filesystem transaction canary на `/opt` прошёл PASS без leftovers, HRNeo/AWG остались рабочими.
 - HRNeo rescue set live-capture + verify прошёл PASS: 7 package-owned files, exact pinned `mipsel-3.4` IPK SHA256 verified, post-doctor 26/26 PASS; package/service/network не менялись.
-- Добавлен opkg/control rescue gate: pinned postinst/conffiles hashes, semantic safety checks, backup `/opt/lib/opkg/info/hrneo.*`, `/opt/bin/neo` и `rc.unslung`; live package transaction ещё не выполняется.
+- Opkg/control rescue gate прошёл live PASS: pinned postinst/conffiles hashes matched, 4 `hrneo.*` opkg-info files + `/opt/bin/neo` + `rc.unslung` сохранены и проверены, post-doctor 26/26 PASS. Перед reinstall остаётся backup глобального `/opt/lib/opkg/status`.
 
 
 ## 0.2.0 — repository workflow
