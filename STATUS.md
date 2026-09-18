@@ -22,7 +22,7 @@
 | Sandbox-транзакция роутера | CI PASS: APPLY / NO CHANGE / VERIFY / ROLLBACK |
 | Sandbox-транзакция VPS | CI PASS: APPLY / NO CHANGE / VERIFY / ROLLBACK |
 | Файловый backup/restore | IMPLEMENTED IN SANDBOX |
-| Chur/AmneziaWG feed map | EXPLICIT BY ARCHITECTURE |
+| Chur/AmneziaWG feed provisioning | SANDBOX APPLY / NO CHANGE / ROLLBACK PASS |
 | HydraRoute Neo feed | UPSTREAM SCRIPT ONLY / LIVE BLOCKED |
 | Реальный apply роутера | BLOCKED |
 | Реальный apply VPS | BLOCKED |
@@ -45,7 +45,8 @@
 - сохранить исходный файл;
 - применить новое состояние;
 - определить повторный запуск как `NO CHANGE`;
-- откатить изменения при провале проверки.
+- откатить изменения при провале проверки;
+- сформировать и транзакционно применить `chur.conf` для `aarch64-3.10`, `mips-3.4` и `mipsel-3.4` в sandbox.
 
 При этом обычный `apply` специально остаётся заблокированным и не меняет реальный роутер/VPS.
 

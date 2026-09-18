@@ -31,7 +31,7 @@ for expected in \
     'HOMEROUTE_PLAN dependency_state=VALIDATED_REFERENCE_MANIFEST' \
     'HOMEROUTE_PLAN core_install_roots=chur-amneziawg,hrneo' \
     'HOMEROUTE_PLAN resource_thresholds=SUPPORTED_FLOOR_DEFINED' \
-    'HOMEROUTE_PLAN feed_provisioning=PARTIAL_UPSTREAM_EVIDENCE' \
+    'HOMEROUTE_PLAN feed_provisioning=CHUR_SANDBOX_TESTED_HRNEO_BLOCKED' \
     'HOMEROUTE_PLAN backup_restore=SANDBOX_TRANSACTION_TESTED' \
     'HOMEROUTE_PLAN clean_device_validation=NOT_VALIDATED'
 do

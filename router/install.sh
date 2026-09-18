@@ -7,6 +7,7 @@ mode=${1:-plan}
 CORE_INSTALL_ROOTS=${CORE_INSTALL_ROOTS:-chur-amneziawg,hrneo}
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 TX_LIB=${HOMEROUTE_TRANSACTION_LIB:-$SCRIPT_DIR/../scripts/installer/file-transaction.sh}
+FEED_TOOL=${HOMEROUTE_FEED_TOOL:-$SCRIPT_DIR/feed-config.sh}
 
 show_help() {
     cat <<'EOF'
@@ -39,12 +40,30 @@ sandbox_apply() {
         printf '[FAIL] sandbox transaction library not found: %s\n' "$TX_LIB" >&2
         return 2
     }
+    [ -f "$FEED_TOOL" ] || {
+        printf '[FAIL] router feed renderer not found: %s\n' "$FEED_TOOL" >&2
+        return 2
+    }
+
+    arch=${HOMEROUTE_ENTWARE_ARCH:-}
+    [ -n "$arch" ] || {
+        printf '%s\n' '[FAIL] HOMEROUTE_ENTWARE_ARCH is required for sandbox-apply' >&2
+        return 2
+    }
 
     # shellcheck source=../scripts/installer/file-transaction.sh
     . "$TX_LIB"
 
-    desired="${TMPDIR:-/tmp}/homeroute-router-desired.$$"
-    trap 'rm -f "$desired"' EXIT HUP INT TERM
+    desired="${TMPDIR:-/tmp}/homeroute-router-desired.$"
+    desired_feed="${TMPDIR:-/tmp}/homeroute-chur-feed.$"
+    trap 'rm -f "$desired" "$desired_feed"' EXIT HUP INT TERM
+
+    if ! sh "$FEED_TOOL" render-chur "$arch" > "$desired_feed"; then
+        printf '[FAIL] cannot render Chur feed for architecture: %s\n' "$arch" >&2
+        rm -f "$desired" "$desired_feed"
+        trap - EXIT HUP INT TERM
+        return 2
+    fi
 
     cat > "$desired" <<EOF
 AWG_BASELINE=AmneziaWG_2.x
@@ -53,32 +72,35 @@ ROUTING_MARK=0x3001
 ROUTING_TABLE=301
 ORCHESTRATOR=HRNeo
 CORE_INSTALL_ROOTS=$CORE_INSTALL_ROOTS
+ENTWARE_ARCH=$arch
 EOF
 
     tx_begin
     tx_apply_file 'etc/homeroute/router-state.env' "$desired"
+    tx_apply_file 'opt/etc/opkg/chur.conf' "$desired_feed"
 
     if [ "${HOMEROUTE_SANDBOX_FORCE_VERIFY_FAIL:-0}" = "1" ]; then
         printf '%s\n' '[VERIFY] forced failure requested by sandbox test'
         tx_rollback
-        rm -f "$desired"
+        rm -f "$desired" "$desired_feed"
         trap - EXIT HUP INT TERM
         return 3
     fi
 
-    if ! tx_verify_file 'etc/homeroute/router-state.env' "$desired"; then
+    if ! tx_verify_file 'etc/homeroute/router-state.env' "$desired" ||
+       ! tx_verify_file 'opt/etc/opkg/chur.conf' "$desired_feed"; then
         printf '%s\n' '[FAIL] sandbox router verification failed'
         tx_rollback
-        rm -f "$desired"
+        rm -f "$desired" "$desired_feed"
         trap - EXIT HUP INT TERM
         return 3
     fi
 
-    printf '%s\n' '[VERIFY] router sandbox desired state matches'
+    printf '%s\n' '[VERIFY] router sandbox desired state and Chur feed match'
     tx_commit
-    printf '%s\n' 'HOMEROUTE_SANDBOX target=router result=PASS live_apply=false'
+    printf 'HOMEROUTE_SANDBOX target=router result=PASS live_apply=false entware_arch=%s\n' "$arch"
 
-    rm -f "$desired"
+    rm -f "$desired" "$desired_feed"
     trap - EXIT HUP INT TERM
     return 0
 }
@@ -133,7 +155,7 @@ plan_field orchestrator HRNeo
 plan_field dependency_state VALIDATED_REFERENCE_MANIFEST
 plan_field core_install_roots "$CORE_INSTALL_ROOTS"
 plan_field resource_thresholds SUPPORTED_FLOOR_DEFINED
-plan_field feed_provisioning PARTIAL_UPSTREAM_EVIDENCE
+plan_field feed_provisioning CHUR_SANDBOX_TESTED_HRNEO_BLOCKED
 plan_field backup_restore SANDBOX_TRANSACTION_TESTED
 plan_field clean_device_validation NOT_VALIDATED
 
