@@ -160,13 +160,13 @@ while IFS= read -r path; do
         cp -a "$source_path" "$rescue/files/$rel"
         printf '%s\t%s\n' "$rel" "$target" >> "$rescue/SYMLINKS.tsv"
         symlink_count=$((symlink_count + 1))
-    elif [ -f "$path" ]; then
+    elif [ -f "$source_path" ]; then
         mkdir -p "$rescue/files/$(dirname "$rel")"
-        cp -a "$path" "$rescue/files/$rel"
+        cp -a "$source_path" "$rescue/files/$rel"
         hash=$(sha256sum "$rescue/files/$rel" | awk '{print $1}')
         printf '%s  %s\n' "$hash" "$rel" >> "$rescue/FILES.sha256"
         file_count=$((file_count + 1))
-    elif [ -d "$path" ]; then
+    elif [ -d "$source_path" ]; then
         dir_count=$((dir_count + 1))
     else
         missing_count=$((missing_count + 1))
