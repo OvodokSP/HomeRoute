@@ -80,5 +80,5 @@ grep -Fx 'ORIGINAL=1' "$BASE/etc/homeroute/existing.conf" >/dev/null ||
 grep -Fx 'UNRELATED=1' "$BASE/etc/homeroute/unrelated.conf" >/dev/null ||
     fail 'unrelated file changed'
 
-printf 'HOMEROUTE_LIVE_CANARY schema=1 target=%s result=PASS scope=dedicated_filesystem_only\n' "$target"
+printf 'HOMEROUTE_LIVE_CANARY schema=1 target=%s result=PASS scope=dedicated_filesystem_only\n' "$CANARY_TARGET"
 printf '%s\n' '[PASS] live filesystem transaction canary; dedicated directory will be removed'
