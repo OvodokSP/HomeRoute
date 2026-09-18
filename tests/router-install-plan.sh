@@ -35,7 +35,8 @@ for expected in \
     'HOMEROUTE_PLAN hrneo_artifact=PINNED_3.18.3-1_SHA256_VERIFIED' \
     'HOMEROUTE_PLAN hrneo_rescue=FULL_LIVE_RESCUE_SET_PASS' \
     'HOMEROUTE_PLAN backup_restore=FULL_HRNEO_PACKAGE_ROLLBACK_SET_PASS' \
-    'HOMEROUTE_PLAN hrneo_reinstall=CONTROLLED_SAME_VERSION_VALIDATOR_READY_LIVE_PENDING' \
+    'HOMEROUTE_PLAN hrneo_reinstall=LIVE_PASS_CONFFILE_RESIDUE_CLEANUP_PENDING' \
+    'HOMEROUTE_PLAN hrneo_conffile_cleanup=TOOLING_READY_LIVE_PENDING' \
     'HOMEROUTE_PLAN clean_device_validation=NOT_VALIDATED'
 do
     grep -Fx "$expected" "$OUT" >/dev/null || fail "missing plan contract field: $expected"
