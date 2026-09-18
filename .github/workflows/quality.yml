@@ -31,5 +31,6 @@ jobs:
           sh tests/backup-restore-contract.sh
           sh tests/installer-sandbox-transaction.sh
           sh tests/router-feed-config.sh
+          sh tests/live-validation-contract.sh
       - name: Test router doctor matcher
         run: HOMEROUTE_DOCTOR_SELFTEST=1 sh router/doctor-router.sh
