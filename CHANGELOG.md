@@ -28,6 +28,13 @@
 
 - Sanitized reference-router semantic capture прошёл live PASS: зафиксированы hashes/size/line-count persistence hooks, package baseline, HRNeo config shape, AWG `/32` + MTU 1324 + one peer/handshake и все routing/firewall invariants без вывода секретов. Добавлен отдельный allow-listed dependency capture для делегирующих hooks перед построением reproduction renderer.
 
+- Allow-listed persistence-hook dependency capture прошёл live PASS: hooks подтверждены как delegation/orchestration layer без direct ip/iptables/ipset mutations; два `/opt/...` dependency targets в Telegram NDM hooks остаются unresolved.
+- Добавлен public `router-reference-contract.json` + CI validator и machine-readable `reproduction-gates.json`; stable apply жёстко связан с HL-502.
+- Добавлены local-only router/VPS reproduction bundle builders/verifiers, deterministic plan renderers и единый `scripts/reproduction/status.py`; secret-bearing inputs остаются вне Git.
+- Подготовлен protected exact-hook export для следующей live-сессии: exact SHA gate + secret/address scan + mode-0600 archive, без вывода source contents.
+- Chur upstream source recipe закреплён на commit `a445e93b305d439ae1d797a54cee67aff8e36ae2`; source package versions/pins подтверждены, но published IPK byte identity остаётся PENDING и не подменяется догадкой по filename/latest feed.
+- VPS rescue manifest синхронизирован с фактом: AWG/AdGuard live state restore = PASS; exact image load остаётся отдельно NOT VALIDATED.
+
 ## 0.2.0 — repository workflow
 
 - Добавлены `AGENTS.md` и `CURRENT_STATE.md` как правила и фактическая точка проекта.
