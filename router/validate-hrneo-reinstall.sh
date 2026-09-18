@@ -148,7 +148,7 @@ live_path() {
     printf '%s/%s\n' "$LIVE_ROOT" "$1"
 }
 
-verify_live_against_rescue() {
+verify_live_managed_state() {
     while read -r hash rel; do
         [ -n "$hash" ] && [ -n "$rel" ] || continue
         path=$(live_path "$rel")
@@ -189,6 +189,11 @@ verify_live_against_rescue() {
     [ -L "$neo" ] || return 1
     [ "$(readlink "$neo")" = /opt/etc/init.d/S99hrneo ] || return 1
 
+    return 0
+}
+
+verify_live_against_rescue() {
+    verify_live_managed_state || return 1
     status_expected=$(sed -n 's/^status_database_sha256=//p' "$RESCUE/opkg-status-rescue-metadata.txt" | sed -n '1p')
     [ -n "$status_expected" ] || return 1
     [ "$(sha256sum "$STATUS_FILE" | awk '{print $1}')" = "$status_expected" ] || return 1
@@ -303,20 +308,8 @@ cmp -s "$work/packages.before" "$work/packages.after" ||
 # and idempotent postinst side effects. The global status DB itself may be rewritten.
 status_after_sha=$(sha256sum "$STATUS_FILE" | awk '{print $1}')
 
-# Temporarily compare every live object except the full global status DB.
-saved_status_expected=$(sed -n 's/^status_database_sha256=//p' "$RESCUE/opkg-status-rescue-metadata.txt" | sed -n '1p')
-tmp_meta="$RESCUE/opkg-status-rescue-metadata.txt.homeroute-check.$$"
-sed "s/^status_database_sha256=.*/status_database_sha256=$status_after_sha/"     "$RESCUE/opkg-status-rescue-metadata.txt" > "$tmp_meta"
-mv "$tmp_meta" "$RESCUE/opkg-status-rescue-metadata.txt"
-
-if ! verify_live_against_rescue; then
-    sed "s/^status_database_sha256=.*/status_database_sha256=$saved_status_expected/"         "$RESCUE/opkg-status-rescue-metadata.txt" > "$tmp_meta"
-    mv "$tmp_meta" "$RESCUE/opkg-status-rescue-metadata.txt"
+verify_live_managed_state ||
     fail 'managed HRNeo/opkg state differs from expected same-version result'
-fi
-
-sed "s/^status_database_sha256=.*/status_database_sha256=$saved_status_expected/"     "$RESCUE/opkg-status-rescue-metadata.txt" > "$tmp_meta"
-mv "$tmp_meta" "$RESCUE/opkg-status-rescue-metadata.txt"
 
 doctor_after=$(sh "$DOCTOR" 2>&1) || {
     printf '%s\n' "$doctor_after" >&2
