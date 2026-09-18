@@ -26,6 +26,8 @@
 - Controlled HRNeo live rollback failure-path rehearsal прошёл PASS: fresh rescue, forced postinstall failure, automatic rollback PASS, live state снова совпал с fresh rescue по immutable state, package set unchanged, residue none, final doctor 26/26 PASS, validation window 8s. Live backup/restore gate v1 закрыт.
 
 
+- Sanitized reference-router semantic capture прошёл live PASS: зафиксированы hashes/size/line-count persistence hooks, package baseline, HRNeo config shape, AWG `/32` + MTU 1324 + one peer/handshake и все routing/firewall invariants без вывода секретов. Добавлен отдельный allow-listed dependency capture для делегирующих hooks перед построением reproduction renderer.
+
 ## 0.2.0 — repository workflow
 
 - Добавлены `AGENTS.md` и `CURRENT_STATE.md` как правила и фактическая точка проекта.
