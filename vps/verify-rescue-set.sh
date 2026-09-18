@@ -22,10 +22,10 @@ for name in AWG_STATE ADGUARD_STATE AWG_IMAGE ADGUARD_IMAGE; do
     [ -d "$value" ] || fail "rescue-set directory is missing for $name"
 done
 
-"$SCRIPT_DIR/verify-awg-backup.sh" "$AWG_STATE" >/dev/null
-"$SCRIPT_DIR/verify-adguard-backup.sh" "$ADGUARD_STATE" >/dev/null
-"$SCRIPT_DIR/verify-container-image-backup.sh" "$AWG_IMAGE" >/dev/null
-"$SCRIPT_DIR/verify-container-image-backup.sh" "$ADGUARD_IMAGE" >/dev/null
+sh "$SCRIPT_DIR/verify-awg-backup.sh" "$AWG_STATE" >/dev/null
+sh "$SCRIPT_DIR/verify-adguard-backup.sh" "$ADGUARD_STATE" >/dev/null
+sh "$SCRIPT_DIR/verify-container-image-backup.sh" "$AWG_IMAGE" >/dev/null
+sh "$SCRIPT_DIR/verify-container-image-backup.sh" "$ADGUARD_IMAGE" >/dev/null
 
 awg_image_id=$(sed -n 's/^image_id=//p' "$AWG_IMAGE/metadata.txt")
 adguard_image_id=$(sed -n 's/^image_id=//p' "$ADGUARD_IMAGE/metadata.txt")
