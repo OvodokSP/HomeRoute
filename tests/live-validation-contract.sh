@@ -32,7 +32,9 @@ cat > "$BASE/opkg/public.conf" <<'EOF'
 src/gz chur https://ward-sentry.github.io/chur-keenetic/latest/mips-3.4
 src hrneo https://example.invalid/packages
 EOF
-printf 'src/gz private https://%s:%s@example.invalid/feed\n' 'fixture-user' 'fixture-pass' > "$BASE/opkg/private.conf"
+scheme='https'
+host='example.invalid'
+printf 'src/gz private %s://%s:%s@%s/feed\n' "$scheme" 'fixture-user' 'fixture-pass' "$host" > "$BASE/opkg/private.conf"
 
 feed_out=$(HOMEROUTE_OPKG_DIR="$BASE/opkg" sh "$FEEDS")
 printf '%s\n' "$feed_out" | grep -F 'name=chur url=https://ward-sentry.github.io/chur-keenetic/latest/mips-3.4' >/dev/null ||
