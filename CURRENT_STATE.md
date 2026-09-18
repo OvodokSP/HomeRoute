@@ -19,6 +19,8 @@ This document contains only the current reference state confirmed during the Hom
 - Live router and VPS doctor checks were completed on 2026-09-17; the router FORWARD false-negative was isolated to the checker and fixed with a regression test.
 - On 2026-09-18 the VPS dedicated-filesystem transaction canary completed PASS: an existing file was changed then restored, a transaction-created file was removed, and unrelated state remained unchanged.
 - On 2026-09-18 sanitized VPS runtime metadata was captured for AWG2 and AdGuard without reading environment values, IP addresses, port mappings, mount source paths, labels, command lines, config contents, or credentials.
+- On 2026-09-18 sanitized container-shape capture verified AWG2 networks `amnezia-dns-net` + `bridge`, its `/lib/modules` bind destination, UDP container port `35404`, and AdGuard's `amnezia-dns-net` attachment plus persistent container-side destinations `/opt/adguardhome/conf` and `/opt/adguardhome/work`. Host paths, host ports, IP addresses and secrets were deliberately not captured.
+- The observed AWG2 container has no dedicated persistent bind for `/opt/amnezia/awg`; replacing that container must therefore be preceded by an explicit backup/export of AWG state.
 
 ## VERIFIED — component roles and package roots
 

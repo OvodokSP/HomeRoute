@@ -30,7 +30,10 @@
 - sandbox backup/apply/verify/rollback;
 - идемпотентность файлового слоя;
 - частичный VPS runtime-manifest с подтверждёнными reference-параметрами;
-- безопасный read-only capture image/restart/network-mode/count/privileged metadata без чтения Env/IP/port bindings/mount source paths.
+- безопасный read-only capture image/restart/network-mode/count/privileged metadata без чтения Env/IP/host paths;
+- sanitized container-shape: сети, container-side mount destinations, exposed/container ports и отсутствие host-published AdGuard ports;
+- параметризуемая модель будущего provisioning, где image pins, host paths, AWG host UDP port и AWG state source задаются локально и не попадают в Git;
+- обязательный backup `/opt/amnezia/awg` перед заменой AWG2-контейнера.
 
 ## Что ещё блокирует live-apply
 

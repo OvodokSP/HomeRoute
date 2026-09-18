@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "status": "DESIGN_ONLY",
+  "network": {
+    "dns_network_name": "amnezia-dns-net",
+    "create_if_absent": true
+  },
+  "awg": {
+    "container_name": "amnezia-awg2",
+    "image": "LOCAL_PIN_REQUIRED",
+    "restart_policy": "always",
+    "network_mode": "bridge",
+    "additional_networks": [
+      "amnezia-dns-net"
+    ],
+    "privileged": true,
+    "auto_remove": false,
+    "readonly_rootfs": false,
+    "mounts": [
+      {
+        "type": "bind",
+        "source": "LOCAL_REQUIRED",
+        "destination": "/lib/modules",
+        "rw": true
+      }
+    ],
+    "published_ports": [
+      {
+        "container_port": "35404/udp",
+        "host_port": "LOCAL_REQUIRED"
+      }
+    ],
+    "state": {
+      "container_path": "/opt/amnezia/awg",
+      "source": "LOCAL_OR_GENERATED_REQUIRED",
+      "backup_before_replacement": true
+    }
+  },
+  "adguard": {
+    "container_name": "adguard-home",
+    "image": "LOCAL_PIN_REQUIRED",
+    "restart_policy": "unless-stopped",
+    "network_mode": "amnezia-dns-net",
+    "privileged": false,
+    "auto_remove": false,
+    "readonly_rootfs": false,
+    "mounts": [
+      {
+        "type": "bind",
+        "source": "LOCAL_REQUIRED",
+        "destination": "/opt/adguardhome/conf",
+        "rw": true
+      },
+      {
+        "type": "bind",
+        "source": "LOCAL_REQUIRED",
+        "destination": "/opt/adguardhome/work",
+        "rw": true
+      }
+    ],
+    "published_ports": []
+  },
+  "policy": {
+    "no_floating_latest_for_clean_install": true,
+    "no_embedded_secrets": true,
+    "no_host_paths_in_repository": true,
+    "no_host_ports_in_repository": true,
+    "awg_state_backup_required_before_container_replacement": true,
+    "render_plan_is_non_mutating": true
+  }
+}
