@@ -34,6 +34,9 @@
 | AdGuard state backup | LIVE PASS 2026-09-18; SHA256 VERIFY PASS |
 | AdGuard restore algorithm | SANDBOX APPLY + VERIFY + ROLLBACK TESTED; LIVE RESTORE BLOCKED |
 | VPS rescue set | 4 LIVE ARTIFACTS CAPTURED; COMBINED VERIFIER READY |
+| Amnezia Docker network | UPSTREAM PINNED: amnezia-dns-net / bridge / 172.29.172.0/24 / amn0 |
+| HomeRoute AdGuard DNS target | DYNAMIC RUNTIME RESOLUTION CONTRACT TESTED |
+| DNS redirect persistence | LIVE RULES PASS; TIMER PREFLIGHT READY / IMPLEMENTATION CAPTURE PENDING |
 | Реальный apply VPS | BLOCKED |
 | Live backup/restore | VPS FILESYSTEM + AWG/ADGUARD BACKUPS PASS; EXACT IMAGES SAVED; LIVE RESTORE + ROUTER PENDING |
 | Протокол чистого воспроизведения | PREPARED |
