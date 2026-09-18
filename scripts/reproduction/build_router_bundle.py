@@ -31,13 +31,13 @@ REQUIRED = {
 }
 
 OPTIONAL = {
-    "packages/chur-amneziawg_1.0.0-1_mipsel-3.4.ipk": {
+    "packages/chur-amneziawg.ipk": {
         "kind": "package", "sensitive": False, "executable": False, "artifact_pin": "NOT_DEFINED"
     },
-    "packages/chur-amneziawg-go_f4f4c99-1_mipsel-3.4.ipk": {
+    "packages/chur-amneziawg-go.ipk": {
         "kind": "package", "sensitive": False, "executable": False, "artifact_pin": "NOT_DEFINED"
     },
-    "packages/chur-amneziawg-tools_1.0.20260223-2_mipsel-3.4.ipk": {
+    "packages/chur-amneziawg-tools.ipk": {
         "kind": "package", "sensitive": False, "executable": False, "artifact_pin": "NOT_DEFINED"
     },
 }
