@@ -39,7 +39,7 @@ This document contains only the current reference state confirmed during the Hom
 - The live persistence timer `awg-adguard-dns.timer` is active and enabled; it targets `awg-adguard-dns.service`, whose ExecStart resolves to `/usr/local/sbin/awg-adguard-dns.sh` with SHA256 `96766c14d26edb63877aaf8f2bff5de577e42683b99b86b1b2b7bc382424c2b0`.
 - A repeat live preflight with schema 2 confirmed the DNS persistence timer is monotonic: `OnBootUSec=30s`, `OnUnitActiveUSec=1min`, next monotonic elapse SET, last trigger SET, `Persistent=yes`, accuracy `10s`, randomized delay `0`; no realtime next-elapse is expected for this observed schedule.
 - A live schema-1 semantic fingerprint of the exact helper SHA confirmed valid shell syntax, Docker inspect/exec, iptables NAT PREROUTING DNAT on dport 53, idempotency check `-C`, rule insertion `-I`, and absence of broad flush, Docker restart/removal, reboot and `rm` patterns.
-- That first fingerprint did not find literal `adguard-home`, `amnezia-dns-net`, `-p tcp` or `-p udp`. Those values may be supplied through variables/loops, so exact dynamic-target and dual-protocol helper semantics remain NOT VALIDATED until the schema-2 variable/loop analyzer is run live.
+- A live schema-2 fingerprint of the same helper SHA confirmed a `tcp udp` protocol loop with a protocol variable (`protocol_loop_candidate=true`). The analyzer still did not identify `NetworkSettings.Networks`/`.IPAddress` or literal AdGuard/network names, so the exact target-resolution implementation remains NOT VALIDATED.
 
 ## VERIFIED — component roles and package roots
 
@@ -50,7 +50,7 @@ This document contains only the current reference state confirmed during the Hom
 - Every deployment must use a separate working VPS controlled by that deployment's user.
 - The evidence-backed router core install roots are `chur-amneziawg` and `hrneo`.
 - HRNeo `3.18.3-1` is now pinned independently of the mutable upstream feed: release repository commit `4811c8d13fa4bd6eaed5080fd49788f5aee20883` contains exact `.ipk` identities for `aarch64-3.10`, `mipsel-3.4`, and `mips-3.4`, recorded by repository path, byte size, and Git blob SHA-1.
-- HomeRoute does not claim SHA-256/GPG release verification for those artifacts yet. A 2026-09-18 re-check found the HydraRoute GitHub Releases API empty, `Neo/RELEASE_SIGNING_KEY.asc` absent from both current `main` and the pinned source commit, and the release-repository commit containing the `.ipk` files marked unsigned. Upstream README describes a SHA256SUMS/GPG workflow, but the usable release/signing channel was not available in the observed GitHub state. Direct SHA-256 capture of the pinned `.ipk` bytes is still pending, exact binary-to-source-commit provenance is not proven, and live HRNeo install remains blocked pending artifact verification plus package transaction/rollback validation.
+- HomeRoute does not claim SHA-256/GPG release verification for those artifacts yet. A 2026-09-18 re-check found the HydraRoute GitHub Releases API empty, `Neo/RELEASE_SIGNING_KEY.asc` absent from both current `main` and the pinned source commit, and the release-repository commit containing the `.ipk` files marked unsigned. Upstream README describes a SHA256SUMS/GPG workflow, but the usable release/signing channel was not available in the observed GitHub state. Direct SHA-256 capture of all three pinned `.ipk` files completed on 2026-09-18 after size + Git blob verification: aarch64 `e903e8eb0fd9153d1f181b314d9591bdd5b5953ec8dc42bb9f38aff41c4aca21`, mipsel `811fe75ee6a566dc0404dfb5943f9a1f6d102459c3b9cbd4d340b5d4f1aeb450`, mips `11c881e34d5455662c26ffb3841ba49f712c6e0d2a145a69e61f04fb22abbc62`. Exact binary-to-source-commit provenance is still not proven, GPG remains unavailable in the observed upstream state, and live HRNeo install remains blocked pending package transaction/rollback validation.
 - `chur-amneziawg` upstream metadata resolves the AWG userspace/runtime packages; HRNeo upstream metadata resolves its runtime dependencies.
 - Optional/reserve package profiles are disabled by default; `UNCLASSIFIED` reference packages are never promoted to install roots automatically.
 
@@ -72,7 +72,7 @@ This document contains only the current reference state confirmed during the Hom
 
 ## NOT VALIDATED
 
-- Exact live DNS helper variable/loop semantics for dynamic AdGuard target and TCP/UDP coverage (schema-2 capture pending).
+- Exact live DNS helper target-resolution implementation (schema-2 confirms TCP/UDP loop, but target source remains unresolved by sanitized analysis).
 - Automated live apply on a clean router or VPS.
 - Full live restore/rollback for real managed router/VPS objects (VPS filesystem transaction and live AWG backup are verified; live AWG restore and router restore remain unvalidated).
 - Physical minimum router/VPS resource requirements below the supported floor.

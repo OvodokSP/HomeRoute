@@ -6,7 +6,8 @@
 - Добавлен sanitized DNS helper analyzer schema 2 для variable/loop patterns без вывода содержимого helper, IP или shell-переменных.
 - Первый live helper fingerprint записан как partial evidence без преждевременного повышения dynamic target/TCP+UDP semantics до VERIFIED.
 - Добавлен design-only DNS persistence contract и read-only renderer для monotonic timer, dynamic AdGuard target и TCP/UDP DNAT 53; live apply остаётся blocked.
-- Уточнён HRNeo integrity boundary: release commit unsigned, GitHub Releases пуст, signing key не найден в main/pinned source commit на дату observation; GPG остаётся NOT VERIFIED, SHA-256 бинарников pending.
+- Уточнён HRNeo integrity boundary: release commit unsigned, GitHub Releases пуст, signing key не найден в main/pinned source commit; SHA-256 всех трёх pinned `.ipk` захвачен и добавлен в verifier, GPG остаётся NOT VERIFIED.
+- Live DNS helper schema 2 подтвердил TCP/UDP loop через protocol variable; конкретный target-resolution path остаётся NOT VALIDATED.
 
 
 ## 0.2.0 — autonomous repository workflow

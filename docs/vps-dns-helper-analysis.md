@@ -35,6 +35,6 @@ Schema 2 дополнительно выводит два производных
 
 При этом literal patterns `adguard-home`, `amnezia-dns-net`, `-p tcp`, `-p udp` не найдены. Это совместимо с variable/loop implementation, но schema 1 не могла это различить.
 
-Поэтому полное соответствие live helper desired dynamic AdGuard TCP/UDP DNAT implementation пока остаётся **NOT VALIDATED**. Для следующего read-only capture используется schema 2.
+Повторный live запуск schema 2 подтвердил `protocol_loop_candidate=true`: helper использует protocol variable и пару `tcp udp`, поэтому dual-protocol loop подтверждён как syntactic evidence. Одновременно `runtime_target_candidate=false`, `pattern_networks_object=false` и `pattern_ip_address_field=false`; следовательно, конкретный способ получения DNAT target из Docker inspect этим анализатором не установлен. Это остаётся **NOT VALIDATED**, а не считается ошибкой helper.
 
 Текст helper, адрес AdGuard и значения shell-переменных не печатаются.

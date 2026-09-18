@@ -15,18 +15,21 @@ EXPECTED_ARTIFACTS = {
         "repository_path": "keenetic/aarch64-k3.10/hrneo_3.18.3-1_aarch64-3.10.ipk",
         "size_bytes": 90689,
         "git_blob_sha1": "69e62156adf91868f58a85eaccc21916dc88f1c1",
+        "sha256": "e903e8eb0fd9153d1f181b314d9591bdd5b5953ec8dc42bb9f38aff41c4aca21",
     },
     "mipsel-3.4": {
         "filename": "hrneo_3.18.3-1_mipsel-3.4.ipk",
         "repository_path": "keenetic/mipselsf-k3.4/hrneo_3.18.3-1_mipsel-3.4.ipk",
         "size_bytes": 111881,
         "git_blob_sha1": "eb4b7b17c7b987da88270935de74ce59f91c7b99",
+        "sha256": "811fe75ee6a566dc0404dfb5943f9a1f6d102459c3b9cbd4d340b5d4f1aeb450",
     },
     "mips-3.4": {
         "filename": "hrneo_3.18.3-1_mips-3.4.ipk",
         "repository_path": "keenetic/mipssf-k3.4/hrneo_3.18.3-1_mips-3.4.ipk",
         "size_bytes": 112060,
         "git_blob_sha1": "3d09aa888c1375a0f2a5aa7872638c8202c44e3a",
+        "sha256": "11c881e34d5455662c26ffb3841ba49f712c6e0d2a145a69e61f04fb22abbc62",
     },
 }
 
@@ -64,8 +67,8 @@ def main() -> int:
         fail("HRNeo pinned artifact map drifted")
 
     integrity = data.get("integrity", {})
-    if integrity.get("sha256") != "NOT_CAPTURED":
-        fail("SHA256 must not be invented before it is captured")
+    if integrity.get("sha256") != "CAPTURED_AND_MATCHED_PINNED_GIT_OBJECTS_2026-09-18":
+        fail("SHA256 capture evidence drifted")
     if integrity.get("gpg") != "NOT_VERIFIED":
         fail("GPG verification must not be claimed before evidence exists")
     if integrity.get("github_release_assets") != "NOT_PRESENT_AT_REVIEW_TIME":
