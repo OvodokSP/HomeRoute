@@ -32,11 +32,12 @@
 - идемпотентность файлового слоя;
 - явные Chur feed-адреса для `aarch64-3.10`, `mips-3.4`, `mipsel-3.4`;
 - HRNeo `3.18.3-1` как pinned `.ipk` для всех трёх архитектур: release commit + path + byte size + Git blob SHA;
-- read-only helper для выбора pinned HRNeo artifact и проверки локального файла без установки.
+- read-only helper для выбора pinned HRNeo artifact и проверки локального файла без установки;
+- HRNeo rescue-set capture/verifier: package-owned files + checksums/symlinks + opkg metadata + exact pinned `.ipk`, без package/service/network changes.
 
 ## Что ещё блокирует live-apply
 
-- SHA-256/GPG evidence для pinned HRNeo artifact либо отдельное решение о приемлемом integrity floor;
+- live capture/verify HRNeo rescue set на reference router;
 - live-safe изменение opkg feed-файлов для Chur;
 - установка/удаление pinned HRNeo/Chur package roots с транзакционным учётом;
 - резервное копирование реальных HomeRoute-конфигов и hooks;
