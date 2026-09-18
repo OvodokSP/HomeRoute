@@ -46,6 +46,7 @@ for expected in \
     'HOMEROUTE_PLAN restore_readiness=LIVE_READ_ONLY_PASS' \
     'HOMEROUTE_PLAN restore_rehearsal=LIVE_ISOLATED_PASS' \
     'HOMEROUTE_PLAN live_awg_restore_validation=LIVE_PASS' \
+    'HOMEROUTE_PLAN live_adguard_restore_validation=CONTROLLED_SCRIPT_READY_LIVE_PENDING' \
     'HOMEROUTE_PLAN backup_restore=SANDBOX_TRANSACTION_TESTED' \
     'HOMEROUTE_PLAN clean_device_validation=NOT_VALIDATED'
 do
