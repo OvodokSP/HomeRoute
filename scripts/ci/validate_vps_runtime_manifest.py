@@ -20,6 +20,23 @@ REQUIRED_VERIFIED = {
     "legacy_wg443_test_absent": True,
 }
 
+EXPECTED_PROVISIONING = {
+    "awg_image_reference": "amnezia-awg2",
+    "awg_image_id": "sha256:37314a32abb8ce2283e087f69e3ef020dd0eac655350313b860d82059c425d2d",
+    "awg_restart_policy": "always",
+    "awg_network_mode": "bridge",
+    "awg_network_attachment_count": 2,
+    "awg_mount_count": 1,
+    "awg_privileged": True,
+    "adguard_image_reference": "adguard/adguardhome:latest",
+    "adguard_image_id": "sha256:aba9e3bf0613be3ba3755e1fc311b126e2c24bec25e18b6483894a88283074f0",
+    "adguard_restart_policy": "unless-stopped",
+    "adguard_network_mode": "amnezia-dns-net",
+    "adguard_network_attachment_count": 1,
+    "adguard_mount_count": 2,
+    "adguard_privileged": False,
+}
+
 PROVISIONING_KEYS = {
     "awg_image_reference",
     "awg_image_id",
@@ -58,6 +75,8 @@ def main() -> int:
     provisioning = data.get("provisioning", {})
     if set(provisioning) != PROVISIONING_KEYS:
         fail("VPS provisioning field set drifted")
+    if provisioning != EXPECTED_PROVISIONING:
+        fail("captured VPS runtime shape drifted from reviewed evidence")
 
     policy = data.get("policy", {})
     for key in (
@@ -65,6 +84,8 @@ def main() -> int:
         "container_environment_values_must_not_be_collected",
         "mount_source_paths_must_not_be_collected",
         "container_ip_addresses_must_not_be_collected",
+        "runtime_shape_observed_not_full_reproduction",
+        "floating_image_tags_do_not_define_deterministic_install",
     ):
         if policy.get(key) is not True:
             fail(f"VPS safety policy must remain true: {key}")

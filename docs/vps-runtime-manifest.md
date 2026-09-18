@@ -17,20 +17,31 @@
 
 Эти значения находятся в `config/vps-runtime-manifest.json`.
 
-## Что пока не подтверждено для воспроизводимого создания
+## Что подтверждено дополнительным capture 2026-09-18
 
-До отдельного безопасного capture HomeRoute не утверждает:
+Для работающего reference VPS теперь также зафиксированы:
 
-- точную ссылку на Docker image AWG2;
-- точный image ID;
-- restart policy;
-- network mode;
-- число network attachments;
-- число mounts;
-- privileged mode;
-- те же параметры для AdGuard Home.
+- AWG2 image reference и image ID;
+- AWG2 restart policy, network mode, число подключённых сетей и mounts, privileged flag;
+- те же runtime-поля для AdGuard Home.
 
-Пока любое из этих полей равно `null`, live VPS apply остаётся заблокированным.
+Эти значения описывают **наблюдаемую работающую конфигурацию**, но ещё не являются полным рецептом создания контейнеров с нуля.
+
+Особенно важно: `adguard/adguardhome:latest` — плавающий tag. Сам факт, что текущий контейнер работает с этим tag, не делает `latest` детерминированным источником для будущего installer.
+
+## Что всё ещё не подтверждено для полного воспроизведения
+
+Без отдельного безопасного решения HomeRoute пока не фиксирует публично:
+
+- значения container environment;
+- IP-адреса;
+- published port mappings;
+- mount source paths;
+- credentials и приватные конфиги;
+- полный способ первоначального получения AWG2 image;
+- безопасный способ переноса/generation secrets на чистый VPS.
+
+Поэтому live VPS apply остаётся заблокированным даже после заполнения runtime manifest.
 
 ## Безопасный capture
 

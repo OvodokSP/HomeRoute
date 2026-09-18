@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "reference_capture": "2026-09-17",
+  "reference_capture": "2026-09-18",
   "verified": {
     "os_id": "ubuntu",
     "os_version_id": "26.04",
@@ -9,29 +9,34 @@
     "awg_container": "amnezia-awg2",
     "adguard_container": "adguard-home",
     "awg_interface": "awg0",
-    "dns_redirect": ["tcp/53", "udp/53"],
+    "dns_redirect": [
+      "tcp/53",
+      "udp/53"
+    ],
     "legacy_wg443_test_absent": true
   },
   "provisioning": {
-    "awg_image_reference": null,
-    "awg_image_id": null,
-    "awg_restart_policy": null,
-    "awg_network_mode": null,
-    "awg_network_attachment_count": null,
-    "awg_mount_count": null,
-    "awg_privileged": null,
-    "adguard_image_reference": null,
-    "adguard_image_id": null,
-    "adguard_restart_policy": null,
-    "adguard_network_mode": null,
-    "adguard_network_attachment_count": null,
-    "adguard_mount_count": null,
-    "adguard_privileged": null
+    "awg_image_reference": "amnezia-awg2",
+    "awg_image_id": "sha256:37314a32abb8ce2283e087f69e3ef020dd0eac655350313b860d82059c425d2d",
+    "awg_restart_policy": "always",
+    "awg_network_mode": "bridge",
+    "awg_network_attachment_count": 2,
+    "awg_mount_count": 1,
+    "awg_privileged": true,
+    "adguard_image_reference": "adguard/adguardhome:latest",
+    "adguard_image_id": "sha256:aba9e3bf0613be3ba3755e1fc311b126e2c24bec25e18b6483894a88283074f0",
+    "adguard_restart_policy": "unless-stopped",
+    "adguard_network_mode": "amnezia-dns-net",
+    "adguard_network_attachment_count": 1,
+    "adguard_mount_count": 2,
+    "adguard_privileged": false
   },
   "policy": {
     "null_provisioning_fields_block_live_apply": true,
     "container_environment_values_must_not_be_collected": true,
     "mount_source_paths_must_not_be_collected": true,
-    "container_ip_addresses_must_not_be_collected": true
+    "container_ip_addresses_must_not_be_collected": true,
+    "runtime_shape_observed_not_full_reproduction": true,
+    "floating_image_tags_do_not_define_deterministic_install": true
   }
 }
