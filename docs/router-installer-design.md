@@ -1,103 +1,56 @@
-# Router installer design
+# Установщик роутера: техническое устройство
 
-Статус: **PRE-ALPHA / repository design only**. Документ не разрешает применение изменений на реальном роутере до завершения reference inventory и отдельной проверки apply-mode.
-
-## Цель
-
-Router installer должен быть воспроизводимым и идемпотентным: повторный запуск на уже приведённой к desired state системе не должен создавать дубли rules/hooks/config blocks или менять рабочую систему без необходимости.
+Статус: **PRE-ALPHA**. Режим просмотра плана и sandbox-транзакция реализованы. Изменения на реальном роутере по-прежнему заблокированы.
 
 ## Режимы
 
 ### `plan`
 
-Read-only режим. Он:
+Только чтение. Показывает текущие инварианты HomeRoute, обязательные пакеты и незакрытые проверки.
 
-- проверяет доступность ожидаемых компонентов;
-- показывает Golden State invariants;
-- перечисляет будущие этапы установки;
-- явно помечает неподтверждённые зависимости как `BLOCKED`/`NOT VALIDATED`;
-- ничего не устанавливает и не меняет.
+### `sandbox-apply`
+
+Только для тестов репозитория.
+
+Требует отдельный каталог `HOMEROUTE_SANDBOX_ROOT` с маркером `.homeroute-sandbox`. Установщик создаёт в нём фиктивное управляемое состояние, выполняет проверку и умеет откатывать изменения.
+
+Этот режим не устанавливает пакеты, не меняет firewall, маршруты, VPN или реальные конфиги.
 
 ### `apply`
 
-До отдельного architecture decision и успешного clean-device test режим обязан завершаться отказом до любых изменений.
+На реальном роутере **заблокирован**.
 
-## Pipeline
+## Уже подтверждено
 
-Будущий apply-mode должен состоять из отдельных стадий:
+- обязательные install roots: `chur-amneziawg` и `hrneo`;
+- опорные ресурсы роутера;
+- интерфейс `opkgtun0`;
+- метка `0x3001`;
+- таблица `301`;
+- роль HydraRoute Neo;
+- sandbox backup/apply/verify/rollback;
+- идемпотентность файлового слоя;
+- явные Chur feed-адреса для `aarch64-3.10`, `mips-3.4`, `mipsel-3.4`.
 
-1. **Preflight** — architecture, storage, Entware/opkg, component/package compatibility.
-2. **Plan** — desired state против observed state, без изменений.
-3. **Backup** — сохранить только необходимые существующие конфиги/hooks и metadata для rollback.
-4. **Apply** — минимальные изменения, только после всех gates.
-5. **Verify** — doctor + routing contract + persistence checks.
-6. **Commit state** — записать локальный deployment manifest без secrets.
-7. **Rollback** — вернуть backup и удалить только объекты, созданные текущей транзакцией.
+## Что ещё блокирует live-apply
 
-## Идемпотентность
+- точная детерминированная строка feed для HydraRoute Neo;
+- live-safe изменение opkg feed-файлов;
+- установка/удаление пакетов с транзакционным учётом;
+- резервное копирование реальных HomeRoute-конфигов и hooks;
+- откат сетевых объектов;
+- HL-404: live backup/restore validation;
+- HL-502: первое чистое воспроизведение.
 
-Каждая изменяющая операция должна перед применением сравнить desired и current state.
+## Требование идемпотентности
 
-Требования:
+Повторный успешный запуск не должен:
 
-- не добавлять повторно существующий `ip rule`;
-- не создавать дубли firewall/NAT rules;
-- не дублировать HRNeo entries/ipsets;
-- не перезаписывать совпадающий конфиг;
-- не создавать второй peer для того же AllowedIPs;
-- использовать atomic replacement для файлов, где это возможно;
-- повторный `apply` после успешной установки должен давать `NO CHANGE` для уже совпадающих объектов.
+- добавлять второй `ip rule`;
+- создавать дубли firewall/NAT;
+- дублировать hooks;
+- перезаписывать совпадающий файл;
+- создавать повторный peer;
+- переустанавливать уже совпадающее состояние без причины.
 
-## Golden State invariants
-
-Installer не имеет права молча менять:
-
-- AWG baseline: 2.x;
-- router AWG interface: `opkgtun0`;
-- mark: `0x3001`;
-- routing table: `301`;
-- HRNeo как selective-routing orchestrator;
-- `nfqws` как независимый optional layer;
-- `tg-ws-proxy` как reserve path.
-
-Legacy `Wireguard0`/`nwg0`, table `4098`, mark `0xffffaab`, `WG443_TEST` и duplicate peers не являются допустимой desired state.
-
-## Backup contract
-
-Перед первым изменением конкретного ресурса installer должен сохранить:
-
-- исходный файл или доказательство его отсутствия;
-- mode/owner metadata, если применимо;
-- manifest созданных/изменённых объектов;
-- timestamp/transaction id.
-
-Backup не хранится в Git и не должен печатать secret contents в stdout.
-
-## Verify contract
-
-Apply считается успешным только если после изменений проходят:
-
-- `doctor-router.sh` без FAIL по обязательным Golden State checks;
-- persistence checks;
-- отсутствие legacy state;
-- отдельная функциональная проверка, определённая clean-device protocol.
-
-Если verify не проходит, installer не имеет права объявлять success.
-
-## Rollback contract
-
-Rollback должен быть ограничен текущей транзакцией. Он не должен удалять неизвестные пользователю правила или файлы только потому, что они не входят в HomeRoute desired state.
-
-Порядок rollback проектируется в обратном порядке apply и должен быть безопасен при повторном запуске.
-
-## Блокирующие данные
-
-До фактического reference inventory остаются `NOT VALIDATED`:
-
-- точные обязательные opkg packages;
-- package provider для AWG/HRNeo и вспомогательных binaries;
-- минимальный свободный storage/RAM;
-- подтверждённые target paths для автоматически создаваемых файлов на чистом устройстве;
-- безопасный способ первой установки AWG client на всех поддерживаемых платформах.
-
-Эти значения нельзя придумывать в apply-mode.
+Для совпадающего файлового состояния sandbox уже требует `NO CHANGE`.
