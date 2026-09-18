@@ -38,6 +38,26 @@ HomeRoute **не переносит эту команду в live-установ
 
 Источник: <https://github.com/Ground-Zerro/HydraRoute/blob/main/Neo/README.md>.
 
+## Что уже реализовано для Chur
+
+`router/feed-config.sh` выдаёт точную строку Chur feed для:
+
+- `aarch64-3.10`;
+- `mips-3.4`;
+- `mipsel-3.4`.
+
+Router `sandbox-apply` требует явный `HOMEROUTE_ENTWARE_ARCH`, создаёт `opt/etc/opkg/chur.conf` внутри sandbox и включает этот файл в ту же транзакцию, что и остальное управляемое состояние.
+
+CI проверяет:
+
+- все три поддерживаемые архитектуры;
+- отказ на неизвестной архитектуре;
+- первое создание `chur.conf`;
+- повторный запуск как `NO CHANGE`;
+- восстановление предыдущего `chur.conf` при принудительном провале verify.
+
+HydraRoute Neo feed при этом **не создаётся**: для него live gate остаётся закрытым.
+
 ## Что уже можно тестировать
 
 В sandbox можно тестировать:
