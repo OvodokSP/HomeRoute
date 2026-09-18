@@ -35,7 +35,9 @@
 - параметризуемая модель будущего provisioning, где image pins, host paths, AWG host UDP port и AWG state source задаются локально и не попадают в Git;
 - обязательный backup `/opt/amnezia/awg` перед заменой AWG2-контейнера;
 - закреплённый upstream Amnezia source recipe с совпадающей формой контейнера;
-- CI-tested backup/verify tooling для `/opt/amnezia/awg` и `/opt/amnezia/start.sh`, без вывода содержимого секретных файлов.
+- CI-tested backup/verify tooling для `/opt/amnezia/awg` и `/opt/amnezia/start.sh`, без вывода содержимого секретных файлов;
+- CI-tested export точного image ID работающего контейнера в локальный root-only rescue archive;
+- CI-tested backup/verify AdGuard `conf/work` без вывода содержимого конфигурации.
 
 ## Что ещё блокирует live-apply
 
