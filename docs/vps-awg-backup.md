@@ -37,8 +37,25 @@ Reference-контейнер имеет bind только в `/lib/modules`. К�
 
 `vps/verify-awg-backup.sh <backup-directory>` проверяет структуру и SHA256, но ничего не восстанавливает.
 
+## Live validation 2026-09-18
+
+На reference VPS выполнен реальный backup работающего `amnezia-awg2`:
+
+- результат backup: PASS;
+- файлов AWG state: 5;
+- общий размер backup: 40 KiB;
+- отдельная checksum verification: PASS;
+- backup/state directories: 0700;
+- metadata/manifest: 0600;
+- владелец: root:root;
+- container restart: не выполнялся;
+- configuration change: не выполнялся;
+- restore: не выполнялся.
+
+В публичном репозитории хранится только sanitized evidence. Содержимое backup и его реальные checksum остаются на VPS.
+
 ## Что пока запрещено
 
-Автоматический restore пока не реализован. Он потребует контролируемого изменения live-контейнера и отдельной проверки работоспособности после восстановления.
+Live restore пока не выполнялся. Алгоритм restore/rollback проверяется отдельно в filesystem sandbox и не считается доказательством безопасного восстановления работающего контейнера.
 
-Успешный backup не равен успешному restore и сам по себе не закрывает HL-404.
+Успешный backup не равен успешному live restore и сам по себе не закрывает HL-404.
