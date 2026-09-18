@@ -117,4 +117,8 @@ AWG-часть live restore validation теперь подтверждена. Ad
 
 При любом сбое после готовности quiescent snapshot cleanup пытается снова остановить AdGuard, повторно применить snapshot и запустить контейнер. Recovery snapshot при ошибке сохраняется на диске для ручного разбора.
 
-AWG не останавливается и не изменяется; container recreate/remove и image load не выполняются. До фактического live запуска статус остаётся **LIVE PENDING**.
+AWG не останавливается и не изменяется; container recreate/remove и image load не выполняются.
+
+На reference VPS 2026-09-18 этот validator завершился PASS: quiescent snapshot PASS, stopped restore round-trip PASS, `AdGuardHome.yaml` present, AWG DNS redirect PASS, реальные UDP/53 и TCP/53 DNS probes PASS, validation window 10 секунд. После теста оба контейнера были `running`, а финальный restore-readiness gate снова подтвердил целостность rescue set и совпадение image IDs.
+
+VPS-часть live service restore validation теперь подтверждена; следующий незакрытый live restore блок — Keenetic.
