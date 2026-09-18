@@ -23,7 +23,7 @@
 | Sandbox-транзакция VPS | CI PASS: APPLY / NO CHANGE / VERIFY / ROLLBACK |
 | Файловый backup/restore | ROUTER LIVE FILESYSTEM CANARY PASS + VPS LIVE PASS |
 | Chur/AmneziaWG feed provisioning | SANDBOX APPLY / NO CHANGE / ROLLBACK PASS |
-| HydraRoute Neo package | PINNED 3.18.3-1 / FULL RESCUE PASS / LIVE SAME-VERSION REINSTALL PASS / POST-TRANSACTION CLEANUP PASS / LIVE ROLLBACK FAILURE-PATH PENDING |
+| HydraRoute Neo package | PINNED 3.18.3-1 / FULL RESCUE PASS / LIVE REINSTALL+CLEANUP PASS / CONTROLLED LIVE ROLLBACK REHEARSAL READY |
 | Реальный apply роутера | BLOCKED |
 | VPS runtime provisioning data | RUNTIME + CONTAINER SHAPE CAPTURED 2026-09-18 |
 | VPS provisioning parameter model | DEFINED; LOCAL IMAGE/PATH/PORT/STATE REQUIRED |
@@ -66,7 +66,7 @@
 
 Следующие реальные блокеры:
 
-1. live-safe package transaction для закреплённого HRNeo `.ipk` + post-transaction cleanup уже PASS; live rollback failure-path ещё не подтверждён;
+1. live-safe package transaction + cleanup HRNeo уже PASS; controlled live rollback failure-path rehearsal подготовлен и CI-tested, live запуск ещё pending;
 2. live-safe backup/restore router package/config objects; filesystem + HRNeo files + opkg control/side-effects + global `/opt/lib/opkg/status` live PASS;
 3. контрольная live backup/restore validation — VPS filesystem/AWG/AdGuard live restore PASS; Keenetic ещё не подтверждён;
 4. первое чистое воспроизведение.

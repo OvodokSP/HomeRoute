@@ -18,7 +18,9 @@ fail() {
     exit 1
 }
 
-mkdir -p "$BIN" "$LIVE/opt/bin" "$LIVE/opt/etc/init.d" "$INFO"   "$RESCUE/files/opt/bin" "$RESCUE/opkg-info" "$RESCUE/package-side-effects"   "$RESCUE/package-database"
+mkdir -p "$BIN" "$LIVE/opt/bin" "$LIVE/opt/etc/init.d" "$LIVE/opt/etc/HydraRoute" "$INFO" \
+  "$RESCUE/files/opt/bin" "$RESCUE/opkg-info" "$RESCUE/package-side-effects" \
+  "$RESCUE/package-database"
 
 printf '%s\n' 'hrneo-binary-fixture' > "$LIVE/opt/bin/hrneo"
 printf '%s\n' 'hrneo-binary-fixture' > "$RESCUE/files/opt/bin/hrneo"
@@ -146,6 +148,9 @@ case "$1" in
       printf '%s\n' 'mutated-rc' > "$LIVE/opt/etc/init.d/rc.unslung"
       rm -f "$LIVE/opt/bin/neo"
       ln -s /tmp/wrong-target "$LIVE/opt/bin/neo"
+      printf '%s\n' package-default > "$LIVE/opt/etc/HydraRoute/hrneo.conf-opkg"
+      printf '%s\n' package-default > "$LIVE/opt/etc/HydraRoute/domain.conf-opkg"
+      printf '%s\n' package-default > "$LIVE/opt/etc/HydraRoute/ip.list-opkg"
     fi
     ;;
   status)
@@ -173,7 +178,13 @@ EOF
 chmod 700 "$BIN/opkg"
 
 plan=$(sh "$SCRIPT" plan)
-for expected in   'HOMEROUTE_HRNEO_REINSTALL exact_local_ipk=true'   'HOMEROUTE_HRNEO_REINSTALL force_reinstall=true'   'HOMEROUTE_HRNEO_REINSTALL nodeps=true'   'HOMEROUTE_HRNEO_REINSTALL rollback_opkg_status=true'   'HOMEROUTE_HRNEO_REINSTALL result=PLAN_ONLY'
+for expected in \
+  'HOMEROUTE_HRNEO_REINSTALL exact_local_ipk=true' \
+  'HOMEROUTE_HRNEO_REINSTALL force_reinstall=true' \
+  'HOMEROUTE_HRNEO_REINSTALL nodeps=true' \
+  'HOMEROUTE_HRNEO_REINSTALL rollback_opkg_status=true' \
+  'HOMEROUTE_HRNEO_REINSTALL rollback_conffile_residue=true' \
+  'HOMEROUTE_HRNEO_REINSTALL result=PLAN_ONLY'
 do
   printf '%s\n' "$plan" | grep -Fx "$expected" >/dev/null ||
     fail "missing plan field: $expected"
@@ -218,5 +229,13 @@ cmp -s "$LIVE/opt/etc/init.d/rc.unslung" "$RESCUE/package-side-effects/rc.unslun
 [ -L "$LIVE/opt/bin/neo" ] || fail 'rollback did not restore neo symlink'
 [ "$(readlink "$LIVE/opt/bin/neo")" = /opt/etc/init.d/S99hrneo ] ||
   fail 'rollback restored wrong neo symlink target'
+
+for residue in \
+  "$LIVE/opt/etc/HydraRoute/hrneo.conf-opkg" \
+  "$LIVE/opt/etc/HydraRoute/domain.conf-opkg" \
+  "$LIVE/opt/etc/HydraRoute/ip.list-opkg"
+do
+  [ ! -e "$residue" ] || fail "rollback left generated conffile residue: $residue"
+done
 
 printf '%s\n' '[PASS] controlled HRNeo same-version reinstall/rollback contract'
