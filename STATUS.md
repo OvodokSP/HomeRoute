@@ -17,8 +17,8 @@
 | Обязательные пакеты роутера | VALIDATED: `chur-amneziawg`, `hrneo` |
 | Диагностика роутера | LIVE PASS 26/26 (2026-09-18) |
 | Диагностика VPS | PASS 10/10 |
-| План установщика роутера | TESTED, READ-ONLY |
-| План установщика VPS | TESTED, READ-ONLY; RUNTIME MANIFEST WIRED |
+| План установщика роутера | TESTED, READ-ONLY; REPRODUCTION-APPLY BOUNDARY DEFINED |
+| План установщика VPS | TESTED, READ-ONLY; RUNTIME MANIFEST WIRED; REPRODUCTION-APPLY BOUNDARY DEFINED |
 | Sandbox-транзакция роутера | CI PASS: APPLY / NO CHANGE / VERIFY / ROLLBACK |
 | Sandbox-транзакция VPS | CI PASS: APPLY / NO CHANGE / VERIFY / ROLLBACK |
 | Файловый backup/restore | ROUTER LIVE FILESYSTEM CANARY PASS + VPS LIVE PASS |
@@ -43,7 +43,7 @@
 | Реальный apply VPS | BLOCKED |
 | Live backup/restore | PASS: VPS FILESYSTEM + AWG + ADGUARD; ROUTER FILESYSTEM + HRNEO REINSTALL + CLEANUP + FORCED-FAILURE ROLLBACK |
 | Протокол чистого воспроизведения | PREPARED |
-| Первое чистое воспроизведение | NOT YET TESTED |
+| Первое чистое воспроизведение | NOT YET TESTED; ROUTER SEMANTIC CAPTURE TOOLING READY |
 | AWG 3.x | NOT YET ADOPTED |
 | Repository CI | CONFIGURED |
 
