@@ -112,7 +112,7 @@ case "$mode" in
         ;;
     apply|--apply)
         printf '%s\n' '[BLOCKED] HomeRoute router live apply-mode is not implemented or validated.'
-        printf '%s\n' '[BLOCKED] Package roots are validated; remaining live gates are deterministic feed provisioning, live-safe backup/verify/rollback, and clean-device validation.'
+        printf '%s\n' '[BLOCKED] Package roots and a pinned HRNeo artifact are validated; remaining live gates are package transaction/rollback, live-safe backup/verify/rollback, and clean-device validation.'
         printf '%s\n' '[INFO] No opkg, firewall, routing, VPN, file, service, or system changes were made.'
         exit 2
         ;;
@@ -155,7 +155,8 @@ plan_field orchestrator HRNeo
 plan_field dependency_state VALIDATED_REFERENCE_MANIFEST
 plan_field core_install_roots "$CORE_INSTALL_ROOTS"
 plan_field resource_thresholds SUPPORTED_FLOOR_DEFINED
-plan_field feed_provisioning CHUR_SANDBOX_TESTED_HRNEO_BLOCKED
+plan_field feed_provisioning CHUR_SANDBOX_TESTED_HRNEO_PINNED_ARTIFACT
+plan_field hrneo_artifact PINNED_3.18.3-1_GIT_BLOB_VERIFIER_TESTED_LIVE_BLOCKED
 plan_field backup_restore SANDBOX_TRANSACTION_TESTED
 plan_field clean_device_validation NOT_VALIDATED
 
@@ -173,13 +174,13 @@ fi
 
 printf '%s\n' '[PLAN] Future live transaction stages (not executed):'
 printf '%s\n' '  1. preflight inventory gate'
-printf '%s\n' '  2. deterministic feed provisioning'
+printf '%s\n' '  2. deterministic package/feed provisioning'
 printf '%s\n' '  3. install validated package roots only'
 printf '%s\n' '  4. backup current managed state'
 printf '%s\n' '  5. minimal idempotent configuration apply'
 printf '%s\n' '  6. doctor/functional verify'
 printf '%s\n' '  7. transaction manifest / rollback on failed verify'
 
-printf '%s\n' '[BLOCKED] Live apply remains disabled until feed provisioning and live backup/rollback are validated and a clean-device reproduction is recorded.'
+printf '%s\n' '[BLOCKED] Live apply remains disabled until package/feed transactions and live backup/rollback are validated and a clean-device reproduction is recorded.'
 printf '%s\n' '[PASS] Plan completed; no system changes were made.'
 exit 0
