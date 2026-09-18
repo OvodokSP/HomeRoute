@@ -25,7 +25,7 @@
 | Chur/AmneziaWG feed provisioning | SANDBOX APPLY / NO CHANGE / ROLLBACK PASS |
 | HydraRoute Neo feed | UPSTREAM SCRIPT ONLY / LIVE BLOCKED |
 | Реальный apply роутера | BLOCKED |
-| VPS runtime provisioning data | REFERENCE RUNTIME CAPTURED 2026-09-18 |
+| VPS runtime provisioning data | REFERENCE RUNTIME CAPTURED 2026-09-18; CONTAINER SHAPE CAPTURE READY |
 | Реальный apply VPS | BLOCKED |
 | Live backup/restore | VPS FILESYSTEM CANARY PASS / ROUTER PENDING |
 | Протокол чистого воспроизведения | PREPARED |
