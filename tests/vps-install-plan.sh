@@ -30,6 +30,8 @@ for expected in \
     'HOMEROUTE_PLAN runtime_capture=AVAILABLE_READ_ONLY' \
     'HOMEROUTE_PLAN container_shape_capture=REFERENCE_CAPTURED' \
     'HOMEROUTE_PLAN provisioning_template=DEFINED_LOCAL_PARAMETERS_REQUIRED' \
+    'HOMEROUTE_PLAN awg_upstream_recipe=PINNED_SOURCE_BASE_IMAGE_FLOATING' \
+    'HOMEROUTE_PLAN awg_state_backup=TOOLING_READY_NOT_LIVE_VALIDATED' \
     'HOMEROUTE_PLAN container_provisioning=NOT_VALIDATED' \
     'HOMEROUTE_PLAN backup_restore=SANDBOX_TRANSACTION_TESTED' \
     'HOMEROUTE_PLAN clean_device_validation=NOT_VALIDATED'
