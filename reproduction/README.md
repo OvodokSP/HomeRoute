@@ -36,7 +36,9 @@ reproduction/local/router/
 │   └── ip.list
 ├── packages/
 │   ├── hrneo_3.18.3-1_mipsel-3.4.ipk
-│   └── ... exact Chur/AWG artifacts when pinned ...
+│   ├── chur-amneziawg.ipk
+│   ├── chur-amneziawg-go.ipk
+│   └── chur-amneziawg-tools.ipk
 └── manifest.json
 ```
 
