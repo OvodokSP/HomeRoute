@@ -44,13 +44,15 @@
 - динамическое разрешение AdGuard target через Docker без публикации внутреннего IP;
 - CI-tested renderer TCP/UDP 53 DNAT для AWG2;
 - live-confirmed active+enabled `awg-adguard-dns.timer`, service identity, helper path и helper SHA256;
+- live-confirmed monotonic timer schedule: `OnBootSec=30s`, `OnUnitActiveSec=60s`, `Persistent=yes`, accuracy `10s`, randomized delay `0`;
+- design-only `config/vps-dns-persistence.json` и non-mutating renderer `vps/render-dns-persistence-plan.sh`, фиксирующие target resolution, TCP/UDP DNAT 53 и safety boundary без выполнения команд;
 - calendar/monotonic-aware read-only timer preflight;
-- CI-tested sanitized semantic analyzer DNS helper без публикации содержимого.
+- CI-tested sanitized semantic analyzer DNS helper schema 2 без публикации содержимого.
 
 ## Что ещё блокирует live-apply
 
 - immutable image/base-image pin для новой установки;
-- детерминированное создание Docker network/container state и live semantic fingerprint текущего DNS persistence helper;
+- детерминированное создание Docker network/container state и schema-2 live semantic fingerprint текущего DNS persistence helper;
 - безопасная генерация и доставка credentials;
 - транзакционный учёт firewall/DNS;
 - live backup/restore validation;
