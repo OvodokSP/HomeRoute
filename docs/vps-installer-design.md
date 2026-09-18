@@ -51,13 +51,16 @@
 - read-only live-restore readiness gate, который повторно проверяет rescue-set и exact current/rescue image identity до любого controlled restore;
 - isolated stopped-container restore rehearsal: временные контейнеры с `--network none`, без start/restart рабочих сервисов, с backup round-trip и повторной SHA-256 verification.
 
-## Что ещё блокирует live-apply
+## Что ещё блокирует stable live-apply
 
-- immutable image/base-image pin для новой установки;
-- детерминированное создание Docker network/container state и schema-2 live semantic fingerprint текущего DNS persistence helper;
-- безопасная генерация и доставка credentials;
-- транзакционный учёт firewall/DNS;
-- успешный live restore-readiness preflight и затем отдельная controlled live restore validation;
-- первое чистое воспроизведение.
+HL-404 уже закрыт: filesystem, AWG и AdGuard restore validation прошли live. До stable `apply` остаются:
 
-Sandbox-успех не считается доказательством готовности production-установщика.
+- reproduction-only apply engine для HL-502;
+- exact/local image provisioning для новой установки;
+- детерминированное создание Docker network/container state;
+- полный принятый DNS persistence helper contract;
+- безопасная локальная доставка credentials/state без embedded secrets;
+- транзакционный учёт DNS/firewall объектов;
+- первое чистое воспроизведение HL-502.
+
+Отдельный `reproduction-apply` может быть реализован после HL-404 с явным ACK только для тестового контура. Sandbox-успех сам по себе не считается доказательством готовности production-установщика.

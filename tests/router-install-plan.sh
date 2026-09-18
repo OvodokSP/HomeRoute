@@ -15,13 +15,15 @@ fail() {
 
 sh "$INSTALLER" plan >"$OUT" 2>"$ERR" || fail 'plan mode returned non-zero'
 grep -F '[PASS] Plan completed; no system changes were made.' "$OUT" >/dev/null || fail 'plan success marker missing'
-grep -F '[BLOCKED] Live apply remains disabled' "$OUT" >/dev/null || fail 'live apply gate missing'
+grep -F '[BLOCKED] Stable live apply remains disabled' "$OUT" >/dev/null || fail 'stable live apply gate missing'
+grep -F '[BLOCKED] Reproduction-only apply engine is not implemented yet.' "$OUT" >/dev/null || fail 'reproduction-apply gate missing'
 
 for expected in \
     'HOMEROUTE_PLAN schema=1' \
     'HOMEROUTE_PLAN target=router' \
     'HOMEROUTE_PLAN mode=plan' \
     'HOMEROUTE_PLAN apply_available=false' \
+    'HOMEROUTE_PLAN reproduction_apply_available=false' \
     'HOMEROUTE_PLAN sandbox_apply_available=true' \
     'HOMEROUTE_PLAN awg_baseline=AmneziaWG_2.x' \
     'HOMEROUTE_PLAN awg_interface=opkgtun0' \

@@ -123,4 +123,4 @@ AWG не останавливается и не изменяется; container 
 
 На reference VPS 2026-09-18 этот validator завершился PASS: quiescent snapshot PASS, stopped restore round-trip PASS, `AdGuardHome.yaml` present, AWG DNS redirect PASS, реальные UDP/53 и TCP/53 DNS probes PASS, validation window 10 секунд. После теста оба контейнера были `running`, а финальный restore-readiness gate снова подтвердил целостность rescue set и совпадение image IDs.
 
-VPS-часть live service restore validation теперь подтверждена; следующий незакрытый live restore блок — Keenetic.
+VPS live service restore validation подтверждена. Keenetic filesystem и HRNeo package rollback также впоследствии прошли live validation; HL-404 закрыт. Следующий gate — clean-device reproduction (HL-502).

@@ -35,15 +35,18 @@
 - read-only helper для выбора pinned HRNeo artifact и проверки локального файла без установки;
 - HRNeo rescue-set capture/verifier: package-owned files + checksums/symlinks + opkg metadata + exact pinned `.ipk`, без package/service/network changes.
 
-## Что ещё блокирует live-apply
+## Что ещё блокирует stable live-apply
 
-- live capture/verify глобального `/opt/lib/opkg/status` в тот же rescue set перед package transaction;
+HL-404 уже закрыт live evidence. До stable `apply` остаются:
+
+- reproduction-only apply engine для первого HL-502;
+- точный capture/render persistence hooks и router runtime contract без секретов;
 - live-safe изменение opkg feed-файлов для Chur;
-- установка/удаление pinned HRNeo/Chur package roots с транзакционным учётом;
-- резервное копирование реальных HomeRoute-конфигов и hooks;
-- откат сетевых объектов;
-- HL-404: live backup/restore validation;
-- HL-502: первое чистое воспроизведение.
+- установка pinned HRNeo/Chur package roots с транзакционным учётом;
+- генерация/доставка локального AWG state без embedded secrets;
+- первое чистое воспроизведение HL-502.
+
+Отдельный `reproduction-apply` может быть реализован до HL-502 при явном ACK; ordinary/stable `apply` остаётся закрыт до результата HL-502.
 
 ## Требование идемпотентности
 
@@ -64,4 +67,4 @@ Before clean-device automation, the reference router uses a dedicated validator 
 
 The validator invokes only the exact local pinned artifact with `opkg install --force-reinstall --nodeps`. It then requires the installed package set, HRNeo managed files, opkg info, `neo` symlink, `rc.unslung` side effect and router doctor to remain valid. If any post-transaction check fails, it restores package files, `hrneo.*`, the saved global opkg status, `rc.unslung` and `neo`, restarts HRNeo and verifies the router doctor again.
 
-The live run remains pending until the global opkg status rescue is captured on the reference router.
+The same-version reinstall, cleanup and forced-failure rollback have all passed live on the reference router. The package transaction layer is no longer a blocker for reproduction-only apply.

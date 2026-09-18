@@ -146,6 +146,7 @@ plan_field schema 1
 plan_field target router
 plan_field mode plan
 plan_field apply_available false
+plan_field reproduction_apply_available false
 plan_field sandbox_apply_available true
 plan_field awg_baseline 'AmneziaWG_2.x'
 plan_field awg_interface opkgtun0
@@ -185,6 +186,7 @@ printf '%s\n' '  5. minimal idempotent configuration apply'
 printf '%s\n' '  6. doctor/functional verify'
 printf '%s\n' '  7. transaction manifest / rollback on failed verify'
 
-printf '%s\n' '[BLOCKED] Live apply remains disabled until a clean-device reproduction is recorded.'
+printf '%s\n' '[BLOCKED] Stable live apply remains disabled until a clean-device reproduction is recorded.'
+printf '%s\n' '[BLOCKED] Reproduction-only apply engine is not implemented yet.'
 printf '%s\n' '[PASS] Plan completed; no system changes were made.'
 exit 0

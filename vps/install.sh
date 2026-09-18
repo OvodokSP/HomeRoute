@@ -124,6 +124,7 @@ plan_field schema 1
 plan_field target vps
 plan_field mode plan
 plan_field apply_available false
+plan_field reproduction_apply_available false
 plan_field sandbox_apply_available true
 plan_field awg_baseline 'AmneziaWG_2.x'
 plan_field awg_interface awg0
@@ -175,6 +176,7 @@ printf '%s\n' '  5. doctor/functional verify'
 printf '%s\n' '  6. transaction manifest'
 printf '%s\n' '  7. rollback on failed verify'
 
-printf '%s\n' '[BLOCKED] Live apply remains disabled until exact provisioning, live backup/rollback, and clean-device validation are complete.'
+printf '%s\n' '[BLOCKED] Stable live apply remains disabled until exact provisioning and clean-device validation are complete.'
+printf '%s\n' '[BLOCKED] Reproduction-only apply engine is not implemented yet.'
 printf '%s\n' '[PASS] Plan completed; no system changes were made.'
 exit 0
