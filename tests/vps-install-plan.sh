@@ -35,7 +35,7 @@ for expected in \
     'HOMEROUTE_PLAN awg_restore=SANDBOX_RESTORE_ROLLBACK_TESTED_LIVE_BLOCKED' \
     'HOMEROUTE_PLAN exact_image_rescue=LIVE_EXPORT_VERIFIED' \
     'HOMEROUTE_PLAN adguard_state_backup=LIVE_BACKUP_VERIFIED' \
-    'HOMEROUTE_PLAN adguard_restore=SANDBOX_RESTORE_ROLLBACK_TESTED_LIVE_BLOCKED' \
+    'HOMEROUTE_PLAN adguard_restore=LIVE_SAME_STATE_RESTORE_VERIFIED' \
     'HOMEROUTE_PLAN rescue_set=ARTIFACTS_CAPTURED_COMBINED_VERIFIER_READY' \
     'HOMEROUTE_PLAN dns_network=UPSTREAM_PINNED' \
     'HOMEROUTE_PLAN adguard_dns_target=DYNAMIC_RUNTIME_RESOLUTION' \
@@ -46,7 +46,7 @@ for expected in \
     'HOMEROUTE_PLAN restore_readiness=LIVE_READ_ONLY_PASS' \
     'HOMEROUTE_PLAN restore_rehearsal=LIVE_ISOLATED_PASS' \
     'HOMEROUTE_PLAN live_awg_restore_validation=LIVE_PASS' \
-    'HOMEROUTE_PLAN live_adguard_restore_validation=CONTROLLED_SCRIPT_READY_LIVE_PENDING' \
+    'HOMEROUTE_PLAN live_adguard_restore_validation=LIVE_PASS' \
     'HOMEROUTE_PLAN backup_restore=SANDBOX_TRANSACTION_TESTED' \
     'HOMEROUTE_PLAN clean_device_validation=NOT_VALIDATED'
 do
