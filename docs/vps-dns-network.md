@@ -60,3 +60,26 @@ Live preflight 2026-09-18 подтвердил:
 Первый live semantic fingerprint helper подтвердил exact SHA, valid shell syntax, Docker inspect + docker exec и DNAT 53 через iptables/NAT/PREROUTING с `-C` и `-I`; broad flush/restart/remove/reboot/rm не обнаружены. Literal `adguard-home`, `amnezia-dns-net`, `-p tcp` и `-p udp` не обнаружены, поэтому полное соответствие desired dynamic TCP/UDP implementation пока не повышается до VERIFIED: значения могут быть переданы через переменные/циклы. Schema 2 analyzer добавляет безопасные признаки такого indirection без вывода содержимого helper.
 
 Полный sanitized capture зафиксирован в `docs/live-dns-persistence-2026-09-18.md`.
+
+## Desired-state contract
+
+Рабочий reference timer теперь используется как исходная модель для будущего воспроизведения:
+
+- monotonic timer;
+- запуск после boot через 30 секунд;
+- повторный запуск через 60 секунд после предыдущей активации;
+- `Persistent=yes`;
+- accuracy 10 секунд;
+- без randomized delay.
+
+Сам helper при этом не копируется из live VPS в репозиторий. Его целевая семантика описана отдельно в `config/vps-dns-persistence.json` и выводится read-only скриптом `vps/render-dns-persistence-plan.sh`.
+
+Desired helper должен:
+
+1. разрешать IPv4 AdGuard динамически через Docker на `amnezia-dns-net`;
+2. не печатать runtime IP;
+3. проверять TCP и UDP DNAT 53 внутри `amnezia-awg2`;
+4. перед вставкой правила выполнять точную проверку существования;
+5. не использовать broad flush, container restart/remove или reboot как часть обычного reconciliation.
+
+Это пока **DESIGN_ONLY**. Live apply systemd/iptables по-прежнему запрещён.

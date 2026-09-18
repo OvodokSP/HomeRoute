@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "status": "DESIGN_ONLY",
+  "reference_evidence": {
+    "capture_date": "2026-09-18",
+    "timer_schedule_verified": true,
+    "observed_helper_sha256": "96766c14d26edb63877aaf8f2bff5de577e42683b99b86b1b2b7bc382424c2b0",
+    "helper_full_semantics_verified": false
+  },
+  "timer": {
+    "name": "awg-adguard-dns.timer",
+    "service": "awg-adguard-dns.service",
+    "schedule_kind": "monotonic",
+    "on_boot_sec": 30,
+    "on_unit_active_sec": 60,
+    "persistent": true,
+    "accuracy_sec": 10,
+    "randomized_delay_sec": 0
+  },
+  "helper": {
+    "exec_path": "/usr/local/sbin/awg-adguard-dns.sh",
+    "target_resolution": {
+      "method": "docker_inspect_runtime_ipv4",
+      "network": "amnezia-dns-net",
+      "adguard_container": "adguard-home",
+      "awg_container": "amnezia-awg2",
+      "publish_runtime_ip": false
+    },
+    "rules": {
+      "execution_scope": "inside_awg_container",
+      "table": "nat",
+      "chain": "PREROUTING",
+      "protocols": [
+        "tcp",
+        "udp"
+      ],
+      "destination_port": 53,
+      "target": "resolved_adguard_ipv4:53",
+      "check_before_insert": true,
+      "insert_operation": "-I"
+    },
+    "forbidden_operations": [
+      "iptables -F",
+      "docker restart",
+      "docker rm",
+      "reboot",
+      "rm"
+    ]
+  },
+  "policy": {
+    "render_only": true,
+    "live_apply_allowed": false,
+    "no_embedded_secrets": true,
+    "no_runtime_ip_in_logs": true,
+    "helper_source_identity_not_adopted_from_live_until_schema2_capture": true
+  }
+}

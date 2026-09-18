@@ -14,3 +14,4 @@
 | Separate VPS per deployment | Каждый пользователь использует собственный VPS. |
 | No secrets in Git | Репозиторий публичный. |
 | Clean reproduction before stable installer | Installer не станет стабильным до проверки на чистом устройстве. |
+| DNS persistence follows verified reference timer | Для v1 desired schedule принят подтверждённый monotonic timer: boot +30s, затем 60s после активации; helper semantics задаются отдельно и остаются render-only до live validation. |

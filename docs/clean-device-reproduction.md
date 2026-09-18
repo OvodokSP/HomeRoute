@@ -46,7 +46,8 @@
 1. Снять router/VPS inventory.
 2. Выполнить router `install.sh plan`.
 3. Выполнить VPS `install.sh plan`.
-4. Все `NOT VALIDATED`/`BLOCKED` зависимости должны быть либо разрешены подтверждёнными данными, либо run останавливается.
+4. Выполнить `vps/render-dns-persistence-plan.sh` и убедиться, что он завершился `HOMEROUTE_DNS_DESIRED result=PASS`; renderer ничего не применяет.
+5. Все `NOT VALIDATED`/`BLOCKED` зависимости должны быть либо разрешены подтверждёнными данными, либо run останавливается.
 
 Plan сам по себе ничего не меняет.
 

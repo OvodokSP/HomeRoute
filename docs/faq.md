@@ -203,6 +203,12 @@ HOMEROUTE_INVENTORY ...
 
 `WARN` означает замечание или неполную проверку. Общий результат может оставаться `PASS`.
 
+## DNS service показывает inactive, хотя timer active. Это ошибка?
+
+Не обязательно. Для timer-triggered oneshot-подобного сервиса состояние `inactive` между запусками может быть нормальным.
+
+Смотрите не только на service, а на весь preflight: timer должен быть active/enabled, должен иметь следующий monotonic запуск и зафиксированный helper SHA. Если preflight завершился `[PASS]`, само по себе `service_active=inactive` не означает поломку.
+
 ## После перезагрузки перестал работать нужный сервис
 
 1. Не удаляйте маршруты и firewall rules.
