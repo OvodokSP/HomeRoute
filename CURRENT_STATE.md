@@ -26,7 +26,12 @@ This document contains only the current reference state confirmed during the Hom
 - On 2026-09-18 a real root-only backup of the running AWG2 state completed successfully: 5 files, 40 KiB, checksum verification PASS, backup directories mode 0700, metadata/manifest mode 0600, owner root:root. No container restart, configuration change or restore was performed.
 - The AWG restore algorithm is tested only in an isolated filesystem sandbox, including successful restore, per-file SHA256 verification, forced verification failure and rollback to pre-existing state. Live AWG restore remains unvalidated.
 - Repository tooling can create a root-only rescue archive of the exact Docker image ID used by a running container, with conservative free-space gating, tar validation and SHA256 integrity verification, without loading the image or restarting the container.
-- Repository tooling can back up AdGuard Home `/opt/adguardhome/conf` and `/opt/adguardhome/work` with root-only permissions and SHA256 verification. Live execution of those two rescue operations has not yet been performed.
+- On 2026-09-18 a real AdGuard state backup completed successfully: 6 files, 35060 KiB, checksum verification PASS, with no container restart and no restore.
+- On 2026-09-18 the exact running AWG2 image `sha256:37314a32abb8ce2283e087f69e3ef020dd0eac655350313b860d82059c425d2d` was exported to a local rescue archive (12204 KiB) and passed tar/SHA256 verification without loading the image or restarting the container.
+- On 2026-09-18 the exact running AdGuard image `sha256:aba9e3bf0613be3ba3755e1fc311b126e2c24bec25e18b6483894a88283074f0` was exported to a local rescue archive (28828 KiB) and passed tar/SHA256 verification without loading the image or restarting the container.
+- After these backups the reference root filesystem remained at 54% used with 13 GiB available.
+- The AdGuard restore algorithm is tested only in an isolated filesystem sandbox, including per-file SHA256 verification, forced failure and rollback of pre-existing `conf/work`. Live AdGuard restore remains unvalidated.
+- The local rescue-set contract consists of four artifacts: AWG state, AdGuard state, exact AWG2 image and exact AdGuard image. Repository tooling can verify all four together without loading images or restoring state.
 
 ## VERIFIED — component roles and package roots
 
