@@ -33,11 +33,13 @@
 - безопасный read-only capture image/restart/network-mode/count/privileged metadata без чтения Env/IP/host paths;
 - sanitized container-shape: сети, container-side mount destinations, exposed/container ports и отсутствие host-published AdGuard ports;
 - параметризуемая модель будущего provisioning, где image pins, host paths, AWG host UDP port и AWG state source задаются локально и не попадают в Git;
-- обязательный backup `/opt/amnezia/awg` перед заменой AWG2-контейнера.
+- обязательный backup `/opt/amnezia/awg` перед заменой AWG2-контейнера;
+- закреплённый upstream Amnezia source recipe с совпадающей формой контейнера;
+- CI-tested backup/verify tooling для `/opt/amnezia/awg` и `/opt/amnezia/start.sh`, без вывода содержимого секретных файлов.
 
 ## Что ещё блокирует live-apply
 
-- точные image/version rules для новой установки;
+- immutable image/base-image pin для новой установки;
 - детерминированное создание Docker network/container state;
 - безопасная генерация и доставка credentials;
 - транзакционный учёт firewall/DNS;

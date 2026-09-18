@@ -27,6 +27,8 @@
 | Реальный apply роутера | BLOCKED |
 | VPS runtime provisioning data | RUNTIME + CONTAINER SHAPE CAPTURED 2026-09-18 |
 | VPS provisioning parameter model | DEFINED; LOCAL IMAGE/PATH/PORT/STATE REQUIRED |
+| AWG upstream recipe | PINNED SOURCE COMMIT; BASE IMAGE `latest` STILL FLOATING |
+| AWG state backup tooling | CI TESTED; LIVE BACKUP NOT YET RUN |
 | Реальный apply VPS | BLOCKED |
 | Live backup/restore | VPS FILESYSTEM CANARY PASS / ROUTER PENDING |
 | Протокол чистого воспроизведения | PREPARED |
