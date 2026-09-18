@@ -25,6 +25,8 @@ This document contains only the current reference state confirmed during the Hom
 - That pinned source recipe is not a deterministic image pin: its Dockerfile still uses `amneziavpn/amneziawg-go:latest`, so exact clean-build provenance remains unverified.
 - On 2026-09-18 a real root-only backup of the running AWG2 state completed successfully: 5 files, 40 KiB, checksum verification PASS, backup directories mode 0700, metadata/manifest mode 0600, owner root:root. No container restart, configuration change or restore was performed.
 - The AWG restore algorithm is tested only in an isolated filesystem sandbox, including successful restore, per-file SHA256 verification, forced verification failure and rollback to pre-existing state. Live AWG restore remains unvalidated.
+- Repository tooling can create a root-only rescue archive of the exact Docker image ID used by a running container, with conservative free-space gating, tar validation and SHA256 integrity verification, without loading the image or restarting the container.
+- Repository tooling can back up AdGuard Home `/opt/adguardhome/conf` and `/opt/adguardhome/work` with root-only permissions and SHA256 verification. Live execution of those two rescue operations has not yet been performed.
 
 ## VERIFIED — component roles and package roots
 
