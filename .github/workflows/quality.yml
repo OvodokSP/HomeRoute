@@ -65,6 +65,7 @@ jobs:
           sh tests/router-hrneo-rollback-rehearsal.sh
           sh tests/router-reference-semantics-capture.sh
           sh tests/router-hook-dependencies-capture.sh
+          sh tests/router-hook-export.sh
           sh tests/live-validation-contract.sh
           sh tests/vps-runtime-preflight.sh
           sh tests/vps-container-shape.sh
