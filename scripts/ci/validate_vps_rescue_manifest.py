@@ -27,8 +27,8 @@ def main() -> int:
         item = artifacts[key]
         if item.get("live_backup") != "PASS" or item.get("integrity_verify") != "PASS":
             fail(f"state backup evidence not PASS: {key}")
-        if item.get("live_restore") != "NOT_VALIDATED":
-            fail(f"live restore boundary drifted: {key}")
+        if item.get("live_restore") != "PASS":
+            fail(f"live restore evidence not PASS: {key}")
 
     for key in ("awg_image", "adguard_image"):
         item = artifacts[key]
@@ -42,10 +42,13 @@ def main() -> int:
         "artifact_contents_are_local_only",
         "checksum_manifests_are_local_only",
         "public_repository_contains_metadata_only",
-        "restore_requires_separate_validation",
+        "live_state_restore_validated",
+        "image_load_still_requires_separate_validation",
     ):
         if policy.get(key) is not True:
             fail(f"rescue manifest safety policy must remain true: {key}")
+    if policy.get("restore_requires_separate_validation") is not False:
+        fail("state restore is already live-validated and must not regress to pending")
 
     print("[PASS] VPS rescue manifest contract")
     return 0
