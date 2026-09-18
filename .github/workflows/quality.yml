@@ -30,6 +30,10 @@ jobs:
         run: python3 scripts/ci/validate_vps_awg_upstream.py
       - name: Validate live AWG backup evidence
         run: python3 scripts/ci/validate_vps_live_awg_backup.py
+      - name: Validate live VPS rescue evidence
+        run: python3 scripts/ci/validate_vps_rescue_evidence.py
+      - name: Validate VPS rescue manifest
+        run: python3 scripts/ci/validate_vps_rescue_manifest.py
       - name: Test inventory tooling
         run: python3 -m unittest discover -s tests -p 'test_*.py'
       - name: Test installer contracts
@@ -47,5 +51,7 @@ jobs:
           sh tests/vps-awg-restore-sandbox.sh
           sh tests/vps-image-backup.sh
           sh tests/vps-adguard-backup.sh
+          sh tests/vps-adguard-restore-sandbox.sh
+          sh tests/vps-rescue-set.sh
       - name: Test router doctor matcher
         run: HOMEROUTE_DOCTOR_SELFTEST=1 sh router/doctor-router.sh
