@@ -34,3 +34,7 @@ The pinned postinst performs four relevant actions:
 It does not contain an iptables/ipset/ip route mutation command and does not contain an `rm` command.
 
 Before any live package reinstall, HomeRoute requires the installed `hrneo.postinst` and `hrneo.conffiles` hashes to match this pinned boundary, requires the `neo` symlink and `rc.unslung` patch to already be in their expected state, and captures all `/opt/lib/opkg/info/hrneo.*` plus these two side-effect objects into the existing rescue directory.
+
+## Mutable conffile boundary
+
+`hrneo.conf`, `domain.conf`, and `ip.list` are package-declared conffiles and must be treated as mutable user state, not immutable package identity. HomeRoute may retain them in a rescue snapshot for backup/evidence, but a later transaction must not require their bytes to still match that older snapshot. Immediately before `opkg`, the validator captures current hashes for all three and requires the package transaction not to alter them. Automatic rollback restores immutable package/opkg state and preserves the current conffiles rather than copying stale conffile bytes from the long-lived rescue set.
