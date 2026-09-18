@@ -32,7 +32,7 @@
 | AWG restore algorithm | LIVE SAME-STATE RESTORE PASS; QUIESCENT SNAPSHOT + BYTE VERIFY + RUNTIME POSTCHECK; 6s WINDOW |
 | Exact Docker image rescue | AWG2 + ADGUARD LIVE EXPORT PASS; SHA256/TAR VERIFY PASS |
 | AdGuard state backup | LIVE PASS 2026-09-18; SHA256 VERIFY PASS |
-| AdGuard restore algorithm | SANDBOX PASS + ISOLATED LIVE REHEARSAL PASS; CONTROLLED SAME-STATE LIVE VALIDATOR READY; LIVE VALIDATION PENDING |
+| AdGuard restore algorithm | LIVE SAME-STATE RESTORE PASS; QUIESCENT CONF/WORK + BYTE VERIFY + TCP/UDP DNS POSTCHECK; 10s WINDOW |
 | VPS rescue set | 4 LIVE ARTIFACTS CAPTURED; COMBINED VERIFIER READY |
 | Amnezia Docker network | UPSTREAM PINNED: amnezia-dns-net / bridge / 172.29.172.0/24 / amn0 |
 | HomeRoute AdGuard DNS target | DYNAMIC RUNTIME RESOLUTION CONTRACT TESTED |
@@ -41,7 +41,7 @@
 | DNS helper semantics | LIVE SCHEMA-2 PARTIAL: TCP/UDP LOOP CONFIRMED; TARGET-RESOLUTION DETAILS NOT VALIDATED |
 | DNS persistence desired state | DESIGN-ONLY CONTRACT + RENDERER; CI TESTED; LIVE APPLY BLOCKED |
 | Реальный apply VPS | BLOCKED |
-| Live backup/restore | VPS FILESYSTEM + AWG LIVE RESTORE PASS; ADGUARD LIVE RESTORE + ROUTER PENDING; READINESS/REHEARSAL PASS |
+| Live backup/restore | VPS FILESYSTEM + AWG + ADGUARD LIVE RESTORE PASS; ROUTER/Keenetic PENDING; READINESS/REHEARSAL PASS |
 | Протокол чистого воспроизведения | PREPARED |
 | Первое чистое воспроизведение | NOT YET TESTED |
 | AWG 3.x | NOT YET ADOPTED |
@@ -68,5 +68,5 @@
 
 1. live-safe package transaction/rollback для закреплённого HRNeo `.ipk`; SHA-256 уже captured/pinned, GPG остаётся NOT VERIFIED из-за отсутствия подтверждённого signing/release channel;
 2. live-safe backup/restore всех изменяемых типов объектов;
-3. контрольная live backup/restore validation — VPS filesystem/AWG/AdGuard backup PASS; live restore и Keenetic ещё не подтверждены;
+3. контрольная live backup/restore validation — VPS filesystem/AWG/AdGuard live restore PASS; Keenetic ещё не подтверждён;
 4. первое чистое воспроизведение.
