@@ -72,7 +72,7 @@ record() {
     printf ' use_pgrep=%s' "$(has '(^|/|[[:space:]])pgrep([[:space:]]|$)' "$file")"
     printf ' use_logger=%s' "$(has '(^|/|[[:space:]])logger([[:space:]]|$)' "$file")"
     printf ' use_sleep=%s' "$(has '(^|/|[[:space:]])sleep([[:space:]]|$)' "$file")"
-    printf ' background=%s' "$(has '&[[:space:]]*($|#)' "$file")"
+    printf ' background=%s' "$(has '&[[:space:]]*(;;|$|#)' "$file")"
 
     printf ' action_start=%s' "$(has '(^|[^[:alnum:]_])start([^[:alnum:]_]|$)' "$file")"
     printf ' action_stop=%s' "$(has '(^|[^[:alnum:]_])stop([^[:alnum:]_]|$)' "$file")"
