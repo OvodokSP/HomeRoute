@@ -136,15 +136,11 @@ fi
 [ "$existing" -eq 3 ] || fail "partial conffile-artifact state detected: expected 3, found $existing"
 [ ! -e "$evidence" ] || fail 'cleanup evidence directory already exists before first cleanup'
 
-# Verify current live conffiles still match the pre-reinstall rescue snapshot.
+# HRNeo conffiles are mutable user state. Cleanup must preserve the current
+# live files and must not require them to match an older rescue snapshot.
 for name in $names; do
-    rel="opt/etc/HydraRoute/$name"
-    live="$LIVE_ROOT/$rel"
-    expected=$(awk -v rel="$rel" '$2==rel {print $1; exit}' "$RESCUE/FILES.sha256")
-    [ -n "$expected" ] || fail "rescue manifest does not contain live conffile: $rel"
-    [ -f "$live" ] || fail "live conffile missing: $live"
-    actual=$(sha256sum "$live" | awk '{print $1}')
-    [ "$actual" = "$expected" ] || fail "live conffile drifted from rescue snapshot: $name"
+    live="$base/$name"
+    [ -f "$live" ] || fail "live mutable conffile missing: $live"
 done
 
 mkdir -p "$evidence"
