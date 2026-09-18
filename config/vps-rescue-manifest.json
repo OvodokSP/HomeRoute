@@ -7,13 +7,13 @@
       "backup_id": "awg-state-20260918T103646Z",
       "live_backup": "PASS",
       "integrity_verify": "PASS",
-      "live_restore": "NOT_VALIDATED"
+      "live_restore": "PASS"
     },
     "adguard_state": {
       "backup_id": "adguard-state-20260918T110820Z",
       "live_backup": "PASS",
       "integrity_verify": "PASS",
-      "live_restore": "NOT_VALIDATED"
+      "live_restore": "PASS"
     },
     "awg_image": {
       "backup_id": "image-awg2-20260918T110821Z",
@@ -34,6 +34,8 @@
     "artifact_contents_are_local_only": true,
     "checksum_manifests_are_local_only": true,
     "public_repository_contains_metadata_only": true,
-    "restore_requires_separate_validation": true
+    "restore_requires_separate_validation": false,
+    "live_state_restore_validated": true,
+    "image_load_still_requires_separate_validation": true
   }
 }
