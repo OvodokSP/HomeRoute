@@ -1,6 +1,6 @@
 # HomeRoute current state
 
-Snapshot date: 2026-09-17.
+Snapshot date: 2026-09-18.
 
 This document contains only the current reference state confirmed during the HomeRoute investigation. It is the factual baseline for agents and maintainers.
 
@@ -17,6 +17,8 @@ This document contains only the current reference state confirmed during the Hom
 - Persistence hooks restore the working route after a controlled restart and a normal Keenetic reboot.
 - A full VPS reboot and a normal Keenetic reboot were completed successfully.
 - Live router and VPS doctor checks were completed on 2026-09-17; the router FORWARD false-negative was isolated to the checker and fixed with a regression test.
+- On 2026-09-18 the VPS dedicated-filesystem transaction canary completed PASS: an existing file was changed then restored, a transaction-created file was removed, and unrelated state remained unchanged.
+- On 2026-09-18 sanitized VPS runtime metadata was captured for AWG2 and AdGuard without reading environment values, IP addresses, port mappings, mount source paths, labels, command lines, config contents, or credentials.
 
 ## VERIFIED — component roles and package roots
 
@@ -48,7 +50,7 @@ This document contains only the current reference state confirmed during the Hom
 ## NOT VALIDATED
 
 - Automated live apply on a clean router or VPS.
-- Deterministic feed provisioning and live backup/restore rollback.
+- Full live backup/restore rollback for real managed router/VPS objects (the VPS dedicated-filesystem canary is verified, but it is not the full installer rollback).
 - Physical minimum router/VPS resource requirements below the supported floor.
 - A complete clean-device-verified hardware compatibility matrix.
 - Generic Netis flashing instructions for specific models.
