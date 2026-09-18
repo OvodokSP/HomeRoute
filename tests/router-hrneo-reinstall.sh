@@ -135,6 +135,19 @@ case "$1" in
   --help)
     printf '%s\n' '  --force-reinstall Reinstall package(s)' '  --nodeps Do not follow dependencies'
     ;;
+  --force-reinstall)
+    [ "$2" = --nodeps ] || exit 2
+    [ "$3" = install ] || exit 2
+    [ -f "$4" ] || exit 2
+    if [ "${HOMEROUTE_TEST_OPKG_MUTATE:-0}" = 1 ]; then
+      printf '%s\n' 'mutated-binary' > "$LIVE/opt/bin/hrneo"
+      printf '%s\n' 'mutated-control' > "$INFO/hrneo.control"
+      printf '%s\n' 'mutated-status' > "$STATUS"
+      printf '%s\n' 'mutated-rc' > "$LIVE/opt/etc/init.d/rc.unslung"
+      rm -f "$LIVE/opt/bin/neo"
+      ln -s /tmp/wrong-target "$LIVE/opt/bin/neo"
+    fi
+    ;;
   status)
     pkg=$2
     case "$pkg" in
@@ -151,19 +164,6 @@ case "$1" in
     ;;
   list-installed)
     printf '%s\n'       'hrneo - 3.18.3-1'       'ip-full - 1'       'ipset - 1'       'iptables - 1'       'libc - 1'
-    ;;
-  install)
-    [ "$2" = --force-reinstall ] || exit 2
-    [ "$3" = --nodeps ] || exit 2
-    [ -f "$4" ] || exit 2
-    if [ "${HOMEROUTE_TEST_OPKG_MUTATE:-0}" = 1 ]; then
-      printf '%s\n' 'mutated-binary' > "$LIVE/opt/bin/hrneo"
-      printf '%s\n' 'mutated-control' > "$INFO/hrneo.control"
-      printf '%s\n' 'mutated-status' > "$STATUS"
-      printf '%s\n' 'mutated-rc' > "$LIVE/opt/etc/init.d/rc.unslung"
-      rm -f "$LIVE/opt/bin/neo"
-      ln -s /tmp/wrong-target "$LIVE/opt/bin/neo"
-    fi
     ;;
   *)
     exit 2
