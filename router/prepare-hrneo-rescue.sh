@@ -12,6 +12,7 @@ ARTIFACT_TOOL=${HOMEROUTE_HRNEO_ARTIFACT_TOOL:-$SCRIPT_DIR/hrneo-artifact.sh}
 DOCTOR=${HOMEROUTE_ROUTER_DOCTOR:-$SCRIPT_DIR/doctor-router.sh}
 BACKUP_ROOT=${HOMEROUTE_ROUTER_BACKUP_ROOT:-/opt/homeroute-backups}
 TEST_MODE=${HOMEROUTE_HRNEO_RESCUE_TEST_MODE:-0}
+LIVE_ROOT=${HOMEROUTE_HRNEO_LIVE_ROOT:-}
 
 fail() {
     printf '[FAIL] %s\n' "$1" >&2
@@ -80,8 +81,13 @@ if [ "$TEST_MODE" = 1 ]; then
         /tmp/homeroute-hrneo-rescue-test.*) ;;
         *) fail 'unsafe test backup root' ;;
     esac
+    case "$LIVE_ROOT" in
+        /tmp/homeroute-hrneo-live-test.*) ;;
+        *) fail 'unsafe test live root' ;;
+    esac
 else
     [ "$BACKUP_ROOT" = /opt/homeroute-backups ] || fail 'live backup root must be /opt/homeroute-backups'
+    [ -z "$LIVE_ROOT" ] || fail 'live root override is forbidden outside test mode'
 fi
 
 doctor_out=$(sh "$DOCTOR" 2>&1) || {
@@ -146,10 +152,12 @@ while IFS= read -r path; do
             ;;
     esac
 
-    if [ -L "$path" ]; then
-        target=$(readlink "$path")
+    source_path="$LIVE_ROOT$path"
+
+    if [ -L "$source_path" ]; then
+        target=$(readlink "$source_path")
         mkdir -p "$rescue/files/$(dirname "$rel")"
-        cp -a "$path" "$rescue/files/$rel"
+        cp -a "$source_path" "$rescue/files/$rel"
         printf '%s\t%s\n' "$rel" "$target" >> "$rescue/SYMLINKS.tsv"
         symlink_count=$((symlink_count + 1))
     elif [ -f "$path" ]; then
