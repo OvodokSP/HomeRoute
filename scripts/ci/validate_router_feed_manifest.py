@@ -42,9 +42,17 @@ def main() -> int:
     if hrneo.get("install_root") != "hrneo":
         fail("unexpected HRNeo install root")
     if hrneo.get("deterministic_feed_line") is not None:
-        fail("HRNeo deterministic feed line must not be invented")
+        fail("HRNeo mutable feed line must not be promoted as deterministic")
+    if hrneo.get("status") != "PINNED_RELEASE_ARTIFACTS":
+        fail("HRNeo must use pinned release artifacts")
+    if hrneo.get("install_strategy") != "PINNED_IPK_ARTIFACT":
+        fail("HRNeo install strategy must remain pinned IPK")
+    if hrneo.get("release_manifest") != "config/hrneo-release-manifest.json":
+        fail("HRNeo release manifest path drifted")
+    if hrneo.get("pinned_version") != "3.18.3-1":
+        fail("HRNeo pinned version drifted")
     if hrneo.get("live_apply_allowed") is not False:
-        fail("HRNeo live apply must remain blocked until deterministic feed evidence exists")
+        fail("HRNeo live apply must remain blocked until live package transaction validation")
 
     print("[PASS] router feed manifest safety contract")
     return 0

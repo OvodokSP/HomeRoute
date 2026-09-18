@@ -30,13 +30,15 @@
 - роль HydraRoute Neo;
 - sandbox backup/apply/verify/rollback;
 - идемпотентность файлового слоя;
-- явные Chur feed-адреса для `aarch64-3.10`, `mips-3.4`, `mipsel-3.4`.
+- явные Chur feed-адреса для `aarch64-3.10`, `mips-3.4`, `mipsel-3.4`;
+- HRNeo `3.18.3-1` как pinned `.ipk` для всех трёх архитектур: release commit + path + byte size + Git blob SHA;
+- read-only helper для выбора pinned HRNeo artifact и проверки локального файла без установки.
 
 ## Что ещё блокирует live-apply
 
-- точная детерминированная строка feed для HydraRoute Neo;
-- live-safe изменение opkg feed-файлов;
-- установка/удаление пакетов с транзакционным учётом;
+- SHA-256/GPG evidence для pinned HRNeo artifact либо отдельное решение о приемлемом integrity floor;
+- live-safe изменение opkg feed-файлов для Chur;
+- установка/удаление pinned HRNeo/Chur package roots с транзакционным учётом;
 - резервное копирование реальных HomeRoute-конфигов и hooks;
 - откат сетевых объектов;
 - HL-404: live backup/restore validation;

@@ -48,6 +48,8 @@ This document contains only the current reference state confirmed during the Hom
 - `tg-ws-proxy` is retained only as a reserve path.
 - Every deployment must use a separate working VPS controlled by that deployment's user.
 - The evidence-backed router core install roots are `chur-amneziawg` and `hrneo`.
+- HRNeo `3.18.3-1` is now pinned independently of the mutable upstream feed: release repository commit `4811c8d13fa4bd6eaed5080fd49788f5aee20883` contains exact `.ipk` identities for `aarch64-3.10`, `mipsel-3.4`, and `mips-3.4`, recorded by repository path, byte size, and Git blob SHA-1.
+- HomeRoute does not claim SHA-256/GPG release verification for those artifacts yet: the reviewed GitHub state did not provide confirmed release assets/signing key evidence, and exact binary-to-source-commit provenance is not proven. Live HRNeo package install remains blocked pending local artifact verification and package transaction/rollback validation.
 - `chur-amneziawg` upstream metadata resolves the AWG userspace/runtime packages; HRNeo upstream metadata resolves its runtime dependencies.
 - Optional/reserve package profiles are disabled by default; `UNCLASSIFIED` reference packages are never promoted to install roots automatically.
 

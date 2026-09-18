@@ -16,12 +16,16 @@
     "note": "The upstream latest feed is explicit by architecture but is not version-pinned."
   },
   "hrneo": {
-    "status": "UPSTREAM_BOOTSTRAP_SCRIPT_ONLY",
+    "status": "PINNED_RELEASE_ARTIFACTS",
     "install_root": "hrneo",
     "source": "https://github.com/Ground-Zerro/HydraRoute",
+    "release_repository": "https://github.com/Ground-Zerro/release",
     "upstream_feed_bootstrap": "https://git.zerrolabs.org/Ground-Zerro/release/pages/keenetic/install-feed.sh",
     "deterministic_feed_line": null,
+    "install_strategy": "PINNED_IPK_ARTIFACT",
+    "release_manifest": "config/hrneo-release-manifest.json",
+    "pinned_version": "3.18.3-1",
     "live_apply_allowed": false,
-    "reason": "Upstream documentation currently instructs users to execute install-feed.sh; HomeRoute does not yet have an independently recorded exact feed line to provision and rollback deterministically."
+    "reason": "Pinned artifacts are recorded for all supported architectures, but live download verification/package transaction rollback and stronger SHA256/GPG evidence are not yet validated."
   }
 }
