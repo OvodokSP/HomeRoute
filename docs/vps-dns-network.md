@@ -47,4 +47,16 @@ Reference HomeRoute использует **AdGuard Home**, а не штатны�
 
 Содержимое unit или скрипта не печатается.
 
-До live capture этого persistence-механизма его точная реализация остаётся незафиксированной.
+Live preflight 2026-09-18 подтвердил:
+
+- timer: `awg-adguard-dns.timer`;
+- state: active + enabled;
+- service: `awg-adguard-dns.service`;
+- ExecStart: `/usr/local/sbin/awg-adguard-dns.sh`;
+- helper SHA256: `96766c14d26edb63877aaf8f2bff5de577e42683b99b86b1b2b7bc382424c2b0`.
+
+Первая версия preflight не смогла определить тип расписания: `TimersCalendar` был пуст, next realtime elapse отсутствовал. Это не считается сбоем — timer может быть monotonic.
+
+Schema 2 preflight теперь отдельно читает `TimersCalendar`, `TimersMonotonic`, realtime/monotonic next-elapse state, last trigger и безопасные timer-параметры.
+
+Для фиксации поведения helper добавлен `vps/analyze-dns-helper.sh`: он выводит только нормализованные признаки и SHA256, не содержимое скрипта.
