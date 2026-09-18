@@ -159,6 +159,7 @@ plan_field feed_provisioning CHUR_SANDBOX_TESTED_HRNEO_PINNED_ARTIFACT
 plan_field hrneo_artifact PINNED_3.18.3-1_SHA256_VERIFIED
 plan_field hrneo_rescue LIVE_PACKAGE_FILES_AND_OPKG_CONTROL_PASS_STATUS_DB_GATE_READY
 plan_field backup_restore LIVE_FILESYSTEM_HRNEO_FILES_OPKG_CONTROL_PASS_STATUS_DB_GATE_READY
+plan_field hrneo_reinstall CONTROLLED_SAME_VERSION_VALIDATOR_READY_LIVE_PENDING
 plan_field clean_device_validation NOT_VALIDATED
 
 printf '%s\n' '[PLAN] Observed component availability:'
