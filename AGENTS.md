@@ -1,6 +1,6 @@
-# HomeRoute agent rules
+# HomeRoute development rules
 
-These rules apply to every automated or interactive agent working in this repository.
+These rules apply to contributors and interactive development assistants working in this repository.
 
 ## Source of truth
 
@@ -22,20 +22,20 @@ Do not silently change architecture. If a task conflicts with a higher-priority 
 - New hardware limits, compatibility claims, commands, paths, package names, or versions require reproducible evidence or an explicit `NOT VALIDATED` label.
 - Do not generalize the reference installation to arbitrary devices.
 
-## Repository autonomy
+## Development safety boundary
 
-Agents may autonomously edit documentation, examples, diagnostics, tests, and PRE-ALPHA installers inside Git branches.
+Repository changes may be prepared in Git branches, but live infrastructure is outside normal repository work.
 
-Agents must never:
+Contributors and assistants must never:
 
 - connect to or change a real router, NAS, VPS, DNS service, firewall, or VPN;
 - run deployment commands against production or stage infrastructure;
 - read, request, print, commit, or reconstruct real credentials, keys, PSKs, tokens, addresses, or private configuration;
-- weaken `AGENTS.md`, `SECURITY.md`, CI safety checks, or the autopilot workflow as part of an ordinary Roadmap task;
+- weaken `AGENTS.md`, `SECURITY.md`, or CI safety checks as part of an ordinary change;
 - merge work that failed deterministic checks or reviewer acceptance;
 - declare clean-device reproduction, compatibility, or installer safety without recorded evidence.
 
-Production actions always require an explicit human-approved task outside the repository autopilot.
+Production actions always require an explicit human-approved live task.
 
 ## Golden State invariants
 
