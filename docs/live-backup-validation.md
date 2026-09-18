@@ -84,4 +84,6 @@ Canary не:
 - повторно прогоняет SHA-256 verifier после round-trip;
 - удаляет временные контейнеры и scratch-каталог.
 
+На reference VPS 2026-09-18 rehearsal завершился PASS: AWG и AdGuard round-trip PASS, временные контейнеры не запускались, рабочие контейнеры остались running, leftovers отсутствуют.
+
 Успешный rehearsal доказывает только корректность Docker copy/round-trip на живом VPS с exact rescue images. Он **не** является live restore рабочего сервиса и не закрывает HL-404.
