@@ -50,3 +50,18 @@ Canary не:
 Если URL содержит userinfo вида `user:password@host`, URL полностью редактируется в отчёте.
 
 Этот вывод нужен, чтобы зафиксировать фактический источник пакета HRNeo на эталонном роутере без запуска удалённого bootstrap-скрипта.
+
+## Read-only gate перед controlled live restore
+
+Перед любой попыткой live restore используется `vps/preflight-live-restore.sh`.
+
+Он:
+
+- повторно проверяет целостность четырёх rescue-артефактов;
+- подтверждает, что AWG2 и AdGuard сейчас запущены;
+- сравнивает текущие Docker image ID с image ID, сохранёнными в rescue set;
+- останавливает процедуру при любом drift;
+- не выполняет `docker stop/restart/load/cp`;
+- не меняет systemd, firewall, DNS или VPN state.
+
+Успешный результат — только `READY_FOR_CONTROLLED_VALIDATION`. Он **не означает**, что live restore уже разрешён или проверен.

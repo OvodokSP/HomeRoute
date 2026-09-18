@@ -74,7 +74,7 @@ This document contains only the current reference state confirmed during the Hom
 
 - Exact live DNS helper target-resolution implementation (schema-2 confirms TCP/UDP loop, but target source remains unresolved by sanitized analysis).
 - Automated live apply on a clean router or VPS.
-- Full live restore/rollback for real managed router/VPS objects (VPS filesystem transaction and live AWG backup are verified; live AWG restore and router restore remain unvalidated).
+- Full live restore/rollback for real managed router/VPS objects. VPS filesystem transaction and live AWG/AdGuard backups are verified; a read-only restore-readiness gate now verifies rescue integrity and exact current-vs-rescue image identity, but live AWG/AdGuard restore and router restore remain unvalidated.
 - Physical minimum router/VPS resource requirements below the supported floor.
 - A complete clean-device-verified hardware compatibility matrix.
 - Generic Netis flashing instructions for specific models.

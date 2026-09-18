@@ -41,7 +41,7 @@
 | DNS helper semantics | LIVE SCHEMA-2 PARTIAL: TCP/UDP LOOP CONFIRMED; TARGET-RESOLUTION DETAILS NOT VALIDATED |
 | DNS persistence desired state | DESIGN-ONLY CONTRACT + RENDERER; CI TESTED; LIVE APPLY BLOCKED |
 | Реальный apply VPS | BLOCKED |
-| Live backup/restore | VPS FILESYSTEM + AWG/ADGUARD BACKUPS PASS; EXACT IMAGES SAVED; LIVE RESTORE + ROUTER PENDING |
+| Live backup/restore | VPS FILESYSTEM + AWG/ADGUARD BACKUPS PASS; EXACT IMAGES SAVED; READ-ONLY RESTORE READINESS GATE READY; LIVE RESTORE + ROUTER PENDING |
 | Протокол чистого воспроизведения | PREPARED |
 | Первое чистое воспроизведение | NOT YET TESTED |
 | AWG 3.x | NOT YET ADOPTED |
@@ -67,7 +67,7 @@
 
 Следующие реальные блокеры:
 
-1. live-safe package transaction/rollback для закреплённого HRNeo `.ipk` и capture SHA-256 самих бинарников; GPG остаётся NOT VERIFIED, потому что доступный signing/release channel на дату проверки не подтверждён;
+1. live-safe package transaction/rollback для закреплённого HRNeo `.ipk`; SHA-256 уже captured/pinned, GPG остаётся NOT VERIFIED из-за отсутствия подтверждённого signing/release channel;
 2. live-safe backup/restore всех изменяемых типов объектов;
 3. контрольная live backup/restore validation — VPS filesystem/AWG/AdGuard backup PASS; live restore и Keenetic ещё не подтверждены;
 4. первое чистое воспроизведение.

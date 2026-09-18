@@ -47,7 +47,8 @@
 - live-confirmed monotonic timer schedule: `OnBootSec=30s`, `OnUnitActiveSec=60s`, `Persistent=yes`, accuracy `10s`, randomized delay `0`;
 - design-only `config/vps-dns-persistence.json` и non-mutating renderer `vps/render-dns-persistence-plan.sh`, фиксирующие target resolution, TCP/UDP DNAT 53 и safety boundary без выполнения команд;
 - calendar/monotonic-aware read-only timer preflight;
-- CI-tested sanitized semantic analyzer DNS helper schema 2 без публикации содержимого.
+- CI-tested sanitized semantic analyzer DNS helper schema 2 без публикации содержимого;
+- read-only live-restore readiness gate, который повторно проверяет rescue-set и exact current/rescue image identity до любого controlled restore.
 
 ## Что ещё блокирует live-apply
 
@@ -55,7 +56,7 @@
 - детерминированное создание Docker network/container state и schema-2 live semantic fingerprint текущего DNS persistence helper;
 - безопасная генерация и доставка credentials;
 - транзакционный учёт firewall/DNS;
-- live backup/restore validation;
+- успешный live restore-readiness preflight и затем отдельная controlled live restore validation;
 - первое чистое воспроизведение.
 
 Sandbox-успех не считается доказательством готовности production-установщика.
