@@ -11,6 +11,7 @@
 - Live DNS helper schema 2 подтвердил TCP/UDP loop через protocol variable; конкретный target-resolution path остаётся NOT VALIDATED.
 - Добавлен read-only VPS restore-readiness gate: rescue-set integrity + current container/image identity, без stop/restart/load/restore.
 - Добавлен isolated stopped-container restore rehearsal: temporary containers, network none, no start, backup round-trip + checksum reverify; live services не затрагиваются.
+- Live read-only restore-readiness gate прошёл PASS на reference VPS: rescue set повторно проверен, current AWG/AdGuard image IDs совпали с rescue copies; live restore не выполнялся.
 
 
 ## 0.2.0 — repository workflow
