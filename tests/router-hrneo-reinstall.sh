@@ -25,6 +25,12 @@ mkdir -p "$BIN" "$LIVE/opt/bin" "$LIVE/opt/etc/init.d" "$LIVE/opt/etc/HydraRoute
 printf '%s\n' 'hrneo-binary-fixture' > "$LIVE/opt/bin/hrneo"
 printf '%s\n' 'hrneo-binary-fixture' > "$RESCUE/files/opt/bin/hrneo"
 
+mkdir -p "$RESCUE/files/opt/etc/HydraRoute"
+for name in hrneo.conf domain.conf ip.list; do
+  printf 'rescue-old-%s\n' "$name" > "$RESCUE/files/opt/etc/HydraRoute/$name"
+  printf 'live-current-%s\n' "$name" > "$LIVE/opt/etc/HydraRoute/$name"
+done
+
 cat > "$LIVE/opt/etc/init.d/S99hrneo" <<'EOF'
 #!/bin/sh
 exit 0
@@ -80,7 +86,12 @@ EOF
 
 (
   cd "$RESCUE/files"
-  sha256sum opt/bin/hrneo > ../FILES.sha256
+  sha256sum \
+    opt/bin/hrneo \
+    opt/etc/HydraRoute/hrneo.conf \
+    opt/etc/HydraRoute/domain.conf \
+    opt/etc/HydraRoute/ip.list \
+    > ../FILES.sha256
 )
 : > "$RESCUE/SYMLINKS.tsv"
 
@@ -200,7 +211,7 @@ fi
 
 out=$(PATH="$BIN:$PATH"   HOMEROUTE_HRNEO_REINSTALL_ACK=YES   HOMEROUTE_HRNEO_REINSTALL_TEST_MODE=1   HOMEROUTE_HRNEO_LIVE_ROOT="$LIVE"   HOMEROUTE_OPKG_INFO_DIR="$INFO"   HOMEROUTE_OPKG_STATUS_FILE="$STATUS"   HOMEROUTE_HRNEO_RESCUE_VERIFIER="$BASE/base-verify.sh"   HOMEROUTE_HRNEO_OPKG_RESCUE_VERIFIER="$BASE/control-verify.sh"   HOMEROUTE_HRNEO_STATUS_RESCUE_VERIFIER="$BASE/status-verify.sh"   HOMEROUTE_HRNEO_ARTIFACT_TOOL="$BASE/artifact.sh"   HOMEROUTE_ROUTER_DOCTOR="$BASE/doctor.sh"   HOMEROUTE_TEST_LIVE_ROOT="$LIVE"   HOMEROUTE_TEST_INFO_DIR="$INFO"   HOMEROUTE_TEST_STATUS_FILE="$STATUS"   sh "$SCRIPT" validate "$RESCUE")
 
-for expected in   'HOMEROUTE_HRNEO_REINSTALL schema=1'   'HOMEROUTE_HRNEO_REINSTALL mode=validate'   'HOMEROUTE_HRNEO_REINSTALL package=hrneo'   'HOMEROUTE_HRNEO_REINSTALL version=3.18.3-1'   'HOMEROUTE_HRNEO_REINSTALL force_reinstall=true'   'HOMEROUTE_HRNEO_REINSTALL nodeps=true'   'HOMEROUTE_HRNEO_REINSTALL installed_package_set_unchanged=true'   'HOMEROUTE_HRNEO_REINSTALL managed_files_match_rescue=true'   'HOMEROUTE_HRNEO_REINSTALL opkg_info_match_rescue=true'   'HOMEROUTE_HRNEO_REINSTALL side_effect_state_idempotent=true'   'HOMEROUTE_HRNEO_REINSTALL doctor=PASS'   'HOMEROUTE_HRNEO_REINSTALL rollback=NOT_NEEDED'   'HOMEROUTE_HRNEO_REINSTALL live_package_transaction_validated=true'   'HOMEROUTE_HRNEO_REINSTALL result=PASS'
+for expected in   'HOMEROUTE_HRNEO_REINSTALL schema=1'   'HOMEROUTE_HRNEO_REINSTALL mode=validate'   'HOMEROUTE_HRNEO_REINSTALL package=hrneo'   'HOMEROUTE_HRNEO_REINSTALL version=3.18.3-1'   'HOMEROUTE_HRNEO_REINSTALL force_reinstall=true'   'HOMEROUTE_HRNEO_REINSTALL nodeps=true'   'HOMEROUTE_HRNEO_REINSTALL installed_package_set_unchanged=true'   'HOMEROUTE_HRNEO_REINSTALL immutable_package_files_match_rescue=true'   'HOMEROUTE_HRNEO_REINSTALL mutable_conffiles_unchanged=true'   'HOMEROUTE_HRNEO_REINSTALL opkg_info_match_rescue=true'   'HOMEROUTE_HRNEO_REINSTALL side_effect_state_idempotent=true'   'HOMEROUTE_HRNEO_REINSTALL doctor=PASS'   'HOMEROUTE_HRNEO_REINSTALL rollback=NOT_NEEDED'   'HOMEROUTE_HRNEO_REINSTALL live_package_transaction_validated=true'   'HOMEROUTE_HRNEO_REINSTALL result=PASS'
 do
   printf '%s\n' "$out" | grep -Fx "$expected" >/dev/null ||
     fail "missing success field: $expected"
@@ -229,6 +240,13 @@ cmp -s "$LIVE/opt/etc/init.d/rc.unslung" "$RESCUE/package-side-effects/rc.unslun
 [ -L "$LIVE/opt/bin/neo" ] || fail 'rollback did not restore neo symlink'
 [ "$(readlink "$LIVE/opt/bin/neo")" = /opt/etc/init.d/S99hrneo ] ||
   fail 'rollback restored wrong neo symlink target'
+
+for name in hrneo.conf domain.conf ip.list; do
+  expected="live-current-$name"
+  actual=$(cat "$LIVE/opt/etc/HydraRoute/$name")
+  [ "$actual" = "$expected" ] ||
+    fail "rollback overwrote mutable conffile with stale rescue copy: $name"
+done
 
 for residue in \
   "$LIVE/opt/etc/HydraRoute/hrneo.conf-opkg" \
