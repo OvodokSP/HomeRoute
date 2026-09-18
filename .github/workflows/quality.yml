@@ -40,6 +40,8 @@ jobs:
         run: python3 scripts/ci/validate_vps_network_upstream.py
       - name: Validate live DNS persistence evidence
         run: python3 scripts/ci/validate_vps_dns_persistence_evidence.py
+      - name: Validate DNS persistence desired state
+        run: python3 scripts/ci/validate_vps_dns_persistence.py
       - name: Test inventory tooling
         run: python3 -m unittest discover -s tests -p 'test_*.py'
       - name: Test installer contracts
@@ -62,6 +64,7 @@ jobs:
           sh tests/vps-rescue-set.sh
           sh tests/vps-dns-redirect-contract.sh
           sh tests/vps-dns-persistence-preflight.sh
+          sh tests/vps-dns-persistence-plan.sh
           sh tests/vps-dns-helper-analysis.sh
       - name: Test router doctor matcher
         run: HOMEROUTE_DOCTOR_SELFTEST=1 sh router/doctor-router.sh
