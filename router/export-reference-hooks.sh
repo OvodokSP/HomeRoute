@@ -10,6 +10,7 @@ ACK=${HOMEROUTE_HOOK_EXPORT_ACK:-}
 OUT_ROOT=${HOMEROUTE_HOOK_EXPORT_ROOT:-/opt/tmp}
 TEST_MODE=${HOMEROUTE_HOOK_EXPORT_TEST_MODE:-0}
 SOURCE_ROOT=${HOMEROUTE_HOOK_EXPORT_SOURCE_ROOT:-}
+EXPECTED_FILE=${HOMEROUTE_HOOK_EXPORT_EXPECTED_FILE:-}
 
 fail() {
     printf '[FAIL] %s\n' "$1" >&2
@@ -31,12 +32,20 @@ if [ "$TEST_MODE" = 1 ]; then
         /tmp/homeroute-hook-source-test.*) ;;
         *) fail 'unsafe source root in test mode' ;;
     esac
+    if [ -n "$EXPECTED_FILE" ]; then
+        case "$EXPECTED_FILE" in
+            /tmp/homeroute-hook-expected-test.*) ;;
+            *) fail 'unsafe expected identity file in test mode' ;;
+        esac
+        [ -f "$EXPECTED_FILE" ] || fail 'test expected identity file missing'
+    fi
 else
     [ "$OUT_ROOT" = /opt/tmp ] || fail 'live export root must be /opt/tmp'
     [ -z "$SOURCE_ROOT" ] || fail 'live source root override is forbidden'
+    [ -z "$EXPECTED_FILE" ] || fail 'live expected identity override is forbidden'
 fi
 
-for cmd in sha256sum tar grep wc date; do
+for cmd in sha256sum tar grep wc date awk cp mkdir; do
     command -v "$cmd" >/dev/null 2>&1 || fail "$cmd unavailable"
 done
 
@@ -60,8 +69,12 @@ EXPECTED='
 
 expected_sha() {
     rel=$1
-    printf '%s\n' "$EXPECTED" |
-        awk -v p="$rel" '$1==p {print $2; exit}'
+    if [ -n "$EXPECTED_FILE" ]; then
+        awk -v p="$rel" '$1==p {print $2; exit}' "$EXPECTED_FILE"
+    else
+        printf '%s\n' "$EXPECTED" |
+            awk -v p="$rel" '$1==p {print $2; exit}'
+    fi
 }
 
 secret_scan() {
