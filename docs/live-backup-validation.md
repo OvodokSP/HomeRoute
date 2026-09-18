@@ -65,3 +65,21 @@ Canary не:
 - не меняет systemd, firewall, DNS или VPN state.
 
 Успешный результат — только `READY_FOR_CONTROLLED_VALIDATION`. Он **не означает**, что live restore уже разрешён или проверен.
+
+## Isolated stopped-container restore rehearsal
+
+После read-only readiness gate проект может выполнить отдельный rehearsal через `vps/restore-rehearsal.sh`.
+
+Режим `rehearse`:
+
+- требует явного `HOMEROUTE_RESTORE_REHEARSAL_ACK=YES`;
+- создаёт два временных **остановленных** Docker-контейнера;
+- использует `--network none`;
+- не запускает временные контейнеры;
+- не останавливает и не перезапускает рабочие `amnezia-awg2` / `adguard-home`;
+- не выполняет `docker load`;
+- копирует уже проверенные backup-каталоги во временные контейнеры и обратно;
+- повторно прогоняет SHA-256 verifier после round-trip;
+- удаляет временные контейнеры и scratch-каталог.
+
+Успешный rehearsal доказывает только корректность Docker copy/round-trip на живом VPS с exact rescue images. Он **не** является live restore рабочего сервиса и не закрывает HL-404.

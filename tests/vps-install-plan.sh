@@ -44,6 +44,7 @@ for expected in \
     'HOMEROUTE_PLAN dns_helper_analysis=SCHEMA2_LIVE_PARTIAL_TARGET_SOURCE_NOT_VALIDATED' \
     'HOMEROUTE_PLAN container_provisioning=NOT_VALIDATED' \
     'HOMEROUTE_PLAN restore_readiness=READ_ONLY_GATE_AVAILABLE' \
+    'HOMEROUTE_PLAN restore_rehearsal=ISOLATED_STOPPED_CONTAINER_MODE_READY' \
     'HOMEROUTE_PLAN backup_restore=SANDBOX_TRANSACTION_TESTED' \
     'HOMEROUTE_PLAN clean_device_validation=NOT_VALIDATED'
 do
