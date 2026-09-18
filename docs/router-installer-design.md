@@ -57,3 +57,11 @@
 - переустанавливать уже совпадающее состояние без причины.
 
 Для совпадающего файлового состояния sandbox уже требует `NO CHANGE`.
+
+## Controlled HRNeo same-version reinstall validation
+
+Before clean-device automation, the reference router uses a dedicated validator for the pinned local `hrneo 3.18.3-1` IPK. It requires the full rescue set (package files, `hrneo.*` opkg info, side effects and global opkg status) to verify and requires the current live state to still match that rescue snapshot immediately before the package transaction.
+
+The validator invokes only the exact local pinned artifact with `opkg install --force-reinstall --nodeps`. It then requires the installed package set, HRNeo managed files, opkg info, `neo` symlink, `rc.unslung` side effect and router doctor to remain valid. If any post-transaction check fails, it restores package files, `hrneo.*`, the saved global opkg status, `rc.unslung` and `neo`, restarts HRNeo and verifies the router doctor again.
+
+The live run remains pending until the global opkg status rescue is captured on the reference router.
