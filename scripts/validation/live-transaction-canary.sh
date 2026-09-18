@@ -5,7 +5,7 @@
 
 set -eu
 
-target=${1:-}
+CANARY_TARGET=${1:-}
 ACK=${HOMEROUTE_LIVE_CANARY_ACK:-}
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 TX_LIB=${HOMEROUTE_TRANSACTION_LIB:-$SCRIPT_DIR/../installer/file-transaction.sh}
@@ -17,7 +17,7 @@ fail() {
 
 [ "$ACK" = "YES" ] || fail 'set HOMEROUTE_LIVE_CANARY_ACK=YES to run the dedicated canary'
 
-case "$target" in
+case "$CANARY_TARGET" in
     router)
         BASE=/opt/tmp/homeroute-live-canary
         ;;
