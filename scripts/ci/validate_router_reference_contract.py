@@ -77,6 +77,14 @@ FORBIDDEN_KEY_FRAGMENTS = {
     "peer_public_key",
 }
 
+ALLOWED_SECURITY_KEYS = {
+    "security.contains_secrets",
+    "security.contains_private_keys",
+    "security.contains_peer_keys",
+    "security.contains_endpoints",
+    "security.contains_ip_addresses",
+}
+
 
 def fail(message: str) -> None:
     raise SystemExit(f"[FAIL] {message}")
@@ -201,10 +209,16 @@ def main() -> int:
         if security.get(key) is not False:
             fail(f"public router reference contract security boundary drift: {key}")
 
-    lowered_keys = "\n".join(walk_keys(data)).lower()
-    for fragment in FORBIDDEN_KEY_FRAGMENTS:
-        if fragment in lowered_keys:
-            fail(f"forbidden secret-bearing key fragment in public contract: {fragment}")
+    for key_path in walk_keys(data):
+        lowered = key_path.lower()
+        if key_path in ALLOWED_SECURITY_KEYS:
+            continue
+        for fragment in FORBIDDEN_KEY_FRAGMENTS:
+            if fragment in lowered:
+                fail(
+                    "forbidden secret-bearing key fragment in public contract: "
+                    f"{key_path}"
+                )
 
     raw = PATH.read_text(encoding="utf-8")
     if "10.8.1.11" in raw or "192.168.1." in raw:
