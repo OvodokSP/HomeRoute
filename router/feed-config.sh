@@ -22,13 +22,13 @@ EOF
 render_chur() {
     case "$1" in
         aarch64-3.10)
-            printf '%s\n' 'src/gz chur https://ward-sentry.github.io/chur-keenetic/latest/aarch64-3.10'
+            printf '%s\n' 'src/gz chur https://ward-sentry.github.io/chur-keenetic/1_0_0/aarch64-3.10'
             ;;
         mips-3.4)
-            printf '%s\n' 'src/gz chur https://ward-sentry.github.io/chur-keenetic/latest/mips-3.4'
+            printf '%s\n' 'src/gz chur https://ward-sentry.github.io/chur-keenetic/1_0_0/mips-3.4'
             ;;
         mipsel-3.4)
-            printf '%s\n' 'src/gz chur https://ward-sentry.github.io/chur-keenetic/latest/mipsel-3.4'
+            printf '%s\n' 'src/gz chur https://ward-sentry.github.io/chur-keenetic/1_0_0/mipsel-3.4'
             ;;
         *)
             printf '[FAIL] unsupported Entware architecture: %s\n' "$1" >&2
