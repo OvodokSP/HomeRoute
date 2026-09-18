@@ -19,7 +19,8 @@
 - HRNeo rescue set live-capture + verify прошёл PASS: 7 package-owned files, exact pinned `mipsel-3.4` IPK SHA256 verified, post-doctor 26/26 PASS; package/service/network не менялись.
 - Opkg/control rescue gate прошёл live PASS: pinned postinst/conffiles hashes matched, 4 `hrneo.*` opkg-info files + `/opt/bin/neo` + `rc.unslung` сохранены и проверены, post-doctor 26/26 PASS.
 - Global `/opt/lib/opkg/status` rescue live-capture + verify прошёл PASS: 18070 bytes, SHA256 pinned in evidence, saved HRNeo status stanza verified, post-doctor 26/26 PASS.
-- Controlled same-version reinstall exact pinned HRNeo `3.18.3-1` прошёл live PASS: package set unchanged, managed files/opkg-info/side-effects verified, doctor 26/26 PASS, 4s validation window. `opkg` создал три ожидаемых `*-opkg` conffile alternatives; добавлен gated capture+cleanup этих residues. Live rollback failure-path остаётся pending.
+- Controlled same-version reinstall exact pinned HRNeo `3.18.3-1` прошёл live PASS: package set unchanged, managed files/opkg-info/side-effects verified, doctor 26/26 PASS, 4s validation window.
+- Post-transaction cleanup прошёл live PASS: 3 generated `*-opkg` artifacts (869 bytes) захвачены в evidence и удалены, `OPKG_CONFFILE_RESIDUE=none`, post-doctor 26/26 PASS. Live rollback failure-path остаётся pending.
 
 
 ## 0.2.0 — repository workflow
