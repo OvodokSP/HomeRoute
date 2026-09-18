@@ -96,19 +96,43 @@ mkdir -p "$work/snapshot/awg" "$work/verify/awg"
 chmod 700 "$work" "$work/snapshot" "$work/snapshot/awg" "$work/verify" "$work/verify/awg"
 
 container_stopped=0
+snapshot_ready=0
 success=0
 
-start_if_needed() {
-    if [ "$container_stopped" -eq 1 ]; then
-        "$DOCKER" start "$AWG_CONTAINER" >/dev/null 2>&1 || true
-        container_stopped=0
+ensure_stopped() {
+    running=$("$DOCKER" inspect -f '{{.State.Running}}' "$AWG_CONTAINER" 2>/dev/null || true)
+    if [ "$running" = true ]; then
+        "$DOCKER" stop -t 30 "$AWG_CONTAINER" >/dev/null || return 1
     fi
+    container_stopped=1
+    return 0
+}
+
+ensure_started() {
+    running=$("$DOCKER" inspect -f '{{.State.Running}}' "$AWG_CONTAINER" 2>/dev/null || true)
+    if [ "$running" != true ]; then
+        "$DOCKER" start "$AWG_CONTAINER" >/dev/null || return 1
+    fi
+    container_stopped=0
+    return 0
 }
 
 cleanup() {
     rc=$?
     trap - EXIT HUP INT TERM
-    start_if_needed
+
+    if [ "$success" -ne 1 ] && [ "$snapshot_ready" -eq 1 ]; then
+        printf '%s\n' '[INFO] attempting automatic AWG recovery from quiescent snapshot' >&2
+        if ensure_stopped; then
+            restore_snapshot >/dev/null 2>&1 || printf '%s\n' '[FAIL] automatic AWG snapshot reapply failed' >&2
+            ensure_started || printf '%s\n' '[FAIL] automatic AWG restart failed' >&2
+        else
+            printf '%s\n' '[FAIL] could not stop AWG for automatic recovery' >&2
+        fi
+    else
+        ensure_started >/dev/null 2>&1 || true
+    fi
+
     if [ "$success" -eq 1 ]; then
         rm -rf "$work"
     else
@@ -158,23 +182,9 @@ postcheck() {
     return 0
 }
 
-rollback_and_restart() {
-    printf '%s\n' '[INFO] post-restore verification failed; reapplying the quiescent snapshot'
-    running=$("$DOCKER" inspect -f '{{.State.Running}}' "$AWG_CONTAINER" 2>/dev/null || true)
-    if [ "$running" = true ]; then
-        "$DOCKER" stop -t 30 "$AWG_CONTAINER" >/dev/null
-    fi
-    container_stopped=1
-    restore_snapshot || return 1
-    "$DOCKER" start "$AWG_CONTAINER" >/dev/null || return 1
-    container_stopped=0
-    return 0
-}
-
 validation_started=$(date +%s)
 
-"$DOCKER" stop -t 30 "$AWG_CONTAINER" >/dev/null
-container_stopped=1
+ensure_stopped || fail 'AWG container did not stop cleanly'
 
 running=$("$DOCKER" inspect -f '{{.State.Running}}' "$AWG_CONTAINER" 2>/dev/null || true)
 [ "$running" = false ] || fail 'AWG container did not stop cleanly'
@@ -187,12 +197,12 @@ running=$("$DOCKER" inspect -f '{{.State.Running}}' "$AWG_CONTAINER" 2>/dev/null
 
 build_manifest "$work/snapshot" "$work/snapshot.MANIFEST.sha256"
 [ -s "$work/snapshot.MANIFEST.sha256" ] || fail 'quiescent snapshot manifest is empty'
+snapshot_ready=1
 
 restore_snapshot || fail 'copying the quiescent AWG snapshot back into the stopped container failed'
 verify_stopped_roundtrip || fail 'AWG stopped-container restore did not reproduce the exact snapshot bytes'
 
-"$DOCKER" start "$AWG_CONTAINER" >/dev/null
-container_stopped=0
+ensure_started || fail 'AWG container did not start after restore'
 
 post_ok=0
 attempt=0
@@ -205,10 +215,7 @@ while [ "$attempt" -lt "$POSTCHECK_ATTEMPTS" ]; do
     sleep "$POSTCHECK_SLEEP"
 done
 
-if [ "$post_ok" -ne 1 ]; then
-    rollback_and_restart || fail 'automatic AWG recovery attempt failed'
-    fail 'AWG post-restore runtime verification failed; quiescent snapshot was reapplied'
-fi
+[ "$post_ok" -eq 1 ] || fail 'AWG post-restore runtime verification failed'
 
 validation_finished=$(date +%s)
 window=$((validation_finished - validation_started))
