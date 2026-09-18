@@ -87,3 +87,14 @@ Canary не:
 На reference VPS 2026-09-18 rehearsal завершился PASS: AWG и AdGuard round-trip PASS, временные контейнеры не запускались, рабочие контейнеры остались running, leftovers отсутствуют.
 
 Успешный rehearsal доказывает только корректность Docker copy/round-trip на живом VPS с exact rescue images. Он **не** является live restore рабочего сервиса и не закрывает HL-404.
+
+
+## Controlled live AWG same-state restore validation
+
+Перед закрытием VPS-части HL-404 используется отдельный `vps/validate-live-awg-restore.sh`.
+
+Он намеренно проверяет не откат на старую конфигурацию, а более безопасный same-state restore: повторяет read-only readiness gate, требует явного ACK, штатно останавливает только `amnezia-awg2`, снимает quiescent snapshot уже остановленного контейнера, копирует этот же snapshot обратно, повторно вычитывает восстановленные файлы и сравнивает полный SHA-256 manifest, затем запускает исходный контейнер и ждёт восстановления `awg0` и TCP/UDP DNS DNAT 53.
+
+При неуспешной post-check скрипт автоматически повторно применяет quiescent snapshot и запускает контейнер. AdGuard не останавливается и не изменяется; container recreate/remove и image load не выполняются.
+
+Это контролируемая live-операция с кратким перерывом AWG-туннеля, поэтому до фактического запуска статус остаётся **LIVE PENDING**.
