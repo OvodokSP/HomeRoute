@@ -163,4 +163,15 @@ grep -Fx 'automatic_rollback=PASS' "$RESCUE/rollback-rehearsal-evidence.txt" >/d
 grep -Fx 'live_state_matches_fresh_rescue=true' "$RESCUE/rollback-rehearsal-evidence.txt" >/dev/null ||
   fail 'rollback rehearsal evidence lacks live-state match'
 
+[ -f "$RESCUE/rollback-rehearsal-validator.out" ] ||
+  fail 'validator stdout diagnostic was not preserved'
+[ -f "$RESCUE/rollback-rehearsal-validator.err" ] ||
+  fail 'validator stderr diagnostic was not preserved'
+grep -F '[FAIL] forced post-install verification failure requested' \
+  "$RESCUE/rollback-rehearsal-validator.err" >/dev/null ||
+  fail 'preserved validator stderr lacks forced-failure marker'
+grep -F '[PASS] automatic HRNeo rollback completed' \
+  "$RESCUE/rollback-rehearsal-validator.err" >/dev/null ||
+  fail 'preserved validator stderr lacks rollback PASS marker'
+
 printf '%s\n' '[PASS] controlled HRNeo live rollback rehearsal contract'
