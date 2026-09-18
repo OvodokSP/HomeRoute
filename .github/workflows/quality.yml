@@ -22,6 +22,8 @@ jobs:
         run: python3 scripts/ci/validate_router_package_manifest.py
       - name: Validate router feed manifest
         run: python3 scripts/ci/validate_router_feed_manifest.py
+      - name: Validate VPS runtime manifest
+        run: python3 scripts/ci/validate_vps_runtime_manifest.py
       - name: Test inventory tooling
         run: python3 -m unittest discover -s tests -p 'test_*.py'
       - name: Test installer contracts
@@ -32,5 +34,6 @@ jobs:
           sh tests/installer-sandbox-transaction.sh
           sh tests/router-feed-config.sh
           sh tests/live-validation-contract.sh
+          sh tests/vps-runtime-preflight.sh
       - name: Test router doctor matcher
         run: HOMEROUTE_DOCTOR_SELFTEST=1 sh router/doctor-router.sh

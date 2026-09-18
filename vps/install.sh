@@ -128,6 +128,9 @@ plan_field sandbox_apply_available true
 plan_field awg_baseline 'AmneziaWG_2.x'
 plan_field awg_interface awg0
 plan_field resource_thresholds SUPPORTED_FLOOR_DEFINED
+plan_field runtime_manifest REFERENCE_PARTIAL
+plan_field runtime_capture AVAILABLE_READ_ONLY
+plan_field container_provisioning NOT_VALIDATED
 plan_field backup_restore SANDBOX_TRANSACTION_TESTED
 plan_field clean_device_validation NOT_VALIDATED
 

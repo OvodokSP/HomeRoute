@@ -28,7 +28,9 @@
 - DNS redirect TCP/UDP 53 в AWG2;
 - отсутствие `WG443_TEST`;
 - sandbox backup/apply/verify/rollback;
-- идемпотентность файлового слоя.
+- идемпотентность файлового слоя;
+- частичный VPS runtime-manifest с подтверждёнными reference-параметрами;
+- безопасный read-only capture image/restart/network-mode/count/privileged metadata без чтения Env/IP/port bindings/mount source paths.
 
 ## Что ещё блокирует live-apply
 

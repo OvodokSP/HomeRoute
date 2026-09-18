@@ -18,13 +18,14 @@
 | Диагностика роутера | PASS |
 | Диагностика VPS | PASS 10/10 |
 | План установщика роутера | TESTED, READ-ONLY |
-| План установщика VPS | TESTED, READ-ONLY |
+| План установщика VPS | TESTED, READ-ONLY; RUNTIME MANIFEST WIRED |
 | Sandbox-транзакция роутера | CI PASS: APPLY / NO CHANGE / VERIFY / ROLLBACK |
 | Sandbox-транзакция VPS | CI PASS: APPLY / NO CHANGE / VERIFY / ROLLBACK |
 | Файловый backup/restore | IMPLEMENTED IN SANDBOX |
 | Chur/AmneziaWG feed provisioning | SANDBOX APPLY / NO CHANGE / ROLLBACK PASS |
 | HydraRoute Neo feed | UPSTREAM SCRIPT ONLY / LIVE BLOCKED |
 | Реальный apply роутера | BLOCKED |
+| VPS runtime provisioning data | REFERENCE PARTIAL / SAFE CAPTURE READY |
 | Реальный apply VPS | BLOCKED |
 | Live backup/restore | CANARY READY / NOT YET RUN |
 | Протокол чистого воспроизведения | PREPARED |
