@@ -9,6 +9,7 @@
 - Уточнён HRNeo integrity boundary: release commit unsigned, GitHub Releases пуст, signing key не найден в main/pinned source commit; SHA-256 всех трёх pinned `.ipk` захвачен и добавлен в verifier, GPG остаётся NOT VERIFIED.
 - Live DNS helper schema 2 подтвердил TCP/UDP loop через protocol variable; конкретный target-resolution path остаётся NOT VALIDATED.
 - Добавлен read-only VPS restore-readiness gate: rescue-set integrity + current container/image identity, без stop/restart/load/restore.
+- Добавлен isolated stopped-container restore rehearsal: temporary containers, network none, no start, backup round-trip + checksum reverify; live services не затрагиваются.
 
 
 ## 0.2.0 — autonomous repository workflow
