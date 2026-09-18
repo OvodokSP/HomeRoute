@@ -1,17 +1,21 @@
 #!/bin/sh
 # HomeRoute router installer PRE-ALPHA.
-# Only plan/help are implemented. Live apply intentionally remains blocked.
+# plan/help are read-only. Live apply intentionally remains blocked.
+# sandbox-apply is repository-only transaction testing and cannot target live paths.
 
 mode=${1:-plan}
 CORE_INSTALL_ROOTS=${CORE_INSTALL_ROOTS:-chur-amneziawg,hrneo}
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+TX_LIB=${HOMEROUTE_TRANSACTION_LIB:-$SCRIPT_DIR/../scripts/installer/file-transaction.sh}
 
 show_help() {
     cat <<'EOF'
-Usage: install.sh [plan|apply|help]
+Usage: install.sh [plan|apply|sandbox-apply|help]
 
-  plan   Read-only PRE-ALPHA plan. Makes no system changes.
-  apply  BLOCKED until feed provisioning, backup/verify/rollback implementation and clean-device validation are complete.
-  help   Show this help.
+  plan           Read-only PRE-ALPHA plan. Makes no system changes.
+  apply          BLOCKED until live backup/verify/rollback and clean-device validation are complete.
+  sandbox-apply  Developer-only transaction test inside HOMEROUTE_SANDBOX_ROOT.
+  help           Show this help.
 EOF
 }
 
@@ -30,6 +34,55 @@ plan_field() {
     printf 'HOMEROUTE_PLAN %s=%s\n' "$key" "$value"
 }
 
+sandbox_apply() {
+    [ -f "$TX_LIB" ] || {
+        printf '[FAIL] sandbox transaction library not found: %s\n' "$TX_LIB" >&2
+        return 2
+    }
+
+    # shellcheck source=../scripts/installer/file-transaction.sh
+    . "$TX_LIB"
+
+    desired="${TMPDIR:-/tmp}/homeroute-router-desired.$$"
+    trap 'rm -f "$desired"' EXIT HUP INT TERM
+
+    cat > "$desired" <<EOF
+AWG_BASELINE=AmneziaWG_2.x
+AWG_INTERFACE=opkgtun0
+ROUTING_MARK=0x3001
+ROUTING_TABLE=301
+ORCHESTRATOR=HRNeo
+CORE_INSTALL_ROOTS=$CORE_INSTALL_ROOTS
+EOF
+
+    tx_begin
+    tx_apply_file 'etc/homeroute/router-state.env' "$desired"
+
+    if [ "${HOMEROUTE_SANDBOX_FORCE_VERIFY_FAIL:-0}" = "1" ]; then
+        printf '%s\n' '[VERIFY] forced failure requested by sandbox test'
+        tx_rollback
+        rm -f "$desired"
+        trap - EXIT HUP INT TERM
+        return 3
+    fi
+
+    if ! tx_verify_file 'etc/homeroute/router-state.env' "$desired"; then
+        printf '%s\n' '[FAIL] sandbox router verification failed'
+        tx_rollback
+        rm -f "$desired"
+        trap - EXIT HUP INT TERM
+        return 3
+    fi
+
+    printf '%s\n' '[VERIFY] router sandbox desired state matches'
+    tx_commit
+    printf '%s\n' 'HOMEROUTE_SANDBOX target=router result=PASS live_apply=false'
+
+    rm -f "$desired"
+    trap - EXIT HUP INT TERM
+    return 0
+}
+
 case "$mode" in
     help|--help|-h)
         show_help
@@ -37,9 +90,14 @@ case "$mode" in
         ;;
     apply|--apply)
         printf '%s\n' '[BLOCKED] HomeRoute router live apply-mode is not implemented or validated.'
-        printf '%s\n' '[BLOCKED] Package roots are validated; remaining gates are deterministic feed provisioning, live-safe backup/verify/rollback, and clean-device validation.'
+        printf '%s\n' '[BLOCKED] Package roots are validated; remaining live gates are deterministic feed provisioning, live-safe backup/verify/rollback, and clean-device validation.'
         printf '%s\n' '[INFO] No opkg, firewall, routing, VPN, file, service, or system changes were made.'
         exit 2
+        ;;
+    sandbox-apply|--sandbox-apply)
+        printf '%s\n' '[INFO] Developer sandbox apply; live infrastructure is not permitted.'
+        sandbox_apply
+        exit $?
         ;;
     plan|--plan)
         ;;
@@ -66,6 +124,7 @@ plan_field schema 1
 plan_field target router
 plan_field mode plan
 plan_field apply_available false
+plan_field sandbox_apply_available true
 plan_field awg_baseline 'AmneziaWG_2.x'
 plan_field awg_interface opkgtun0
 plan_field routing_mark 0x3001
@@ -74,8 +133,8 @@ plan_field orchestrator HRNeo
 plan_field dependency_state VALIDATED_REFERENCE_MANIFEST
 plan_field core_install_roots "$CORE_INSTALL_ROOTS"
 plan_field resource_thresholds SUPPORTED_FLOOR_DEFINED
-plan_field feed_provisioning NOT_VALIDATED
-plan_field backup_restore LIVE_NOT_VALIDATED
+plan_field feed_provisioning PARTIAL_UPSTREAM_EVIDENCE
+plan_field backup_restore SANDBOX_TRANSACTION_TESTED
 plan_field clean_device_validation NOT_VALIDATED
 
 printf '%s\n' '[PLAN] Observed component availability:'
@@ -90,7 +149,7 @@ else
     printf '%s\n' '[PLAN] /opt filesystem NOT VALIDATED / NOT FOUND'
 fi
 
-printf '%s\n' '[PLAN] Future transaction stages (not executed):'
+printf '%s\n' '[PLAN] Future live transaction stages (not executed):'
 printf '%s\n' '  1. preflight inventory gate'
 printf '%s\n' '  2. deterministic feed provisioning'
 printf '%s\n' '  3. install validated package roots only'
