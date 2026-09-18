@@ -37,7 +37,7 @@
 
 ## Что ещё блокирует live-apply
 
-- live capture/verify `/opt/lib/opkg/info/hrneo.*` + `/opt/bin/neo` + `rc.unslung` side-effect state перед package transaction;
+- live capture/verify глобального `/opt/lib/opkg/status` в тот же rescue set перед package transaction;
 - live-safe изменение opkg feed-файлов для Chur;
 - установка/удаление pinned HRNeo/Chur package roots с транзакционным учётом;
 - резервное копирование реальных HomeRoute-конфигов и hooks;
