@@ -64,7 +64,9 @@ Canary не:
 - не выполняет `docker stop/restart/load/cp`;
 - не меняет systemd, firewall, DNS или VPN state.
 
-Успешный результат — только `READY_FOR_CONTROLLED_VALIDATION`. Он **не означает**, что live restore уже разрешён или проверен.
+На reference VPS 2026-09-18 этот gate завершился `READY_FOR_CONTROLLED_VALIDATION`: rescue set integrity PASS, оба service containers running, current AWG/AdGuard image IDs совпали с сохранёнными rescue image IDs. Live restore, image load и restart не выполнялись.
+
+Этот PASS **не означает**, что live restore уже проверен: он только разрешает перейти к следующей контролируемой стадии.
 
 ## Isolated stopped-container restore rehearsal
 

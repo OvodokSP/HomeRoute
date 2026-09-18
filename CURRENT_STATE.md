@@ -40,6 +40,7 @@ This document contains only the current reference state confirmed during the Hom
 - A repeat live preflight with schema 2 confirmed the DNS persistence timer is monotonic: `OnBootUSec=30s`, `OnUnitActiveUSec=1min`, next monotonic elapse SET, last trigger SET, `Persistent=yes`, accuracy `10s`, randomized delay `0`; no realtime next-elapse is expected for this observed schedule.
 - A live schema-1 semantic fingerprint of the exact helper SHA confirmed valid shell syntax, Docker inspect/exec, iptables NAT PREROUTING DNAT on dport 53, idempotency check `-C`, rule insertion `-I`, and absence of broad flush, Docker restart/removal, reboot and `rm` patterns.
 - A live schema-2 fingerprint of the same helper SHA confirmed a `tcp udp` protocol loop with a protocol variable (`protocol_loop_candidate=true`). The analyzer still did not identify `NetworkSettings.Networks`/`.IPAddress` or literal AdGuard/network names, so the exact target-resolution implementation remains NOT VALIDATED.
+- On 2026-09-18 the live read-only restore-readiness gate completed PASS: the complete four-artifact rescue set re-verified, both AWG2 and AdGuard were running, and both current container image IDs exactly matched their saved rescue-image IDs. No image load, container restart, live restore, Docker state change, systemd change, or iptables change was performed.
 
 ## VERIFIED — component roles and package roots
 
