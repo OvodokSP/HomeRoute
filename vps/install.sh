@@ -130,6 +130,7 @@ plan_field awg_interface awg0
 plan_field resource_thresholds SUPPORTED_FLOOR_DEFINED
 plan_field runtime_manifest REFERENCE_RUNTIME_CAPTURED
 plan_field runtime_capture AVAILABLE_READ_ONLY
+plan_field container_shape_capture AVAILABLE_READ_ONLY
 plan_field container_provisioning NOT_VALIDATED
 plan_field backup_restore SANDBOX_TRANSACTION_TESTED
 plan_field clean_device_validation NOT_VALIDATED
