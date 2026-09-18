@@ -32,6 +32,9 @@ This document contains only the current reference state confirmed during the Hom
 - After these backups the reference root filesystem remained at 54% used with 13 GiB available.
 - The AdGuard restore algorithm is tested only in an isolated filesystem sandbox, including per-file SHA256 verification, forced failure and rollback of pre-existing `conf/work`. Live AdGuard restore remains unvalidated.
 - The local rescue-set contract consists of four artifacts: AWG state, AdGuard state, exact AWG2 image and exact AdGuard image. Repository tooling can verify all four together without loading images or restoring state.
+- The official Amnezia `prepare_host.sh` at the pinned source commit creates `amnezia-dns-net` as a bridge network on subnet `172.29.172.0/24` with host bridge name `amn0`; this network contract is now pinned separately from the AWG container recipe.
+- The official Amnezia DNS container uses a fixed `172.29.172.254`, but HomeRoute does not use that upstream DNS role: AdGuard Home is the DNS target. HomeRoute therefore resolves the AdGuard IPv4 from Docker at runtime and does not treat the upstream `.254` address as an AdGuard invariant.
+- HomeRoute's desired DNS interception remains TCP/UDP port 53 DNAT inside the AWG2 container. A read-only target resolver and a non-mutating rule renderer are CI-tested. The exact live persistence implementation behind `awg-adguard-dns.timer` is still awaiting sanitized capture.
 
 ## VERIFIED — component roles and package roots
 

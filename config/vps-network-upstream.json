@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "source_repository": "amnezia-vpn/amnezia-client",
+  "source_commit": "de93650a90739b87bb47a632872ea9d0adc9412f",
+  "prepare_host": {
+    "path": "client/server_scripts/prepare_host.sh",
+    "blob_sha": "1cc56a0115eb1c0a60ce1bdf790cf7c1c7204fa2",
+    "network_name": "amnezia-dns-net",
+    "driver": "bridge",
+    "subnet": "172.29.172.0/24",
+    "bridge_name": "amn0"
+  },
+  "upstream_dns": {
+    "path": "client/server_scripts/dns/run_container.sh",
+    "blob_sha": "f8ff038097c559d72ea134e3f2d74256f93d2ed1",
+    "network_name": "amnezia-dns-net",
+    "fixed_ip": "172.29.172.254",
+    "role": "upstream_amnezia_dns_not_homeroute_adguard"
+  },
+  "homeroute_policy": {
+    "adguard_replaces_upstream_dns_role": true,
+    "do_not_assume_upstream_dns_fixed_ip_for_adguard": true,
+    "resolve_adguard_ip_from_docker_at_runtime": true,
+    "dns_redirect_location": "inside_awg_container_nat_prerouting",
+    "protocols": [
+      "tcp",
+      "udp"
+    ],
+    "destination_port": 53
+  }
+}

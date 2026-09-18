@@ -39,12 +39,16 @@
 - live-verified export точных AWG2/AdGuard image ID в локальные root-only rescue archives с tar/SHA256 verification;
 - live-verified backup/verify AdGuard `conf/work` без вывода содержимого конфигурации;
 - sandbox-tested AdGuard restore + forced-failure rollback;
-- единый read-only verifier четырёх локальных rescue-артефактов.
+- единый read-only verifier четырёх локальных rescue-артефактов;
+- закреплённый upstream contract сети `amnezia-dns-net`;
+- динамическое разрешение AdGuard target через Docker без публикации внутреннего IP;
+- CI-tested renderer TCP/UDP 53 DNAT для AWG2;
+- read-only preflight `awg-adguard-dns.timer` для фиксации текущего persistence-механизма.
 
 ## Что ещё блокирует live-apply
 
 - immutable image/base-image pin для новой установки;
-- детерминированное создание Docker network/container state;
+- детерминированное создание Docker network/container state и live-фиксация текущего DNS persistence helper;
 - безопасная генерация и доставка credentials;
 - транзакционный учёт firewall/DNS;
 - live backup/restore validation;
