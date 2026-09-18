@@ -15,16 +15,31 @@ fail() {
 
 sh "$INSTALLER" plan >"$OUT" 2>"$ERR" || fail 'plan mode returned non-zero'
 grep -F '[PASS] Plan completed; no system changes were made.' "$OUT" >/dev/null || fail 'plan success marker missing'
-grep -F '[BLOCKED] Exact resource thresholds' "$OUT" >/dev/null || fail 'plan must preserve inventory dependency gate'
+grep -F '[BLOCKED] Live apply remains disabled' "$OUT" >/dev/null || fail 'live apply gate missing'
+
+for expected in \
+    'HOMEROUTE_PLAN schema=1' \
+    'HOMEROUTE_PLAN target=vps' \
+    'HOMEROUTE_PLAN mode=plan' \
+    'HOMEROUTE_PLAN apply_available=false' \
+    'HOMEROUTE_PLAN sandbox_apply_available=true' \
+    'HOMEROUTE_PLAN awg_baseline=AmneziaWG_2.x' \
+    'HOMEROUTE_PLAN awg_interface=awg0' \
+    'HOMEROUTE_PLAN resource_thresholds=SUPPORTED_FLOOR_DEFINED' \
+    'HOMEROUTE_PLAN backup_restore=SANDBOX_TRANSACTION_TESTED' \
+    'HOMEROUTE_PLAN clean_device_validation=NOT_VALIDATED'
+do
+    grep -Fx "$expected" "$OUT" >/dev/null || fail "missing VPS plan contract field: $expected"
+done
 
 if sh "$INSTALLER" apply >"$OUT" 2>"$ERR"; then
     fail 'apply mode unexpectedly succeeded'
 fi
-grep -F '[BLOCKED] HomeRoute VPS apply-mode is not implemented or validated.' "$OUT" >/dev/null || fail 'apply block marker missing'
+grep -F '[BLOCKED] HomeRoute VPS live apply-mode is not implemented or validated.' "$OUT" >/dev/null || fail 'apply block marker missing'
 
 if sh "$INSTALLER" definitely-not-a-mode >"$OUT" 2>"$ERR"; then
     fail 'unknown mode unexpectedly succeeded'
 fi
 grep -F '[FAIL] unknown mode:' "$ERR" >/dev/null || fail 'unknown-mode failure marker missing'
 
-printf '%s\n' '[PASS] VPS installer plan-only contract'
+printf '%s\n' '[PASS] VPS installer plan/live-gate contract'
