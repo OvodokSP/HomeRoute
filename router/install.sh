@@ -161,7 +161,7 @@ plan_field hrneo_rescue FULL_LIVE_RESCUE_SET_PASS
 plan_field backup_restore FULL_HRNEO_PACKAGE_ROLLBACK_SET_PASS
 plan_field hrneo_reinstall LIVE_PASS_CLEAN
 plan_field hrneo_conffile_cleanup LIVE_PASS
-plan_field hrneo_rollback CONTROLLED_REHEARSAL_READY_LIVE_PENDING
+plan_field hrneo_rollback CONTROLLED_REHEARSAL_RETRY_READY_LIVE_PENDING
 plan_field clean_device_validation NOT_VALIDATED
 
 printf '%s\n' '[PLAN] Observed component availability:'

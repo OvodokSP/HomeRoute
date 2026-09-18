@@ -22,6 +22,7 @@
 - Controlled same-version reinstall exact pinned HRNeo `3.18.3-1` прошёл live PASS: package set unchanged, managed files/opkg-info/side-effects verified, doctor 26/26 PASS, 4s validation window.
 - Post-transaction cleanup прошёл live PASS: 3 generated `*-opkg` artifacts (869 bytes) захвачены в evidence и удалены, `OPKG_CONFFILE_RESIDUE=none`, post-doctor 26/26 PASS.
 - Rollback-path усилен: автоматический rollback удаляет только три ожидаемых `*-opkg` residue и отказывается при unexpected residue. Первый live rehearsal остановился до package transaction: `domain.conf` успел измениться между fresh rescue и validator preflight. Исправлена модель conffiles: `hrneo.conf`, `domain.conf`, `ip.list` считаются mutable user state; старый rescue не pin'ит их bytes, а validator снимает fresh SHA непосредственно перед `opkg` и требует их неизменности через transaction/rollback.
+- Исправленная mutable-conffile модель прошла live PASS на reference Keenetic: immutable package files/opkg-info/side-effects/global status PASS, `domain.conf` отличается от rescue как допустимое mutable state, residue none, final doctor 26/26 PASS.
 
 
 ## 0.2.0 — repository workflow

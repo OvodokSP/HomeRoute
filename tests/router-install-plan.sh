@@ -37,7 +37,7 @@ for expected in \
     'HOMEROUTE_PLAN backup_restore=FULL_HRNEO_PACKAGE_ROLLBACK_SET_PASS' \
     'HOMEROUTE_PLAN hrneo_reinstall=LIVE_PASS_CLEAN' \
     'HOMEROUTE_PLAN hrneo_conffile_cleanup=LIVE_PASS' \
-    'HOMEROUTE_PLAN hrneo_rollback=CONTROLLED_REHEARSAL_READY_LIVE_PENDING' \
+    'HOMEROUTE_PLAN hrneo_rollback=CONTROLLED_REHEARSAL_RETRY_READY_LIVE_PENDING' \
     'HOMEROUTE_PLAN clean_device_validation=NOT_VALIDATED'
 do
     grep -Fx "$expected" "$OUT" >/dev/null || fail "missing plan contract field: $expected"
