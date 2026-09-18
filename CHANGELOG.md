@@ -13,6 +13,7 @@
 - Добавлен isolated stopped-container restore rehearsal: temporary containers, network none, no start, backup round-trip + checksum reverify; live services не затрагиваются.
 - Live read-only restore-readiness gate прошёл PASS на reference VPS: rescue set повторно проверен, current AWG/AdGuard image IDs совпали с rescue copies; live restore не выполнялся.
 - Isolated stopped-container restore rehearsal прошёл live PASS: AWG/AdGuard backup round-trip verified, temporary containers never started, live services remained running.
+- Подготовлен controlled live AWG same-state restore validator: graceful stop, quiescent snapshot, exact byte round-trip, restart/post-check и automatic recovery path; live запуск ещё pending.
 
 
 ## 0.2.0 — repository workflow
