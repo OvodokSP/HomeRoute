@@ -19,7 +19,8 @@
     "exact_chur_artifact_identity": "PENDING",
     "local_secret_input_model": "DEFINED",
     "reproduction_bundle_tooling": "DEFINED",
-    "reproduction_apply_engine": "NOT_IMPLEMENTED"
+    "reproduction_apply_engine": "NOT_IMPLEMENTED",
+    "chur_source_recipe": "PASS"
   },
   "vps": {
     "reference_runtime_health": "PASS",
