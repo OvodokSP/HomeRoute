@@ -28,6 +28,8 @@ jobs:
         run: python3 scripts/ci/validate_vps_container_shape.py
       - name: Validate pinned Amnezia AWG upstream evidence
         run: python3 scripts/ci/validate_vps_awg_upstream.py
+      - name: Validate live AWG backup evidence
+        run: python3 scripts/ci/validate_vps_live_awg_backup.py
       - name: Test inventory tooling
         run: python3 -m unittest discover -s tests -p 'test_*.py'
       - name: Test installer contracts
@@ -42,5 +44,6 @@ jobs:
           sh tests/vps-container-shape.sh
           sh tests/vps-desired-state-renderer.sh
           sh tests/vps-awg-backup.sh
+          sh tests/vps-awg-restore-sandbox.sh
       - name: Test router doctor matcher
         run: HOMEROUTE_DOCTOR_SELFTEST=1 sh router/doctor-router.sh

@@ -23,6 +23,8 @@ This document contains only the current reference state confirmed during the Hom
 - The observed AWG2 container has no dedicated persistent bind for `/opt/amnezia/awg`; replacing that container must therefore be preceded by an explicit backup/export of AWG state.
 - The official Amnezia client source at commit `de93650a90739b87bb47a632872ea9d0adc9412f` contains AWG Dockerfile/run/configure/start scripts whose container shape matches the observed restart/privileged/module-mount/UDP-port/DNS-network pattern.
 - That pinned source recipe is not a deterministic image pin: its Dockerfile still uses `amneziavpn/amneziawg-go:latest`, so exact clean-build provenance remains unverified.
+- On 2026-09-18 a real root-only backup of the running AWG2 state completed successfully: 5 files, 40 KiB, checksum verification PASS, backup directories mode 0700, metadata/manifest mode 0600, owner root:root. No container restart, configuration change or restore was performed.
+- The AWG restore algorithm is tested only in an isolated filesystem sandbox, including successful restore, per-file SHA256 verification, forced verification failure and rollback to pre-existing state. Live AWG restore remains unvalidated.
 
 ## VERIFIED — component roles and package roots
 
@@ -54,7 +56,7 @@ This document contains only the current reference state confirmed during the Hom
 ## NOT VALIDATED
 
 - Automated live apply on a clean router or VPS.
-- Full live backup/restore rollback for real managed router/VPS objects (the VPS dedicated-filesystem canary is verified, but it is not the full installer rollback).
+- Full live restore/rollback for real managed router/VPS objects (VPS filesystem transaction and live AWG backup are verified; live AWG restore and router restore remain unvalidated).
 - Physical minimum router/VPS resource requirements below the supported floor.
 - A complete clean-device-verified hardware compatibility matrix.
 - Generic Netis flashing instructions for specific models.

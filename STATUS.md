@@ -28,9 +28,10 @@
 | VPS runtime provisioning data | RUNTIME + CONTAINER SHAPE CAPTURED 2026-09-18 |
 | VPS provisioning parameter model | DEFINED; LOCAL IMAGE/PATH/PORT/STATE REQUIRED |
 | AWG upstream recipe | PINNED SOURCE COMMIT; BASE IMAGE `latest` STILL FLOATING |
-| AWG state backup tooling | CI TESTED; LIVE BACKUP NOT YET RUN |
+| AWG state backup | LIVE PASS 2026-09-18; SHA256 VERIFY PASS |
+| AWG restore algorithm | SANDBOX APPLY + VERIFY + ROLLBACK TESTED; LIVE RESTORE BLOCKED |
 | Реальный apply VPS | BLOCKED |
-| Live backup/restore | VPS FILESYSTEM CANARY PASS / ROUTER PENDING |
+| Live backup/restore | VPS FILESYSTEM CANARY PASS; AWG LIVE BACKUP PASS; LIVE RESTORE + ROUTER PENDING |
 | Протокол чистого воспроизведения | PREPARED |
 | Первое чистое воспроизведение | NOT YET TESTED |
 | AWG 3.x | NOT YET ADOPTED |
@@ -58,5 +59,5 @@
 
 1. детерминированный feed для HydraRoute Neo без скрытого `curl | sh`;
 2. live-safe backup/restore всех изменяемых типов объектов;
-3. контрольная live backup/restore validation — VPS filesystem canary PASS; Keenetic и реальные управляемые объекты ещё не подтверждены;
+3. контрольная live backup/restore validation — VPS filesystem canary PASS и AWG live backup PASS; live restore AWG и Keenetic ещё не подтверждены;
 4. первое чистое воспроизведение.
