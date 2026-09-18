@@ -25,9 +25,9 @@
 | Chur/AmneziaWG feed provisioning | SANDBOX APPLY / NO CHANGE / ROLLBACK PASS |
 | HydraRoute Neo feed | UPSTREAM SCRIPT ONLY / LIVE BLOCKED |
 | Реальный apply роутера | BLOCKED |
-| VPS runtime provisioning data | REFERENCE PARTIAL / SAFE CAPTURE READY |
+| VPS runtime provisioning data | REFERENCE RUNTIME CAPTURED 2026-09-18 |
 | Реальный apply VPS | BLOCKED |
-| Live backup/restore | CANARY READY / NOT YET RUN |
+| Live backup/restore | VPS FILESYSTEM CANARY PASS / ROUTER PENDING |
 | Протокол чистого воспроизведения | PREPARED |
 | Первое чистое воспроизведение | NOT YET TESTED |
 | AWG 3.x | NOT YET ADOPTED |
@@ -55,5 +55,5 @@
 
 1. детерминированный feed для HydraRoute Neo без скрытого `curl | sh`;
 2. live-safe backup/restore всех изменяемых типов объектов;
-3. контрольная live backup/restore validation — canary готов, требуется запуск на эталонном роутере и VPS;
+3. контрольная live backup/restore validation — VPS filesystem canary PASS; Keenetic и реальные управляемые объекты ещё не подтверждены;
 4. первое чистое воспроизведение.
