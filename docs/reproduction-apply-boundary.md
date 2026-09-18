@@ -37,4 +37,4 @@ may be used to review whether ordinary `apply` can be enabled.
 
 ## Current state
 
-HL-404 is complete. The reproduction-only apply engines are **not implemented yet**. The next implementation input is a sanitized semantic capture of the reference router persistence hooks and runtime shape, followed by the corresponding VPS provisioning contract.
+HL-404 is complete. Router semantic and hook-dependency captures are live PASS. Public reference/gate contracts and local router/VPS bundle tooling are being implemented. Reproduction-only apply engines are still **not implemented**. Remaining router source-level inputs are exact persistence-hook source (or reviewed deterministic replacements) and content-pinned Chur/AWG artifacts; VPS still requires completion of deterministic container/DNS persistence rendering.

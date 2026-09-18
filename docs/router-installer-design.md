@@ -40,7 +40,7 @@
 HL-404 уже закрыт live evidence. До stable `apply` остаются:
 
 - reproduction-only apply engine для первого HL-502;
-- sanitized runtime contract уже captured live; остаётся allow-listed dependency graph для делегирующих persistence hooks и затем renderer;
+- sanitized runtime contract и allow-listed hook dependency graph уже captured live; exact hook source bundle (или отдельно reviewed deterministic replacement) остаётся обязательным входом renderer;
 - live-safe изменение opkg feed-файлов для Chur;
 - установка pinned HRNeo/Chur package roots с транзакционным учётом;
 - генерация/доставка локального AWG state без embedded secrets;

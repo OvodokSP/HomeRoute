@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "updated_at": "2026-09-18",
+  "stable_apply_allowed": false,
+  "stable_apply_blocked_until": "HL-502",
+  "hl_404_live_backup_restore": "PASS",
+  "hl_502_clean_reproduction": "NOT_RUN",
+  "router": {
+    "reference_runtime_health": "PASS",
+    "reference_semantics_capture": "PASS",
+    "hook_dependency_capture": "PASS",
+    "reference_contract": "PASS",
+    "hrneo_exact_artifact": "PASS",
+    "hrneo_live_reinstall": "PASS",
+    "hrneo_live_rollback": "PASS",
+    "mutable_conffile_model": "PASS",
+    "exact_hook_source_bundle": "PENDING",
+    "telegram_ndm_dependency_targets": "PENDING",
+    "exact_chur_artifact_identity": "PENDING",
+    "local_secret_input_model": "DEFINED",
+    "reproduction_bundle_tooling": "DEFINED",
+    "reproduction_apply_engine": "NOT_IMPLEMENTED",
+    "chur_source_recipe": "PASS"
+  },
+  "vps": {
+    "reference_runtime_health": "PASS",
+    "live_filesystem_restore": "PASS",
+    "live_awg_restore": "PASS",
+    "live_adguard_restore": "PASS",
+    "exact_running_image_rescue": "PASS",
+    "local_secret_input_model": "DEFINED",
+    "exact_clean_install_image_bundle": "PENDING_LOCAL_ARTIFACTS",
+    "dns_helper_semantics": "PARTIAL",
+    "deterministic_container_renderer": "PARTIAL",
+    "reproduction_apply_engine": "NOT_IMPLEMENTED"
+  },
+  "promotion_policy": {
+    "reproduction_apply_requires_hl_404_pass": true,
+    "stable_apply_requires_hl_502_pass": true,
+    "unknown_required_fact_blocks_apply": true,
+    "undocumented_manual_fix_invalidates_reproduction": true
+  }
+}

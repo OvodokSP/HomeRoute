@@ -20,6 +20,10 @@ jobs:
         run: python3 scripts/ci/validate_repo.py
       - name: Validate router package manifest
         run: python3 scripts/ci/validate_router_package_manifest.py
+      - name: Validate router reference reproduction contract
+        run: python3 scripts/ci/validate_router_reference_contract.py
+      - name: Validate clean-reproduction gate matrix
+        run: python3 scripts/ci/validate_reproduction_gates.py
       - name: Validate router feed manifest
         run: python3 scripts/ci/validate_router_feed_manifest.py
       - name: Validate pinned HRNeo release manifest
@@ -61,6 +65,7 @@ jobs:
           sh tests/router-hrneo-rollback-rehearsal.sh
           sh tests/router-reference-semantics-capture.sh
           sh tests/router-hook-dependencies-capture.sh
+          sh tests/router-hook-export.sh
           sh tests/live-validation-contract.sh
           sh tests/vps-runtime-preflight.sh
           sh tests/vps-container-shape.sh

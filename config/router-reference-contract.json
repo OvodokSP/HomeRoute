@@ -1,0 +1,214 @@
+{
+  "schema": 1,
+  "captured_at": "2026-09-18",
+  "purpose": "HomeRoute reference router public non-secret contract for clean reproduction",
+  "platform": {
+    "keenetic_os": "5.00.C.9.0-1",
+    "entware_architecture": "mipsel-3.4"
+  },
+  "packages": {
+    "chur-amneziawg": "1.0.0-1",
+    "chur-amneziawg-go": "f4f4c99-1",
+    "chur-amneziawg-tools": "1.0.20260223-2",
+    "hrneo": "3.18.3-1"
+  },
+  "awg_runtime": {
+    "interface": "opkgtun0",
+    "ipv4_prefix": "/32",
+    "mtu": 1324,
+    "peer_count": 1,
+    "handshake_required": true,
+    "address_value_embedded": false,
+    "peer_material_embedded": false,
+    "endpoint_embedded": false,
+    "keys_embedded": false
+  },
+  "routing": {
+    "lan_interface": "br0",
+    "routing_mark": "0x3001",
+    "routing_table": 301,
+    "ip_rule_301": true,
+    "default_route_opkgtun0": true,
+    "forward_br0_opkgtun0": true,
+    "masquerade_opkgtun0": true,
+    "ipset_opkgtun0": true
+  },
+  "hrneo_config": {
+    "policy_order": "opkgtun0",
+    "mutable_conffiles": [
+      "hrneo.conf",
+      "domain.conf",
+      "ip.list"
+    ],
+    "reference_sha256": {
+      "hrneo.conf": "2ff73835b812249222b86637a563de640aac48cd5bf55423487bf59ee47df77f",
+      "domain.conf": "353057ff67e0d26492f0f990f42b04705fef0ed4c46fb6e399ab8f9ff3cb5350",
+      "ip.list": "5f9d50cee903da929966e1ce88cae995da1c5a670e219513a93246970d46fb53"
+    },
+    "reference_active_lines": {
+      "hrneo.conf": 8,
+      "domain.conf": 10,
+      "ip.list": 9
+    },
+    "reference_hashes_are_identity_pins": false
+  },
+  "hooks": [
+    {
+      "id": "init_telegram_awg",
+      "path": "/opt/etc/init.d/S98telegram-awg",
+      "sha256": "8165d5be13e57aa13eca8fb38a95bc179e37582f64732bd0e45a013727303504",
+      "bytes": 1101,
+      "lines": 61,
+      "opt_path_refs": 4,
+      "executable": true,
+      "shell_syntax": "valid",
+      "semantics": {
+        "rc_func": false,
+        "awg_quick": true,
+        "awg": true,
+        "hrneo": false,
+        "opkgtun0": true,
+        "start": true,
+        "stop": true,
+        "restart": true,
+        "up": true,
+        "down": true,
+        "action_variable": true,
+        "interface_variable": true,
+        "sleep": true,
+        "direct_ip_rule": false,
+        "direct_ip_route": false,
+        "direct_iptables": false,
+        "direct_ipset": false
+      },
+      "renderability": "requires_exact_source_or_reviewed_replacement"
+    },
+    {
+      "id": "init_hrneo",
+      "path": "/opt/etc/init.d/S99hrneo",
+      "sha256": "cd39a8804b991ae96995746e090a2b46e953930c7c8b89e27f11d4845abe3ceb",
+      "bytes": 222,
+      "lines": 11,
+      "opt_path_refs": 3,
+      "executable": true,
+      "shell_syntax": "valid",
+      "semantics": {
+        "rc_func": true,
+        "awg_quick": false,
+        "awg": false,
+        "hrneo": true,
+        "opkgtun0": false,
+        "start": false,
+        "stop": false,
+        "restart": false,
+        "up": false,
+        "down": false,
+        "action_variable": false,
+        "interface_variable": false,
+        "sleep": false,
+        "direct_ip_rule": false,
+        "direct_ip_route": false,
+        "direct_iptables": false,
+        "direct_ipset": false
+      },
+      "renderability": "requires_exact_source_or_reviewed_replacement"
+    },
+    {
+      "id": "netfilter_telegram_awg",
+      "path": "/opt/etc/ndm/netfilter.d/014-telegram-awg.sh",
+      "sha256": "c6766c421171d06a13ed8b30baa8d586a10a1373fce378f51bb94fdd46eff6f1",
+      "bytes": 118,
+      "lines": 6,
+      "opt_path_refs": 2,
+      "executable": true,
+      "shell_syntax": "valid",
+      "semantics": {
+        "direct_service_ref": false,
+        "hrneo": false,
+        "opkgtun0": false,
+        "direct_ip_rule": false,
+        "direct_ip_route": false,
+        "direct_iptables": false,
+        "direct_ipset": false
+      },
+      "renderability": "blocked_unresolved_opt_dependencies"
+    },
+    {
+      "id": "netfilter_hrneo",
+      "path": "/opt/etc/ndm/netfilter.d/015-hrneo.sh",
+      "sha256": "fa01637e206c4c1a40d009a1b656ea9c98e8b94e652b720a9f1b4912af9c7342",
+      "bytes": 169,
+      "lines": 9,
+      "opt_path_refs": 0,
+      "executable": true,
+      "shell_syntax": "valid",
+      "semantics": {
+        "hrneo": true,
+        "opkgtun0": false,
+        "direct_ip_rule": false,
+        "direct_ip_route": false,
+        "direct_iptables": false,
+        "direct_ipset": false
+      },
+      "renderability": "requires_exact_source_or_reviewed_replacement"
+    },
+    {
+      "id": "ifstate_telegram_awg",
+      "path": "/opt/etc/ndm/ifstatechanged.d/014-telegram-awg.sh",
+      "sha256": "4eafa3bab0b1a1b439ed7eb4bd0ec85705a56d60730f9a46f0e30aa48930d9d2",
+      "bytes": 161,
+      "lines": 9,
+      "opt_path_refs": 2,
+      "executable": true,
+      "shell_syntax": "valid",
+      "semantics": {
+        "direct_service_ref": false,
+        "hrneo": false,
+        "opkgtun0": true,
+        "direct_ip_rule": false,
+        "direct_ip_route": false,
+        "direct_iptables": false,
+        "direct_ipset": false
+      },
+      "renderability": "blocked_unresolved_opt_dependencies"
+    },
+    {
+      "id": "ifstate_hrneo",
+      "path": "/opt/etc/ndm/ifstatechanged.d/015-hrneo.sh",
+      "sha256": "fa01637e206c4c1a40d009a1b656ea9c98e8b94e652b720a9f1b4912af9c7342",
+      "bytes": 169,
+      "lines": 9,
+      "opt_path_refs": 0,
+      "executable": true,
+      "shell_syntax": "valid",
+      "semantics": {
+        "hrneo": true,
+        "opkgtun0": false,
+        "direct_ip_rule": false,
+        "direct_ip_route": false,
+        "direct_iptables": false,
+        "direct_ipset": false
+      },
+      "renderability": "requires_exact_source_or_reviewed_replacement"
+    }
+  ],
+  "unresolved": [
+    {
+      "id": "router_hook_exact_source_bundle",
+      "blocking": "reproduction_apply",
+      "reason": "semantic fingerprints cannot reconstruct exact hook source safely"
+    },
+    {
+      "id": "telegram_ndm_opt_dependency_targets",
+      "blocking": "reproduction_apply",
+      "reason": "two unclassified /opt path references exist in each 014 NDM hook"
+    }
+  ],
+  "security": {
+    "contains_secrets": false,
+    "contains_private_keys": false,
+    "contains_peer_keys": false,
+    "contains_endpoints": false,
+    "contains_ip_addresses": false
+  }
+}
