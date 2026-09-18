@@ -23,7 +23,7 @@
 | Sandbox-транзакция VPS | CI PASS: APPLY / NO CHANGE / VERIFY / ROLLBACK |
 | Файловый backup/restore | ROUTER LIVE FILESYSTEM CANARY PASS + VPS LIVE PASS |
 | Chur/AmneziaWG feed provisioning | SANDBOX APPLY / NO CHANGE / ROLLBACK PASS |
-| HydraRoute Neo package | PINNED 3.18.3-1 / FULL RESCUE PASS / LIVE SAME-VERSION REINSTALL PASS / 3 GENERATED `*-opkg` FILES CLEANUP PENDING |
+| HydraRoute Neo package | PINNED 3.18.3-1 / FULL RESCUE PASS / LIVE SAME-VERSION REINSTALL PASS / POST-TRANSACTION CLEANUP PASS / LIVE ROLLBACK FAILURE-PATH PENDING |
 | Реальный apply роутера | BLOCKED |
 | VPS runtime provisioning data | RUNTIME + CONTAINER SHAPE CAPTURED 2026-09-18 |
 | VPS provisioning parameter model | DEFINED; LOCAL IMAGE/PATH/PORT/STATE REQUIRED |
@@ -41,7 +41,7 @@
 | DNS helper semantics | LIVE SCHEMA-2 PARTIAL: TCP/UDP LOOP CONFIRMED; TARGET-RESOLUTION DETAILS NOT VALIDATED |
 | DNS persistence desired state | DESIGN-ONLY CONTRACT + RENDERER; CI TESTED; LIVE APPLY BLOCKED |
 | Реальный apply VPS | BLOCKED |
-| Live backup/restore | VPS FILESYSTEM + AWG + ADGUARD LIVE RESTORE PASS; ROUTER HRNEO PACKAGE TRANSACTION PASS; ROUTER ROLLBACK/CLEANUP PENDING |
+| Live backup/restore | VPS FILESYSTEM + AWG + ADGUARD LIVE RESTORE PASS; ROUTER HRNEO PACKAGE TRANSACTION+CLEANUP PASS; ROUTER LIVE ROLLBACK FAILURE-PATH PENDING |
 | Протокол чистого воспроизведения | PREPARED |
 | Первое чистое воспроизведение | NOT YET TESTED |
 | AWG 3.x | NOT YET ADOPTED |
@@ -66,7 +66,7 @@
 
 Следующие реальные блокеры:
 
-1. live-safe package transaction для закреплённого HRNeo `.ipk` уже PASS; cleanup трёх generated `*-opkg` conffile artifacts pending, live rollback failure-path ещё не подтверждён;
+1. live-safe package transaction для закреплённого HRNeo `.ipk` + post-transaction cleanup уже PASS; live rollback failure-path ещё не подтверждён;
 2. live-safe backup/restore router package/config objects; filesystem + HRNeo files + opkg control/side-effects + global `/opt/lib/opkg/status` live PASS;
 3. контрольная live backup/restore validation — VPS filesystem/AWG/AdGuard live restore PASS; Keenetic ещё не подтверждён;
 4. первое чистое воспроизведение.
