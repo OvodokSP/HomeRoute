@@ -21,6 +21,8 @@ This document contains only the current reference state confirmed during the Hom
 - On 2026-09-18 sanitized VPS runtime metadata was captured for AWG2 and AdGuard without reading environment values, IP addresses, port mappings, mount source paths, labels, command lines, config contents, or credentials.
 - On 2026-09-18 sanitized container-shape capture verified AWG2 networks `amnezia-dns-net` + `bridge`, its `/lib/modules` bind destination, UDP container port `35404`, and AdGuard's `amnezia-dns-net` attachment plus persistent container-side destinations `/opt/adguardhome/conf` and `/opt/adguardhome/work`. Host paths, host ports, IP addresses and secrets were deliberately not captured.
 - The observed AWG2 container has no dedicated persistent bind for `/opt/amnezia/awg`; replacing that container must therefore be preceded by an explicit backup/export of AWG state.
+- The official Amnezia client source at commit `de93650a90739b87bb47a632872ea9d0adc9412f` contains AWG Dockerfile/run/configure/start scripts whose container shape matches the observed restart/privileged/module-mount/UDP-port/DNS-network pattern.
+- That pinned source recipe is not a deterministic image pin: its Dockerfile still uses `amneziavpn/amneziawg-go:latest`, so exact clean-build provenance remains unverified.
 
 ## VERIFIED — component roles and package roots
 
