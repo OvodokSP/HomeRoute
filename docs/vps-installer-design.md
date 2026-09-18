@@ -48,7 +48,8 @@
 - design-only `config/vps-dns-persistence.json` и non-mutating renderer `vps/render-dns-persistence-plan.sh`, фиксирующие target resolution, TCP/UDP DNAT 53 и safety boundary без выполнения команд;
 - calendar/monotonic-aware read-only timer preflight;
 - CI-tested sanitized semantic analyzer DNS helper schema 2 без публикации содержимого;
-- read-only live-restore readiness gate, который повторно проверяет rescue-set и exact current/rescue image identity до любого controlled restore.
+- read-only live-restore readiness gate, который повторно проверяет rescue-set и exact current/rescue image identity до любого controlled restore;
+- isolated stopped-container restore rehearsal: временные контейнеры с `--network none`, без start/restart рабочих сервисов, с backup round-trip и повторной SHA-256 verification.
 
 ## Что ещё блокирует live-apply
 
