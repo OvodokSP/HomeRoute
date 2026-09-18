@@ -43,7 +43,7 @@
 | Реальный apply VPS | BLOCKED |
 | Live backup/restore | PASS: VPS FILESYSTEM + AWG + ADGUARD; ROUTER FILESYSTEM + HRNEO REINSTALL + CLEANUP + FORCED-FAILURE ROLLBACK |
 | Протокол чистого воспроизведения | PREPARED |
-| Первое чистое воспроизведение | NOT YET TESTED; ROUTER SEMANTIC CAPTURE LIVE PASS; HOOK DEPENDENCY CAPTURE READY |
+| Первое чистое воспроизведение | NOT YET TESTED; ROUTER SEMANTIC + HOOK DEPENDENCY CAPTURE LIVE PASS; REPRODUCTION CONTRACT/BUNDLES IMPLEMENTED IN DEVELOPMENT |
 | AWG 3.x | NOT YET ADOPTED |
 | Repository CI | CONFIGURED |
 
@@ -67,5 +67,6 @@
 Следующие реальные блокеры:
 
 1. live backup/restore gate закрыт: VPS filesystem/AWG/AdGuard и Keenetic filesystem/HRNeo rollback подтверждены live;
-2. закрыть router persistence-hook dependency graph и собрать reproduction-only router renderer;
-3. первое чистое воспроизведение (HL-502).
+2. получить exact hook source bundle (или reviewed replacement) и content-pin Chur/AWG artifacts;
+3. завершить reproduction-only router/VPS apply engines;
+4. первое чистое воспроизведение (HL-502).
