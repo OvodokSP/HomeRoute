@@ -18,12 +18,13 @@ fail() {
 
 mkdir -p "$BASE" "$BIN" "$TMPROOT"
 
-cat > "$BASE/prepare.sh" <<EOF
+cat > "$BASE/prepare.sh" <<'EOF'
 #!/bin/sh
 set -eu
+rescue=${HOMEROUTE_TEST_RESCUE:?}
 [ "${1:-}" = capture ] || exit 2
-mkdir -p "$RESCUE"
-printf '%s\n' 'HOMEROUTE_HRNEO_RESCUE rescue_dir=$RESCUE'
+mkdir -p "$rescue"
+printf 'HOMEROUTE_HRNEO_RESCUE rescue_dir=%s\n' "$rescue"
 printf '%s\n' 'HOMEROUTE_HRNEO_RESCUE result=PASS'
 EOF
 chmod 700 "$BASE/prepare.sh"
@@ -102,6 +103,7 @@ do
 done
 
 if PATH="$BIN:$PATH" \
+   HOMEROUTE_TEST_RESCUE="$RESCUE" \
    HOMEROUTE_HRNEO_ROLLBACK_REHEARSAL_TEST_MODE=1 \
    HOMEROUTE_HRNEO_ROLLBACK_TMPROOT="$TMPROOT" \
    HOMEROUTE_HRNEO_RESCUE_PREPARE="$BASE/prepare.sh" \
@@ -119,6 +121,7 @@ if PATH="$BIN:$PATH" \
 fi
 
 out=$(PATH="$BIN:$PATH" \
+  HOMEROUTE_TEST_RESCUE="$RESCUE" \
   HOMEROUTE_HRNEO_ROLLBACK_REHEARSAL_ACK=YES \
   HOMEROUTE_HRNEO_ROLLBACK_REHEARSAL_TEST_MODE=1 \
   HOMEROUTE_HRNEO_ROLLBACK_TMPROOT="$TMPROOT" \
