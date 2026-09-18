@@ -6,10 +6,10 @@ CAPTURE="$ROOT/router/prepare-hrneo-rescue.sh"
 VERIFY="$ROOT/router/verify-hrneo-rescue.sh"
 BASE=${TMPDIR:-/tmp}/homeroute-hrneo-rescue-test.$$
 BIN="$BASE/bin"
-LIVE="$BASE/live"
+LIVE=/tmp/homeroute-hrneo-live-test.$
 BACKUPS="$BASE/backups"
 FIXTURE="$BASE/hrneo-test.ipk"
-trap 'rm -rf "$BASE"' EXIT HUP INT TERM
+trap 'rm -rf "$BASE" "$LIVE"' EXIT HUP INT TERM
 
 fail() {
     printf '[FAIL] %s\n' "$1" >&2
