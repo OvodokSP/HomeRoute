@@ -34,6 +34,8 @@ jobs:
         run: python3 scripts/ci/validate_vps_rescue_evidence.py
       - name: Validate VPS rescue manifest
         run: python3 scripts/ci/validate_vps_rescue_manifest.py
+      - name: Validate VPS network upstream evidence
+        run: python3 scripts/ci/validate_vps_network_upstream.py
       - name: Test inventory tooling
         run: python3 -m unittest discover -s tests -p 'test_*.py'
       - name: Test installer contracts
@@ -53,5 +55,7 @@ jobs:
           sh tests/vps-adguard-backup.sh
           sh tests/vps-adguard-restore-sandbox.sh
           sh tests/vps-rescue-set.sh
+          sh tests/vps-dns-redirect-contract.sh
+          sh tests/vps-dns-persistence-preflight.sh
       - name: Test router doctor matcher
         run: HOMEROUTE_DOCTOR_SELFTEST=1 sh router/doctor-router.sh
