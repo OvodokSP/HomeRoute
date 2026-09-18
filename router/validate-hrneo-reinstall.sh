@@ -286,7 +286,7 @@ trap cleanup EXIT HUP INT TERM
 start_epoch=$(date +%s)
 transaction_started=1
 
-opkg install --force-reinstall --nodeps "$artifact"
+opkg --force-reinstall --nodeps install "$artifact"
 
 if [ "$FORCE_VERIFY_FAIL" = 1 ]; then
     fail 'forced post-install verification failure requested'
