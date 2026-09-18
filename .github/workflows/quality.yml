@@ -56,6 +56,7 @@ jobs:
           sh tests/router-hrneo-opkg-state.sh
           sh tests/router-hrneo-opkg-status.sh
           sh tests/router-hrneo-reinstall.sh
+          sh tests/router-hrneo-conffile-cleanup.sh
           sh tests/live-validation-contract.sh
           sh tests/vps-runtime-preflight.sh
           sh tests/vps-container-shape.sh
