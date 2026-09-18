@@ -97,4 +97,6 @@ Canary не:
 
 При неуспешной post-check скрипт автоматически повторно применяет quiescent snapshot и запускает контейнер. AdGuard не останавливается и не изменяется; container recreate/remove и image load не выполняются.
 
-Это контролируемая live-операция с кратким перерывом AWG-туннеля, поэтому до фактического запуска статус остаётся **LIVE PENDING**.
+На reference VPS 2026-09-18 этот validator завершился PASS: quiescent snapshot PASS, stopped restore round-trip PASS, `awg0` PASS, TCP/UDP DNS DNAT 53 PASS, validation window 6 секунд. После теста AWG2 и AdGuard были `running`.
+
+AWG-часть live restore validation теперь подтверждена. AdGuard live restore validation остаётся отдельным следующим этапом.
