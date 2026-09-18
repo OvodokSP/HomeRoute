@@ -62,6 +62,7 @@ jobs:
           sh tests/vps-adguard-backup.sh
           sh tests/vps-adguard-restore-sandbox.sh
           sh tests/vps-rescue-set.sh
+          sh tests/vps-live-restore-readiness.sh
           sh tests/vps-dns-redirect-contract.sh
           sh tests/vps-dns-persistence-preflight.sh
           sh tests/vps-dns-persistence-plan.sh
