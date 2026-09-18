@@ -22,6 +22,7 @@ for expected in \
     'HOMEROUTE_PLAN target=vps' \
     'HOMEROUTE_PLAN mode=plan' \
     'HOMEROUTE_PLAN apply_available=false' \
+    'HOMEROUTE_PLAN reproduction_apply_available=false' \
     'HOMEROUTE_PLAN sandbox_apply_available=true' \
     'HOMEROUTE_PLAN awg_baseline=AmneziaWG_2.x' \
     'HOMEROUTE_PLAN awg_interface=awg0' \
