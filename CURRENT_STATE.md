@@ -43,6 +43,7 @@ This document contains only the current reference state confirmed during the Hom
 - On 2026-09-18 the live read-only restore-readiness gate completed PASS: the complete four-artifact rescue set re-verified, both AWG2 and AdGuard were running, and both current container image IDs exactly matched their saved rescue-image IDs. No image load, container restart, live restore, Docker state change, systemd change, or iptables change was performed.
 - On 2026-09-18 the isolated stopped-container restore rehearsal completed PASS on the reference VPS: verified AWG and AdGuard backups were copied into temporary containers created from the exact rescue image IDs with `--network none`, copied back out, and checksum-verified. The temporary containers were never started, both live service containers remained running, and no temporary rehearsal containers remained afterwards.
 - On 2026-09-18 controlled live AWG same-state restore validation completed PASS. `amnezia-awg2` was gracefully stopped, a quiescent snapshot of the current AWG state was captured, the same snapshot was copied back into the stopped container and byte-for-byte verified, then the original container was started. `awg0` and TCP/UDP DNS DNAT 53 both passed post-check. The validation window was 6 seconds. AdGuard remained untouched and running; no container recreate/remove or image load occurred.
+- On 2026-09-18 controlled live AdGuard same-state restore validation completed PASS. `adguard-home` was gracefully stopped, its current `conf/work` state was captured, copied back into the stopped container and byte-for-byte verified, then the original container was started. Real DNS probes over UDP/53 and TCP/53 both passed. The validation window was 10 seconds. AWG2 remained running and untouched; a final rescue-readiness pass confirmed both current image IDs still match the saved rescue images.
 
 ## VERIFIED — component roles and package roots
 
@@ -77,7 +78,7 @@ This document contains only the current reference state confirmed during the Hom
 
 - Exact live DNS helper target-resolution implementation (schema-2 confirms TCP/UDP loop, but target source remains unresolved by sanitized analysis).
 - Automated live apply on a clean router or VPS.
-- Full live restore/rollback for real managed router/VPS objects. VPS filesystem transaction, live AWG/AdGuard backups, restore-readiness, isolated restore rehearsal, and controlled live AWG same-state restore are verified. Controlled AdGuard same-state restore validation is prepared but not yet run; router restore also remains unvalidated.
+- Full live restore/rollback for real managed router/VPS objects. VPS filesystem transaction, live AWG/AdGuard backups, restore-readiness, isolated restore rehearsal, and controlled live AWG + AdGuard same-state restores are verified. Router/Keenetic live restore remains unvalidated.
 - Physical minimum router/VPS resource requirements below the supported floor.
 - A complete clean-device-verified hardware compatibility matrix.
 - Generic Netis flashing instructions for specific models.
