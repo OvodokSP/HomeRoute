@@ -33,7 +33,7 @@
 - [x] HL-401 — Расширить doctor-скрипты структурированным отчётом без секретов.
 - [x] HL-402 — Описать и протестировать локальные backup/restore-контракты на фиктивных данных.
 - [x] HL-403 — Провести live read-only doctor capture и проверить отчёт на Golden State.
-- [ ] HL-404 — Провести контролируемую live backup/restore validation до разрешения installer live apply-mode.
+- [x] HL-404 — Провести контролируемую live backup/restore validation до разрешения installer live apply-mode.
 
 ## Phase 5 — Clean-device reproduction
 

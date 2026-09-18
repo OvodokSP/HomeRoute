@@ -161,7 +161,7 @@ plan_field hrneo_rescue FULL_LIVE_RESCUE_SET_PASS
 plan_field backup_restore FULL_HRNEO_PACKAGE_ROLLBACK_SET_PASS
 plan_field hrneo_reinstall LIVE_PASS_CLEAN
 plan_field hrneo_conffile_cleanup LIVE_PASS
-plan_field hrneo_rollback CONTROLLED_REHEARSAL_RETRY_READY_LIVE_PENDING
+plan_field hrneo_rollback LIVE_PASS
 plan_field clean_device_validation NOT_VALIDATED
 
 printf '%s\n' '[PLAN] Observed component availability:'
@@ -185,6 +185,6 @@ printf '%s\n' '  5. minimal idempotent configuration apply'
 printf '%s\n' '  6. doctor/functional verify'
 printf '%s\n' '  7. transaction manifest / rollback on failed verify'
 
-printf '%s\n' '[BLOCKED] Live apply remains disabled until package/feed transactions and live backup/rollback are validated and a clean-device reproduction is recorded.'
+printf '%s\n' '[BLOCKED] Live apply remains disabled until a clean-device reproduction is recorded.'
 printf '%s\n' '[PASS] Plan completed; no system changes were made.'
 exit 0

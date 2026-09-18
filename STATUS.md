@@ -23,7 +23,7 @@
 | Sandbox-транзакция VPS | CI PASS: APPLY / NO CHANGE / VERIFY / ROLLBACK |
 | Файловый backup/restore | ROUTER LIVE FILESYSTEM CANARY PASS + VPS LIVE PASS |
 | Chur/AmneziaWG feed provisioning | SANDBOX APPLY / NO CHANGE / ROLLBACK PASS |
-| HydraRoute Neo package | PINNED 3.18.3-1 / FULL RESCUE PASS / LIVE REINSTALL+CLEANUP PASS / MUTABLE CONFFILE MODEL LIVE PASS / ROLLBACK REHEARSAL RETRY READY |
+| HydraRoute Neo package | PINNED 3.18.3-1 / FULL RESCUE PASS / LIVE REINSTALL+CLEANUP+ROLLBACK PASS |
 | Реальный apply роутера | BLOCKED |
 | VPS runtime provisioning data | RUNTIME + CONTAINER SHAPE CAPTURED 2026-09-18 |
 | VPS provisioning parameter model | DEFINED; LOCAL IMAGE/PATH/PORT/STATE REQUIRED |
@@ -41,7 +41,7 @@
 | DNS helper semantics | LIVE SCHEMA-2 PARTIAL: TCP/UDP LOOP CONFIRMED; TARGET-RESOLUTION DETAILS NOT VALIDATED |
 | DNS persistence desired state | DESIGN-ONLY CONTRACT + RENDERER; CI TESTED; LIVE APPLY BLOCKED |
 | Реальный apply VPS | BLOCKED |
-| Live backup/restore | VPS FILESYSTEM + AWG + ADGUARD LIVE RESTORE PASS; ROUTER HRNEO PACKAGE TRANSACTION+CLEANUP PASS; ROUTER LIVE ROLLBACK FAILURE-PATH PENDING |
+| Live backup/restore | PASS: VPS FILESYSTEM + AWG + ADGUARD; ROUTER FILESYSTEM + HRNEO REINSTALL + CLEANUP + FORCED-FAILURE ROLLBACK |
 | Протокол чистого воспроизведения | PREPARED |
 | Первое чистое воспроизведение | NOT YET TESTED |
 | AWG 3.x | NOT YET ADOPTED |
@@ -66,7 +66,5 @@
 
 Следующие реальные блокеры:
 
-1. live-safe package transaction + cleanup HRNeo уже PASS; mutable conffile model live PASS, повторный controlled rollback failure-path rehearsal ready;
-2. live-safe backup/restore router package/config objects; filesystem + HRNeo files + opkg control/side-effects + global `/opt/lib/opkg/status` live PASS;
-3. контрольная live backup/restore validation — VPS filesystem/AWG/AdGuard live restore PASS; Keenetic ещё не подтверждён;
-4. первое чистое воспроизведение.
+1. live backup/restore gate закрыт: VPS filesystem/AWG/AdGuard и Keenetic filesystem/HRNeo rollback подтверждены live;
+2. первое чистое воспроизведение (HL-502).
