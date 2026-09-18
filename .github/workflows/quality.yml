@@ -52,6 +52,7 @@ jobs:
           sh tests/installer-sandbox-transaction.sh
           sh tests/router-feed-config.sh
           sh tests/router-hrneo-artifact.sh
+          sh tests/router-hrneo-rescue.sh
           sh tests/live-validation-contract.sh
           sh tests/vps-runtime-preflight.sh
           sh tests/vps-container-shape.sh

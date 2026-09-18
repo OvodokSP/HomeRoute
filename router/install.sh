@@ -156,8 +156,9 @@ plan_field dependency_state VALIDATED_REFERENCE_MANIFEST
 plan_field core_install_roots "$CORE_INSTALL_ROOTS"
 plan_field resource_thresholds SUPPORTED_FLOOR_DEFINED
 plan_field feed_provisioning CHUR_SANDBOX_TESTED_HRNEO_PINNED_ARTIFACT
-plan_field hrneo_artifact PINNED_3.18.3-1_GIT_BLOB_VERIFIER_TESTED_LIVE_BLOCKED
-plan_field backup_restore LIVE_FILESYSTEM_CANARY_PASS_PACKAGE_RESCUE_PENDING
+plan_field hrneo_artifact PINNED_3.18.3-1_SHA256_VERIFIED
+plan_field hrneo_rescue CAPTURE_VERIFIER_READY_LIVE_PENDING
+plan_field backup_restore LIVE_FILESYSTEM_CANARY_PASS_HRNEO_RESCUE_TOOLING_READY
 plan_field clean_device_validation NOT_VALIDATED
 
 printf '%s\n' '[PLAN] Observed component availability:'
