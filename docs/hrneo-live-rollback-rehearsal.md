@@ -11,7 +11,7 @@ Before forcing the failure, the rehearsal creates a **fresh rescue set** of the 
 - `/opt/bin/neo` and `rc.unslung`;
 - the complete `/opt/lib/opkg/status` database.
 
-The pre-transaction and post-rollback state is checked by `verify-hrneo-live-rescue-state.sh`. That verifier requires byte-level equality for package files, HRNeo opkg-info, side-effect state and global opkg status, requires no `*-opkg` residue, and requires router doctor PASS.
+The pre-transaction and post-rollback state is checked by `verify-hrneo-live-rescue-state.sh`. Byte-level equality is required for immutable package files, HRNeo opkg-info, side-effect state and the global opkg status. The three package-declared conffiles (`hrneo.conf`, `domain.conf`, `ip.list`) are mutable user state: they must exist, but their bytes are not pinned to an older rescue snapshot. The transaction validator captures their current SHA-256 immediately before `opkg` and requires them to remain unchanged across the package transaction/rollback.
 
 The rollback routine also explicitly removes only the three observed/expected conffile alternates:
 
@@ -26,7 +26,7 @@ A successful rehearsal therefore means:
 - forced post-install failure was reached;
 - automatic rollback reported PASS;
 - installed package set is unchanged;
-- live state exactly matches the fresh rescue again;
+- immutable live state matches the fresh rescue again and the mutable conffiles still match their immediate pre-transaction hashes;
 - no generated conffile residue remains;
 - router doctor passes after rollback.
 
