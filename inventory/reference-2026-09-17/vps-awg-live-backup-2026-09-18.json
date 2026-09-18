@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "captured_at": "2026-09-18",
+  "target": "awg",
+  "container": "amnezia-awg2",
+  "backup_id": "awg-state-20260918T103646Z",
+  "backup_result": "PASS",
+  "file_count": 5,
+  "size_kib": 40,
+  "integrity_verify": "PASS",
+  "permissions": {
+    "backup_directory": "0700",
+    "state_directory": "0700",
+    "metadata_file": "0600",
+    "manifest_file": "0600",
+    "owner": "root:root"
+  },
+  "live_effects": {
+    "container_restart": false,
+    "configuration_change": false,
+    "restore_performed": false
+  },
+  "secret_material_committed": false,
+  "note": "Only sanitized verification metadata is stored; backup contents and checksums remain on the reference VPS."
+}
