@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "component": "hrneo",
+  "version": "3.18.3-1",
+  "release_repository": "Ground-Zerro/release",
+  "release_commit": "4811c8d13fa4bd6eaed5080fd49788f5aee20883",
+  "release_commit_date": "2026-08-29T14:59:53Z",
+  "release_commit_message": "hrneo_3.18.3-1 hrweb_1.51.9-1",
+  "source_repository": "Ground-Zerro/HydraRoute",
+  "reviewed_source_commit": "984ec135dbc3e9fb54e0c8c63a0e2fd829538772",
+  "reviewed_source_version": "3.18.3-1",
+  "package_dependencies": [
+    "libc",
+    "ipset",
+    "iptables",
+    "ip-full"
+  ],
+  "upstream_feed_mapping": {
+    "aarch64-3.10": "aarch64-k3.10",
+    "mipsel-3.4": "mipselsf-k3.4",
+    "mips-3.4": "mipssf-k3.4"
+  },
+  "artifacts": {
+    "aarch64-3.10": {
+      "filename": "hrneo_3.18.3-1_aarch64-3.10.ipk",
+      "repository_path": "keenetic/aarch64-k3.10/hrneo_3.18.3-1_aarch64-3.10.ipk",
+      "size_bytes": 90689,
+      "git_blob_sha1": "69e62156adf91868f58a85eaccc21916dc88f1c1"
+    },
+    "mipsel-3.4": {
+      "filename": "hrneo_3.18.3-1_mipsel-3.4.ipk",
+      "repository_path": "keenetic/mipselsf-k3.4/hrneo_3.18.3-1_mipsel-3.4.ipk",
+      "size_bytes": 111881,
+      "git_blob_sha1": "eb4b7b17c7b987da88270935de74ce59f91c7b99"
+    },
+    "mips-3.4": {
+      "filename": "hrneo_3.18.3-1_mips-3.4.ipk",
+      "repository_path": "keenetic/mipssf-k3.4/hrneo_3.18.3-1_mips-3.4.ipk",
+      "size_bytes": 112060,
+      "git_blob_sha1": "3d09aa888c1375a0f2a5aa7872638c8202c44e3a"
+    }
+  },
+  "integrity": {
+    "artifact_identity": "release_commit + repository_path + size_bytes + git_blob_sha1",
+    "sha256": "NOT_CAPTURED",
+    "gpg": "NOT_VERIFIED",
+    "github_release_assets": "NOT_PRESENT_AT_REVIEW_TIME",
+    "signing_key_file": "README_REFERENCES_KEY_BUT_FILE_NOT_CONFIRMED_AT_PINNED_COMMIT"
+  },
+  "provenance_boundary": {
+    "package_version_matches_reviewed_source_version": true,
+    "exact_binary_to_source_commit_provenance_proven": false
+  },
+  "policy": {
+    "pipe_remote_script_to_shell": false,
+    "mutable_feed_required_for_hrneo_install": false,
+    "direct_pinned_ipk_strategy": true,
+    "live_install_allowed": false,
+    "reason": "Pinned artifact identity is recorded, but live download/integrity verification and package transaction rollback are not yet validated on the reference router."
+  }
+}
