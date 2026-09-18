@@ -5,15 +5,24 @@
     "unknown_feed_lines_block_live_apply": true
   },
   "chur_amneziawg": {
-    "status": "EXPLICIT_UPSTREAM_FEED",
+    "status": "PINNED_VERSIONED_RELEASE",
     "install_root": "chur-amneziawg",
     "source": "https://github.com/ward-sentry/chur-keenetic",
-    "feeds": {
-      "aarch64-3.10": "src/gz chur https://ward-sentry.github.io/chur-keenetic/latest/aarch64-3.10",
-      "mips-3.4": "src/gz chur https://ward-sentry.github.io/chur-keenetic/latest/mips-3.4",
-      "mipsel-3.4": "src/gz chur https://ward-sentry.github.io/chur-keenetic/latest/mipsel-3.4"
+    "release_manifest": "config/chur-runtime-release-manifest.json",
+    "pinned_version": "1.0.0",
+    "versioned_feeds": {
+      "aarch64-3.10": "src/gz chur https://ward-sentry.github.io/chur-keenetic/1_0_0/aarch64-3.10",
+      "mips-3.4": "src/gz chur https://ward-sentry.github.io/chur-keenetic/1_0_0/mips-3.4",
+      "mipsel-3.4": "src/gz chur https://ward-sentry.github.io/chur-keenetic/1_0_0/mipsel-3.4"
     },
-    "note": "The upstream latest feed is explicit by architecture but is not version-pinned."
+    "install_strategy": "PINNED_RUNTIME_IPK_SET",
+    "runtime_packages": [
+      "chur-amneziawg-go",
+      "chur-amneziawg-tools",
+      "chur-amneziawg"
+    ],
+    "live_apply_allowed": false,
+    "note": "The mutable latest feed is forbidden. The 1_0_0 feed is used only as versioned metadata; future live install should prefer commit-pinned raw IPKs verified by SHA256 and Git blob identity."
   },
   "hrneo": {
     "status": "PINNED_RELEASE_ARTIFACTS",
