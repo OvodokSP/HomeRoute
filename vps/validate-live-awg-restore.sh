@@ -24,6 +24,8 @@ ACK=${HOMEROUTE_LIVE_AWG_RESTORE_ACK:-}
 READINESS=${HOMEROUTE_RESTORE_READINESS:-"$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)/preflight-live-restore.sh"}
 BACKUP_ROOT=${HOMEROUTE_BACKUP_ROOT:-/root/homeroute-backups}
 TEST_MODE=${HOMEROUTE_LIVE_RESTORE_TEST_MODE:-0}
+POSTCHECK_ATTEMPTS=${HOMEROUTE_LIVE_RESTORE_POSTCHECK_ATTEMPTS:-18}
+POSTCHECK_SLEEP=${HOMEROUTE_LIVE_RESTORE_POSTCHECK_SLEEP:-5}
 
 field() {
     printf 'HOMEROUTE_LIVE_RESTORE %s=%s\n' "$1" "$2"
@@ -194,13 +196,13 @@ container_stopped=0
 
 post_ok=0
 attempt=0
-while [ "$attempt" -lt 18 ]; do
+while [ "$attempt" -lt "$POSTCHECK_ATTEMPTS" ]; do
     if postcheck; then
         post_ok=1
         break
     fi
     attempt=$((attempt + 1))
-    sleep 5
+    sleep "$POSTCHECK_SLEEP"
 done
 
 if [ "$post_ok" -ne 1 ]; then
