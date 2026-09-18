@@ -24,3 +24,9 @@ __pycache__/
 *awg*.conf
 !*wg*.conf.example
 !*awg*.conf.example
+
+# Local reproduction inputs and generated evidence
+reproduction/local/
+reproduction/work/
+*.homeroute-bundle
+*.homeroute-evidence
