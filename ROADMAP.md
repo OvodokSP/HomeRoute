@@ -19,14 +19,14 @@
 - [x] HL-201 — Спроектировать идемпотентный router installer с режимами plan/apply, backup, verify и rollback.
 - [x] HL-202 — Реализовать plan-only этап router installer без изменения устройства.
 - [x] HL-203 — Добавить тестовый стенд и негативные проверки router installer.
-- [ ] HL-204 — Реализовать router apply-mode после безопасного feed provisioning и backup/verify/rollback implementation; live enable только после HL-404 и HL-502.
+- [ ] HL-204 — Реализовать router apply engine после безопасного feed provisioning и backup/verify/rollback. После HL-404 допускается отдельный явно подтверждаемый `reproduction-apply` только для HL-502; обычный/stable `apply` разрешается только после успешного HL-502.
 
 ## Phase 3 — VPS installer
 
 - [x] HL-301 — Спроектировать идемпотентный VPS installer с режимами plan/apply, backup, verify и rollback.
 - [x] HL-302 — Реализовать plan-only этап VPS installer без подключения к реальному VPS.
 - [x] HL-303 — Добавить тестовый стенд и негативные проверки VPS installer.
-- [ ] HL-304 — Реализовать VPS apply-mode с параметризуемыми AWG2/AdGuard settings, backup/verify/rollback и без embedded secrets; live enable только после HL-404 и HL-502.
+- [ ] HL-304 — Реализовать VPS apply engine с параметризуемыми AWG2/AdGuard settings, backup/verify/rollback и без embedded secrets. После HL-404 допускается отдельный явно подтверждаемый `reproduction-apply` только для HL-502; обычный/stable `apply` разрешается только после успешного HL-502.
 
 ## Phase 4 — Doctor, backup, restore
 
