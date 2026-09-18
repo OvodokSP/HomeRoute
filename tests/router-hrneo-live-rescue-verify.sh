@@ -18,10 +18,17 @@ fail() {
     exit 1
 }
 
-mkdir -p "$BIN" "$LIVE/opt/bin" "$LIVE/opt/etc/init.d" "$LIVE/opt/etc/HydraRoute"   "$INFO" "$RESCUE/files/opt/bin" "$RESCUE/opkg-info"   "$RESCUE/package-side-effects" "$RESCUE/package-database"
+mkdir -p "$BIN" "$LIVE/opt/bin" "$LIVE/opt/etc/init.d" "$LIVE/opt/etc/HydraRoute" \
+  "$INFO" "$RESCUE/files/opt/bin" "$RESCUE/files/opt/etc/HydraRoute" "$RESCUE/opkg-info" \
+  "$RESCUE/package-side-effects" "$RESCUE/package-database"
 
 printf '%s\n' binary > "$LIVE/opt/bin/hrneo"
 cp -a "$LIVE/opt/bin/hrneo" "$RESCUE/files/opt/bin/hrneo"
+
+for name in hrneo.conf domain.conf ip.list; do
+  printf 'rescue-old-%s\n' "$name" > "$RESCUE/files/opt/etc/HydraRoute/$name"
+  printf 'live-current-%s\n' "$name" > "$LIVE/opt/etc/HydraRoute/$name"
+done
 
 cat > "$LIVE/opt/etc/init.d/rc.unslung" <<'EOF'
 #!/bin/sh
@@ -45,7 +52,12 @@ cp -a "$STATUS" "$RESCUE/package-database/opkg-status"
 
 (
   cd "$RESCUE/files"
-  sha256sum opt/bin/hrneo > ../FILES.sha256
+  sha256sum \
+    opt/bin/hrneo \
+    opt/etc/HydraRoute/hrneo.conf \
+    opt/etc/HydraRoute/domain.conf \
+    opt/etc/HydraRoute/ip.list \
+    > ../FILES.sha256
 )
 : > "$RESCUE/SYMLINKS.tsv"
 
@@ -94,7 +106,7 @@ chmod 700 "$BIN/opkg"
 
 out=$(PATH="$BIN:$PATH"   HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY_TEST_MODE=1   HOMEROUTE_HRNEO_LIVE_ROOT="$LIVE"   HOMEROUTE_OPKG_INFO_DIR="$INFO"   HOMEROUTE_OPKG_STATUS_FILE="$STATUS"   HOMEROUTE_HRNEO_RESCUE_VERIFIER="$BASE/base-verify.sh"   HOMEROUTE_HRNEO_OPKG_RESCUE_VERIFIER="$BASE/control-verify.sh"   HOMEROUTE_HRNEO_STATUS_RESCUE_VERIFIER="$BASE/status-verify.sh"   HOMEROUTE_HRNEO_ARTIFACT_TOOL="$BASE/artifact.sh"   HOMEROUTE_ROUTER_DOCTOR="$BASE/doctor.sh"   sh "$SCRIPT" "$RESCUE")
 
-for expected in   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY schema=1'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY package=hrneo'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY version=3.18.3-1'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY package_files=PASS'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY opkg_info=PASS'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY side_effect_state=PASS'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY status_database=PASS'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY conffile_residue=none'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY doctor=PASS'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY result=PASS'
+for expected in   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY schema=1'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY package=hrneo'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY version=3.18.3-1'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY immutable_package_files=PASS'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY mutable_conffiles=present_not_pinned'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY opkg_info=PASS'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY side_effect_state=PASS'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY status_database=PASS'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY conffile_residue=none'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY doctor=PASS'   'HOMEROUTE_HRNEO_LIVE_RESCUE_VERIFY result=PASS'
 do
   printf '%s\n' "$out" | grep -Fx "$expected" >/dev/null ||
     fail "missing verifier field: $expected"

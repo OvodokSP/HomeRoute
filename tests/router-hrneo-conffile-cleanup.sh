@@ -18,8 +18,8 @@ fail() {
 mkdir -p "$BASE" "$LIVE/opt/etc/HydraRoute" "$RESCUE/files/opt/etc/HydraRoute"
 
 for name in hrneo.conf domain.conf ip.list; do
-    printf 'live-%s\n' "$name" > "$LIVE/opt/etc/HydraRoute/$name"
-    cp -a "$LIVE/opt/etc/HydraRoute/$name" "$RESCUE/files/opt/etc/HydraRoute/$name"
+    printf 'live-current-%s\n' "$name" > "$LIVE/opt/etc/HydraRoute/$name"
+    printf 'rescue-old-%s\n' "$name" > "$RESCUE/files/opt/etc/HydraRoute/$name"
     printf 'package-default-%s\n' "$name" > "$LIVE/opt/etc/HydraRoute/$name-opkg"
 done
 
@@ -57,8 +57,9 @@ done
 for name in hrneo.conf domain.conf ip.list; do
   [ ! -e "$LIVE/opt/etc/HydraRoute/$name-opkg" ] ||
     fail "generated artifact remained after cleanup: $name-opkg"
-  cmp -s "$LIVE/opt/etc/HydraRoute/$name" "$RESCUE/files/opt/etc/HydraRoute/$name" ||
-    fail "live conffile changed during cleanup: $name"
+  actual=$(cat "$LIVE/opt/etc/HydraRoute/$name")
+  [ "$actual" = "live-current-$name" ] ||
+    fail "live mutable conffile changed during cleanup: $name"
   [ -f "$RESCUE/reinstall-conffile-alternates/$name-opkg" ] ||
     fail "captured residue evidence missing: $name-opkg"
 done

@@ -3,11 +3,13 @@
 #
 # Live behavior:
 # - requires a fully verified rescue set;
-# - requires current managed state to still match that rescue set;
+# - requires immutable managed state to still match that rescue set;
+# - treats hrneo.conf/domain.conf/ip.list as mutable protected conffiles;
 # - reinstalls the exact local pinned IPK with --force-reinstall --nodeps;
 # - validates package metadata, managed files, side effects and router doctor;
-# - on any failure after transaction start, restores files, hrneo.* opkg info,
+# - on any failure after transaction start, restores immutable files, hrneo.* opkg info,
 #   global opkg status, rc.unslung and /opt/bin/neo from the rescue set,
+#   while preserving the mutable conffiles captured immediately before the transaction,
 #   then restarts HRNeo and runs doctor again.
 
 set -eu
@@ -149,6 +151,17 @@ live_path() {
     printf '%s/%s\n' "$LIVE_ROOT" "$1"
 }
 
+is_mutable_conffile_rel() {
+    case "$1" in
+        opt/etc/HydraRoute/hrneo.conf|opt/etc/HydraRoute/domain.conf|opt/etc/HydraRoute/ip.list)
+            return 0
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
 check_conffile_residue_clean() {
     base="$LIVE_ROOT/opt/etc/HydraRoute"
     [ -d "$base" ] || return 1
@@ -184,6 +197,11 @@ remove_expected_conffile_residue() {
 verify_live_managed_state() {
     while read -r hash rel; do
         [ -n "$hash" ] && [ -n "$rel" ] || continue
+        if is_mutable_conffile_rel "$rel"; then
+            path=$(live_path "$rel")
+            [ -f "$path" ] || return 1
+            continue
+        fi
         path=$(live_path "$rel")
         [ -f "$path" ] || return 1
         actual=$(sha256sum "$path" | awk '{print $1}')
@@ -254,6 +272,33 @@ chmod 700 "$work"
 opkg list-installed | LC_ALL=C sort > "$work/packages.before"
 status_before_sha=$(sha256sum "$STATUS_FILE" | awk '{print $1}')
 
+mkdir -p "$work/mutable-conffiles"
+: > "$work/MUTABLE_CONFFILES.sha256"
+for rel in \
+    opt/etc/HydraRoute/hrneo.conf \
+    opt/etc/HydraRoute/domain.conf \
+    opt/etc/HydraRoute/ip.list
+do
+    live=$(live_path "$rel")
+    [ -f "$live" ] || fail "mutable HRNeo conffile missing before transaction: $rel"
+    name=$(basename "$rel")
+    cp -a "$live" "$work/mutable-conffiles/$name"
+    hash=$(sha256sum "$live" | awk '{print $1}')
+    printf '%s  %s\n' "$hash" "$name" >> "$work/MUTABLE_CONFFILES.sha256"
+done
+chmod 600 "$work/MUTABLE_CONFFILES.sha256" "$work/mutable-conffiles/"*
+
+verify_mutable_conffiles_unchanged() {
+    while read -r hash name; do
+        [ -n "$hash" ] && [ -n "$name" ] || continue
+        live="$LIVE_ROOT/opt/etc/HydraRoute/$name"
+        [ -f "$live" ] || return 1
+        actual=$(sha256sum "$live" | awk '{print $1}')
+        [ "$actual" = "$hash" ] || return 1
+    done < "$work/MUTABLE_CONFFILES.sha256"
+    return 0
+}
+
 transaction_started=0
 success=0
 rollback_result=NOT_NEEDED
@@ -266,7 +311,31 @@ restore_from_rescue() {
         sh "$init" stop >/dev/null 2>&1 || true
     fi
 
-    cp -a "$RESCUE/files/." "$LIVE_ROOT/" || return 1
+    while read -r hash rel; do
+        [ -n "$hash" ] && [ -n "$rel" ] || continue
+        if is_mutable_conffile_rel "$rel"; then
+            continue
+        fi
+        src="$RESCUE/files/$rel"
+        dst=$(live_path "$rel")
+        [ -f "$src" ] || return 1
+        mkdir -p "$(dirname "$dst")" || return 1
+        cp -a "$src" "$dst" || return 1
+    done < "$RESCUE/FILES.sha256"
+
+    tab=$(printf '\t')
+    while IFS="$tab" read -r rel target; do
+        [ -n "$rel" ] || continue
+        if is_mutable_conffile_rel "$rel"; then
+            continue
+        fi
+        src="$RESCUE/files/$rel"
+        dst=$(live_path "$rel")
+        [ -L "$src" ] || return 1
+        mkdir -p "$(dirname "$dst")" || return 1
+        rm -f "$dst" || return 1
+        cp -a "$src" "$dst" || return 1
+    done < "$RESCUE/SYMLINKS.tsv"
 
     for path in "$INFO_DIR"/hrneo.*; do
         [ -e "$path" ] || [ -L "$path" ] || continue
@@ -283,6 +352,7 @@ restore_from_rescue() {
     cp -a "$RESCUE/package-side-effects/neo" "$LIVE_ROOT/opt/bin/neo" || return 1
 
     remove_expected_conffile_residue || return 1
+    verify_mutable_conffiles_unchanged || return 1
 
     init="$LIVE_ROOT/opt/etc/init.d/S99hrneo"
     sh "$init" start >/dev/null 2>&1 || return 1
@@ -347,7 +417,10 @@ cmp -s "$work/packages.before" "$work/packages.after" ||
 status_after_sha=$(sha256sum "$STATUS_FILE" | awk '{print $1}')
 
 verify_live_managed_state ||
-    fail 'managed HRNeo/opkg state differs from expected same-version result'
+    fail 'immutable HRNeo/opkg state differs from expected same-version result'
+
+verify_mutable_conffiles_unchanged ||
+    fail 'mutable HRNeo conffile changed during package transaction'
 
 doctor_after=$(sh "$DOCTOR" 2>&1) || {
     printf '%s\n' "$doctor_after" >&2
@@ -370,7 +443,8 @@ field arch "$arch"
 field force_reinstall true
 field nodeps true
 field installed_package_set_unchanged true
-field managed_files_match_rescue true
+field immutable_package_files_match_rescue true
+field mutable_conffiles_unchanged true
 field opkg_info_match_rescue true
 field side_effect_state_idempotent true
 field status_database_byte_identical "$status_identical"
