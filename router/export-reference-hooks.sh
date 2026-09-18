@@ -45,7 +45,7 @@ else
     [ -z "$EXPECTED_FILE" ] || fail 'live expected identity override is forbidden'
 fi
 
-for cmd in sha256sum tar grep wc date awk cp mkdir; do
+for cmd in sha256sum tar grep wc date awk cp mkdir mktemp rm; do
     command -v "$cmd" >/dev/null 2>&1 || fail "$cmd unavailable"
 done
 
@@ -95,11 +95,16 @@ secret_scan() {
 }
 
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
-work="$OUT_ROOT/homeroute-hook-export-$stamp"
-archive="$OUT_ROOT/homeroute-hook-export-$stamp.tar.gz"
+work=$(mktemp -d "$OUT_ROOT/homeroute-hook-export-$stamp.XXXXXX")
+archive="$work.tar.gz"
+export_complete=false
 
-[ ! -e "$work" ] || fail "export directory already exists: $work"
-[ ! -e "$archive" ] || fail "export archive already exists: $archive"
+cleanup_partial_export() {
+    if [ "$export_complete" != true ]; then
+        rm -rf "$work" "$archive"
+    fi
+}
+trap 'cleanup_partial_export' EXIT HUP INT TERM
 
 mkdir -p "$work/hooks"
 chmod 700 "$work" "$work/hooks"
@@ -154,6 +159,7 @@ chmod 600 "$archive"
 
 archive_sha=$(sha256sum "$archive" | awk '{print $1}')
 archive_bytes=$(wc -c < "$archive" | tr -d '[:space:]')
+export_complete=true
 
 printf 'HOMEROUTE_HOOK_EXPORT schema=1 result=PASS hooks=%s\n' "$count"
 printf 'HOMEROUTE_HOOK_EXPORT archive=%s\n' "$archive"
