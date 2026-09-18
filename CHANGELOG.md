@@ -14,7 +14,7 @@
 - Live read-only restore-readiness gate прошёл PASS на reference VPS: rescue set повторно проверен, current AWG/AdGuard image IDs совпали с rescue copies; live restore не выполнялся.
 - Isolated stopped-container restore rehearsal прошёл live PASS: AWG/AdGuard backup round-trip verified, temporary containers never started, live services remained running.
 - Controlled live AWG same-state restore validation прошёл PASS: graceful stop, quiescent snapshot, exact byte round-trip, restart/post-check; `awg0` и DNS DNAT восстановились, validation window 6 секунд.
-- Подготовлен controlled live AdGuard same-state restore validator с quiescent conf/work snapshot, byte round-trip, TCP/UDP DNS probe и automatic recovery; AWG validator дополнительно усилен recovery-on-any-failure после snapshot.
+- Controlled live AdGuard same-state restore validation прошёл PASS: quiescent conf/work snapshot, exact byte round-trip, UDP/TCP DNS probes PASS, validation window 10 секунд; final restore-readiness PASS.
 
 
 ## 0.2.0 — repository workflow
