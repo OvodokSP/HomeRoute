@@ -5,6 +5,7 @@ ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 SCRIPT="$ROOT/vps/analyze-dns-helper.sh"
 BASE=${TMPDIR:-/tmp}/homeroute-dns-helper-test.$$
 HELPER="$BASE/helper.sh"
+HELPER_INDIRECT="$BASE/helper-indirect.sh"
 trap 'rm -rf "$BASE"' EXIT HUP INT TERM
 
 fail() {
@@ -28,7 +29,7 @@ sha=$(sha256sum "$HELPER" | awk '{print $1}')
 out=$(HOMEROUTE_DNS_HELPER="$HELPER" HOMEROUTE_DNS_HELPER_EXPECTED_SHA256="$sha" sh "$SCRIPT")
 
 for expected in \
-  'HOMEROUTE_DNS_HELPER schema=1' \
+  'HOMEROUTE_DNS_HELPER schema=2' \
   "HOMEROUTE_DNS_HELPER helper_path=$HELPER" \
   "HOMEROUTE_DNS_HELPER helper_sha256=$sha" \
   'HOMEROUTE_DNS_HELPER expected_sha_match=true' \
@@ -39,6 +40,8 @@ for expected in \
   'HOMEROUTE_DNS_HELPER pattern_awg_name=true' \
   'HOMEROUTE_DNS_HELPER pattern_dns_network=true' \
   'HOMEROUTE_DNS_HELPER pattern_docker_exec=true' \
+  'HOMEROUTE_DNS_HELPER pattern_networks_object=true' \
+  'HOMEROUTE_DNS_HELPER pattern_ip_address_field=true' \
   'HOMEROUTE_DNS_HELPER pattern_iptables=true' \
   'HOMEROUTE_DNS_HELPER pattern_nat_table=true' \
   'HOMEROUTE_DNS_HELPER pattern_prerouting=true' \
@@ -47,13 +50,16 @@ for expected in \
   'HOMEROUTE_DNS_HELPER pattern_dport_53=true' \
   'HOMEROUTE_DNS_HELPER pattern_dnat=true' \
   'HOMEROUTE_DNS_HELPER pattern_to_destination=true' \
+  'HOMEROUTE_DNS_HELPER pattern_to_destination_variable=true' \
   'HOMEROUTE_DNS_HELPER pattern_rule_check=true' \
   'HOMEROUTE_DNS_HELPER pattern_rule_append=true' \
   'HOMEROUTE_DNS_HELPER pattern_rule_flush=false' \
   'HOMEROUTE_DNS_HELPER pattern_docker_restart=false' \
   'HOMEROUTE_DNS_HELPER pattern_docker_rm=false' \
   'HOMEROUTE_DNS_HELPER pattern_system_reboot=false' \
-  'HOMEROUTE_DNS_HELPER pattern_rm_command=false'
+  'HOMEROUTE_DNS_HELPER pattern_rm_command=false' \
+  'HOMEROUTE_DNS_HELPER runtime_target_candidate=true' \
+  'HOMEROUTE_DNS_HELPER protocol_loop_candidate=false'
 do
     printf '%s\n' "$out" | grep -Fx "$expected" >/dev/null ||
         fail "missing helper semantic field: $expected"
@@ -66,5 +72,40 @@ fi
 if HOMEROUTE_DNS_HELPER="$HELPER" HOMEROUTE_DNS_HELPER_EXPECTED_SHA256=deadbeef sh "$SCRIPT" >/dev/null 2>&1; then
     fail 'semantic analyzer unexpectedly accepted wrong helper SHA'
 fi
+
+cat > "$HELPER_INDIRECT" <<'EOF'
+#!/bin/sh
+set -eu
+C="$1"
+N="$2"
+TARGET=$(docker inspect -f "{{with index .NetworkSettings.Networks \"$N\"}}{{.IPAddress}}{{end}}" "$C")
+for proto in tcp udp; do
+    docker exec amnezia-awg2 iptables -t nat -C PREROUTING -p "$proto" --dport 53 -j DNAT --to-destination "$TARGET:53" ||
+    docker exec amnezia-awg2 iptables -t nat -I PREROUTING -p "$proto" --dport 53 -j DNAT --to-destination "$TARGET:53"
+done
+EOF
+
+sha2=$(sha256sum "$HELPER_INDIRECT" | awk '{print $1}')
+out2=$(HOMEROUTE_DNS_HELPER="$HELPER_INDIRECT" HOMEROUTE_DNS_HELPER_EXPECTED_SHA256="$sha2" sh "$SCRIPT")
+
+for expected in \
+  'HOMEROUTE_DNS_HELPER pattern_adguard_name=false' \
+  'HOMEROUTE_DNS_HELPER pattern_dns_network=false' \
+  'HOMEROUTE_DNS_HELPER pattern_networks_object=true' \
+  'HOMEROUTE_DNS_HELPER pattern_ip_address_field=true' \
+  'HOMEROUTE_DNS_HELPER pattern_inspect_variable=true' \
+  'HOMEROUTE_DNS_HELPER pattern_tcp=false' \
+  'HOMEROUTE_DNS_HELPER pattern_udp=false' \
+  'HOMEROUTE_DNS_HELPER pattern_protocol_variable=true' \
+  'HOMEROUTE_DNS_HELPER pattern_tcp_udp_pair=true' \
+  'HOMEROUTE_DNS_HELPER pattern_for_loop=true' \
+  'HOMEROUTE_DNS_HELPER pattern_to_destination_variable=true' \
+  'HOMEROUTE_DNS_HELPER pattern_rule_insert=true' \
+  'HOMEROUTE_DNS_HELPER runtime_target_candidate=true' \
+  'HOMEROUTE_DNS_HELPER protocol_loop_candidate=true'
+do
+    printf '%s\n' "$out2" | grep -Fx "$expected" >/dev/null ||
+        fail "missing indirect helper semantic field: $expected"
+done
 
 printf '%s\n' '[PASS] DNS helper semantic fingerprint contract'

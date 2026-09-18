@@ -37,8 +37,9 @@ This document contains only the current reference state confirmed during the Hom
 - HomeRoute's desired DNS interception remains TCP/UDP port 53 DNAT inside the AWG2 container. A read-only target resolver and a non-mutating rule renderer are CI-tested.
 - On 2026-09-18 the complete four-artifact VPS rescue set re-verified PASS, and dynamic AdGuard target resolution re-verified PASS without exposing the runtime IP.
 - The live persistence timer `awg-adguard-dns.timer` is active and enabled; it targets `awg-adguard-dns.service`, whose ExecStart resolves to `/usr/local/sbin/awg-adguard-dns.sh` with SHA256 `96766c14d26edb63877aaf8f2bff5de577e42683b99b86b1b2b7bc382424c2b0`.
-- The first schedule probe did not identify a calendar schedule and reported no next realtime elapse. This is not treated as failure: the timer may be monotonic. Preflight schema 2 now distinguishes calendar and monotonic timer metadata.
-- A sanitized semantic-fingerprint tool is CI-tested for the DNS helper; live helper semantics remain pending until that tool is run against the captured SHA.
+- A repeat live preflight with schema 2 confirmed the DNS persistence timer is monotonic: `OnBootUSec=30s`, `OnUnitActiveUSec=1min`, next monotonic elapse SET, last trigger SET, `Persistent=yes`, accuracy `10s`, randomized delay `0`; no realtime next-elapse is expected for this observed schedule.
+- A live schema-1 semantic fingerprint of the exact helper SHA confirmed valid shell syntax, Docker inspect/exec, iptables NAT PREROUTING DNAT on dport 53, idempotency check `-C`, rule insertion `-I`, and absence of broad flush, Docker restart/removal, reboot and `rm` patterns.
+- That first fingerprint did not find literal `adguard-home`, `amnezia-dns-net`, `-p tcp` or `-p udp`. Those values may be supplied through variables/loops, so exact dynamic-target and dual-protocol helper semantics remain NOT VALIDATED until the schema-2 variable/loop analyzer is run live.
 
 ## VERIFIED — component roles and package roots
 
@@ -71,6 +72,7 @@ This document contains only the current reference state confirmed during the Hom
 
 ## NOT VALIDATED
 
+- Exact live DNS helper variable/loop semantics for dynamic AdGuard target and TCP/UDP coverage (schema-2 capture pending).
 - Automated live apply on a clean router or VPS.
 - Full live restore/rollback for real managed router/VPS objects (VPS filesystem transaction and live AWG backup are verified; live AWG restore and router restore remain unvalidated).
 - Physical minimum router/VPS resource requirements below the supported floor.

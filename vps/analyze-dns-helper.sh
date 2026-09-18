@@ -21,6 +21,10 @@ bool_grep() {
     fi
 }
 
+has_pattern() {
+    grep -Eq -- "$1" "$HELPER"
+}
+
 fail() {
     printf '[FAIL] %s\n' "$1" >&2
     exit 2
@@ -31,7 +35,7 @@ command -v sha256sum >/dev/null 2>&1 || fail 'sha256sum is unavailable'
 command -v grep >/dev/null 2>&1 || fail 'grep is unavailable'
 
 sha=$(sha256sum "$HELPER" | awk '{print $1}')
-field schema 1
+field schema 2
 field helper_path "$HELPER"
 field helper_sha256 "$sha"
 
@@ -58,14 +62,21 @@ bool_grep pattern_adguard_name 'adguard-home'
 bool_grep pattern_awg_name 'amnezia-awg2'
 bool_grep pattern_dns_network 'amnezia-dns-net'
 bool_grep pattern_docker_exec 'docker[[:space:]]+exec'
+bool_grep pattern_networks_object 'NetworkSettings[.]Networks'
+bool_grep pattern_ip_address_field '[.]IPAddress'
+bool_grep pattern_inspect_variable 'docker[[:space:]]+inspect.*\$[{]?[[:alnum:]_]+'
 bool_grep pattern_iptables '(^|[^[:alnum:]_])iptables([[:space:]]|$)'
 bool_grep pattern_nat_table '(-t[[:space:]]+nat|--table[=[:space:]]+nat)'
 bool_grep pattern_prerouting 'PREROUTING'
 bool_grep pattern_tcp '(-p|--protocol)[=[:space:]]+tcp'
 bool_grep pattern_udp '(-p|--protocol)[=[:space:]]+udp'
+bool_grep pattern_protocol_variable '(-p|--protocol)[=[:space:]]+[^[:space:]]*\$[{]?[[:alnum:]_]+'
+bool_grep pattern_tcp_udp_pair '(tcp[[:space:]]+udp|udp[[:space:]]+tcp)'
+bool_grep pattern_for_loop 'for[[:space:]]+[[:alnum:]_]+[[:space:]]+in([[:space:]]|$)'
 bool_grep pattern_dport_53 '(--dport|--destination-port)[=[:space:]]+53'
 bool_grep pattern_dnat 'DNAT'
 bool_grep pattern_to_destination '--to-destination'
+bool_grep pattern_to_destination_variable '--to-destination[=[:space:]]+[^[:space:]]*\$[{]?[[:alnum:]_]+'
 bool_grep pattern_rule_check 'iptables.*[[:space:]]-C([[:space:]]|$)'
 bool_grep pattern_rule_append 'iptables.*[[:space:]]-A([[:space:]]|$)'
 bool_grep pattern_rule_insert 'iptables.*[[:space:]]-I([[:space:]]|$)'
@@ -75,6 +86,22 @@ bool_grep pattern_docker_restart 'docker[[:space:]]+restart'
 bool_grep pattern_docker_rm 'docker[[:space:]]+rm'
 bool_grep pattern_system_reboot '(^|[;&|[:space:]])reboot([;&|[:space:]]|$)'
 bool_grep pattern_rm_command '(^|[;&|[:space:]])rm([;&|[:space:]]|$)'
+
+runtime_target_candidate=false
+if has_pattern 'docker[[:space:]]+inspect' &&
+   has_pattern 'NetworkSettings[.]Networks' &&
+   has_pattern '[.]IPAddress' &&
+   has_pattern '--to-destination[=[:space:]]+[^[:space:]]*\$[{]?[[:alnum:]_]+'; then
+    runtime_target_candidate=true
+fi
+field runtime_target_candidate "$runtime_target_candidate"
+
+protocol_loop_candidate=false
+if has_pattern '(-p|--protocol)[=[:space:]]+[^[:space:]]*\$[{]?[[:alnum:]_]+' &&
+   has_pattern '(tcp[[:space:]]+udp|udp[[:space:]]+tcp)'; then
+    protocol_loop_candidate=true
+fi
+field protocol_loop_candidate "$protocol_loop_candidate"
 
 line_count=$(wc -l < "$HELPER" | tr -d ' ')
 case "$line_count" in ''|*[!0-9]*) line_count=NOT_VALIDATED ;; esac
