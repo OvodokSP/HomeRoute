@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "reference_date": "2026-09-18",
+  "scope": "local_vps_rescue_set",
+  "artifacts": {
+    "awg_state": {
+      "backup_id": "awg-state-20260918T103646Z",
+      "live_backup": "PASS",
+      "integrity_verify": "PASS",
+      "live_restore": "NOT_VALIDATED"
+    },
+    "adguard_state": {
+      "backup_id": "adguard-state-20260918T110820Z",
+      "live_backup": "PASS",
+      "integrity_verify": "PASS",
+      "live_restore": "NOT_VALIDATED"
+    },
+    "awg_image": {
+      "backup_id": "image-awg2-20260918T110821Z",
+      "image_id": "sha256:37314a32abb8ce2283e087f69e3ef020dd0eac655350313b860d82059c425d2d",
+      "export": "PASS",
+      "integrity_verify": "PASS",
+      "load": "NOT_VALIDATED"
+    },
+    "adguard_image": {
+      "backup_id": "image-adguard-20260918T110822Z",
+      "image_id": "sha256:aba9e3bf0613be3ba3755e1fc311b126e2c24bec25e18b6483894a88283074f0",
+      "export": "PASS",
+      "integrity_verify": "PASS",
+      "load": "NOT_VALIDATED"
+    }
+  },
+  "policy": {
+    "artifact_contents_are_local_only": true,
+    "checksum_manifests_are_local_only": true,
+    "public_repository_contains_metadata_only": true,
+    "restore_requires_separate_validation": true
+  }
+}

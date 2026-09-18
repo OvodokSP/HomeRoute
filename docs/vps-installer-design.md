@@ -36,8 +36,10 @@
 - обязательный backup `/opt/amnezia/awg` перед заменой AWG2-контейнера;
 - закреплённый upstream Amnezia source recipe с совпадающей формой контейнера;
 - CI-tested backup/verify tooling для `/opt/amnezia/awg` и `/opt/amnezia/start.sh`, без вывода содержимого секретных файлов;
-- CI-tested export точного image ID работающего контейнера в локальный root-only rescue archive;
-- CI-tested backup/verify AdGuard `conf/work` без вывода содержимого конфигурации.
+- live-verified export точных AWG2/AdGuard image ID в локальные root-only rescue archives с tar/SHA256 verification;
+- live-verified backup/verify AdGuard `conf/work` без вывода содержимого конфигурации;
+- sandbox-tested AdGuard restore + forced-failure rollback;
+- единый read-only verifier четырёх локальных rescue-артефактов.
 
 ## Что ещё блокирует live-apply
 

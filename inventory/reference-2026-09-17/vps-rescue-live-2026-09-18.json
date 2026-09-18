@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "captured_at": "2026-09-18",
+  "scope": "sanitized_vps_rescue_evidence",
+  "adguard_state": {
+    "result": "PASS",
+    "file_count": 6,
+    "size_kib": 35060,
+    "integrity_verify": "PASS",
+    "backup_id": "adguard-state-20260918T110820Z",
+    "container_restart": false,
+    "restore_performed": false
+  },
+  "exact_images": {
+    "awg2": {
+      "result": "PASS",
+      "image_id": "sha256:37314a32abb8ce2283e087f69e3ef020dd0eac655350313b860d82059c425d2d",
+      "archive_size_kib": 12204,
+      "integrity_verify": "PASS",
+      "backup_id": "image-awg2-20260918T110821Z",
+      "image_loaded": false,
+      "container_restart": false
+    },
+    "adguard": {
+      "result": "PASS",
+      "image_id": "sha256:aba9e3bf0613be3ba3755e1fc311b126e2c24bec25e18b6483894a88283074f0",
+      "archive_size_kib": 28828,
+      "integrity_verify": "PASS",
+      "backup_id": "image-adguard-20260918T110822Z",
+      "image_loaded": false,
+      "container_restart": false
+    }
+  },
+  "disk_after": {
+    "filesystem_size_gib": 30,
+    "used_gib": 16,
+    "available_gib": 13,
+    "use_percent": 54
+  },
+  "secret_material_committed": false,
+  "note": "Only sanitized rescue metadata is stored; backup contents and local checksum manifests remain on the reference VPS."
+}
