@@ -35,5 +35,6 @@ jobs:
           sh tests/router-feed-config.sh
           sh tests/live-validation-contract.sh
           sh tests/vps-runtime-preflight.sh
+          sh tests/vps-container-shape.sh
       - name: Test router doctor matcher
         run: HOMEROUTE_DOCTOR_SELFTEST=1 sh router/doctor-router.sh
