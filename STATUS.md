@@ -67,6 +67,6 @@
 Следующие реальные блокеры:
 
 1. live-safe package transaction/rollback для закреплённого HRNeo `.ipk`; SHA-256 уже captured/pinned, GPG остаётся NOT VERIFIED из-за отсутствия подтверждённого signing/release channel;
-2. live-safe backup/restore router package/config objects; filesystem + HRNeo files + opkg control/side-effects live PASS, global `/opt/lib/opkg/status` backup ещё pending;
+2. live-safe backup/restore router package/config objects; filesystem + HRNeo files + opkg control/side-effects + global `/opt/lib/opkg/status` live PASS;
 3. контрольная live backup/restore validation — VPS filesystem/AWG/AdGuard live restore PASS; Keenetic ещё не подтверждён;
 4. первое чистое воспроизведение.
