@@ -45,5 +45,7 @@ jobs:
           sh tests/vps-desired-state-renderer.sh
           sh tests/vps-awg-backup.sh
           sh tests/vps-awg-restore-sandbox.sh
+          sh tests/vps-image-backup.sh
+          sh tests/vps-adguard-backup.sh
       - name: Test router doctor matcher
         run: HOMEROUTE_DOCTOR_SELFTEST=1 sh router/doctor-router.sh
