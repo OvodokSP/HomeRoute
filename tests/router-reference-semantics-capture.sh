@@ -192,8 +192,10 @@ grep -Fx 'HOMEROUTE_ROUTER_PACKAGE schema=1 name=hrneo version=3.18.3-1 installe
   fail 'HRNeo package record missing'
 grep -F 'HOMEROUTE_ROUTER_AWG_RUNTIME schema=1 ' "$out" | grep -F 'interface_present=true' | grep -F 'ipv4_prefix=/32' | grep -F 'peer_count=1' | grep -F 'keys_printed=false' >/dev/null ||
   fail 'AWG runtime shape missing'
-grep -F 'HOMEROUTE_ROUTER_RUNTIME schema=1 ' "$out" | grep -F 'ip_rule_301=true' | grep -F 'default_route_opkgtun0=true' | grep -F 'mark_0x3001=true' | grep -F 'ipset_opkgtun0=true' >/dev/null ||
+if ! grep -F 'HOMEROUTE_ROUTER_RUNTIME schema=1 ' "$out" | grep -F 'ip_rule_301=true' | grep -F 'default_route_opkgtun0=true' | grep -F 'mark_0x3001=true' | grep -F 'ipset_opkgtun0=true' >/dev/null; then
+  grep -F 'HOMEROUTE_ROUTER_RUNTIME schema=1 ' "$out" >&2 || true
   fail 'runtime routing shape missing'
+fi
 grep -Fx 'HOMEROUTE_ROUTER_REFERENCE result=PASS' "$out" >/dev/null ||
   fail 'result PASS missing'
 
