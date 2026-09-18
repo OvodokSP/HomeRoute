@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "policy": {
+    "remote_pipe_to_shell_allowed_for_live_apply": false,
+    "unknown_feed_lines_block_live_apply": true
+  },
+  "chur_amneziawg": {
+    "status": "EXPLICIT_UPSTREAM_FEED",
+    "install_root": "chur-amneziawg",
+    "source": "https://github.com/ward-sentry/chur-keenetic",
+    "feeds": {
+      "aarch64-3.10": "src/gz chur https://ward-sentry.github.io/chur-keenetic/latest/aarch64-3.10",
+      "mips-3.4": "src/gz chur https://ward-sentry.github.io/chur-keenetic/latest/mips-3.4",
+      "mipsel-3.4": "src/gz chur https://ward-sentry.github.io/chur-keenetic/latest/mipsel-3.4"
+    },
+    "note": "The upstream latest feed is explicit by architecture but is not version-pinned."
+  },
+  "hrneo": {
+    "status": "UPSTREAM_BOOTSTRAP_SCRIPT_ONLY",
+    "install_root": "hrneo",
+    "source": "https://github.com/Ground-Zerro/HydraRoute",
+    "upstream_feed_bootstrap": "https://git.zerrolabs.org/Ground-Zerro/release/pages/keenetic/install-feed.sh",
+    "deterministic_feed_line": null,
+    "live_apply_allowed": false,
+    "reason": "Upstream documentation currently instructs users to execute install-feed.sh; HomeRoute does not yet have an independently recorded exact feed line to provision and rollback deterministically."
+  }
+}
