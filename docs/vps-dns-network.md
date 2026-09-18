@@ -55,8 +55,8 @@ Live preflight 2026-09-18 подтвердил:
 - ExecStart: `/usr/local/sbin/awg-adguard-dns.sh`;
 - helper SHA256: `96766c14d26edb63877aaf8f2bff5de577e42683b99b86b1b2b7bc382424c2b0`.
 
-Первая версия preflight не смогла определить тип расписания: `TimersCalendar` был пуст, next realtime elapse отсутствовал. Это не считается сбоем — timer может быть monotonic.
+Повторный live preflight schema 2 подтвердил, что timer **monotonic**: присутствуют `OnUnitActiveUSec=1min` и `OnBootUSec=30s`, next monotonic elapse и last trigger установлены, `Persistent=yes`, accuracy `10s`, randomized delay `0`. Next realtime elapse отсутствует, что соответствует monotonic schedule.
 
-Schema 2 preflight теперь отдельно читает `TimersCalendar`, `TimersMonotonic`, realtime/monotonic next-elapse state, last trigger и безопасные timer-параметры.
+Первый live semantic fingerprint helper подтвердил exact SHA, valid shell syntax, Docker inspect + docker exec и DNAT 53 через iptables/NAT/PREROUTING с `-C` и `-I`; broad flush/restart/remove/reboot/rm не обнаружены. Literal `adguard-home`, `amnezia-dns-net`, `-p tcp` и `-p udp` не обнаружены, поэтому полное соответствие desired dynamic TCP/UDP implementation пока не повышается до VERIFIED: значения могут быть переданы через переменные/циклы. Schema 2 analyzer добавляет безопасные признаки такого indirection без вывода содержимого helper.
 
-Для фиксации поведения helper добавлен `vps/analyze-dns-helper.sh`: он выводит только нормализованные признаки и SHA256, не содержимое скрипта.
+Полный sanitized capture зафиксирован в `docs/live-dns-persistence-2026-09-18.md`.
