@@ -116,7 +116,7 @@ case "$cmd" in
     if [ "${HOMEROUTE_FAKE_POSTCHECK_FAIL:-0}" = 1 ]; then
       exit 4
     fi
-    case "$1 $2 $3 $4 $5" in
+    case "$1 ${2:-} ${3:-} ${4:-} ${5:-}" in
       "ip link show dev awg0")
         exit 0
         ;;
