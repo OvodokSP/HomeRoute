@@ -46,7 +46,6 @@
 | Первое чистое воспроизведение | NOT YET TESTED |
 | AWG 3.x | NOT YET ADOPTED |
 | Repository CI | CONFIGURED |
-| Repository autopilot | CONFIGURED, INTENTIONALLY DISABLED |
 
 ## Что это означает
 

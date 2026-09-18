@@ -30,10 +30,9 @@ PROTECTED = {
     "SECURITY.md",
     "docs/architecture.md",
     "docs/decision-log.md",
-    "scripts/agent/roadmap.py",
     "scripts/ci/validate_repo.py",
 }
-PROTECTED_PREFIXES = (".github/workflows/", "agent/prompts/")
+PROTECTED_PREFIXES = (".github/workflows/",)
 SECRET_PATTERNS = {
     "private key": re.compile(r"-----BEGIN (?:OPENSSH |RSA |EC |DSA )?PRIVATE KEY-----"),
     "OpenAI key": re.compile(r"\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}\b"),
@@ -173,7 +172,7 @@ def changed_files(base: str) -> set[str]:
 def check_protected(base: str, errors: list[str]) -> None:
     for relative in sorted(changed_files(base)):
         if relative in PROTECTED or relative.startswith(PROTECTED_PREFIXES):
-            errors.append(f"ordinary autopilot task changed protected policy: {relative}")
+            errors.append(f"protected repository policy changed: {relative}")
 
 
 def main() -> int:

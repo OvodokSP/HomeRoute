@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Удалён контур development autopilot: GitHub Actions workflow, Codex prompts и Roadmap helper. Обычный Repository quality CI сохранён.
 - Зафиксирован live schema-2 preflight DNS persistence: monotonic timer, OnBoot 30s, OnUnitActive 1min, Persistent=yes и exact helper SHA.
 - Добавлен sanitized DNS helper analyzer schema 2 для variable/loop patterns без вывода содержимого helper, IP или shell-переменных.
 - Первый live helper fingerprint записан как partial evidence без преждевременного повышения dynamic target/TCP+UDP semantics до VERIFIED.
@@ -12,13 +13,11 @@
 - Добавлен isolated stopped-container restore rehearsal: temporary containers, network none, no start, backup round-trip + checksum reverify; live services не затрагиваются.
 
 
-## 0.2.0 — autonomous repository workflow
+## 0.2.0 — repository workflow
 
-- Добавлены `AGENTS.md` и `CURRENT_STATE.md` как правила и фактическая точка для агентов.
-- Roadmap преобразован в машиночитаемую очередь задач.
+- Добавлены `AGENTS.md` и `CURRENT_STATE.md` как правила и фактическая точка проекта.
+- Roadmap преобразован в машиночитаемый список задач.
 - Добавлены dependency-free repository validation и GitHub Actions CI.
-- Добавлен отключённый по умолчанию Codex-autopilot с независимым review, одной автоматической доработкой и стоп-условиями.
-- Production deployment остаётся вне полномочий автопилота.
 
 ## 0.1.0 — bootstrap
 
