@@ -2,11 +2,11 @@
 
 ## Назначение
 
-Автопилот последовательно обрабатывает `ROADMAP.md`, выполняет изменения в изолированной ветке, запускает детерминированные проверки и отдельный Codex-review. При `PASS` он создаёт аудируемый pull request и выполняет squash merge. При ошибке создаётся или обновляется issue `BLOCKED`; инфраструктура не изменяется.
+Автопилот последовательно обрабатывает `ROADMAP.md`, выполняет изменения в изолированной ветке, запускает детерминированные проверки и отдельный Codex-review. При `PASS` он создаёт аудируемый pull request, запускает отдельный workflow `Repository quality` на точном head-коммите, ждёт его успешного завершения и только затем выполняет squash merge. При ошибке создаётся или обновляется issue `BLOCKED`; инфраструктура не изменяется.
 
 ## Контур доверия
 
-Автопилот имеет право записи только в GitHub-репозиторий. У него нет SSH-ключей, адресов или credentials реального Keenetic, NAS либо VPS. `scripts/ci/validate_repo.py --protect-policy` запрещает обычной Roadmap-задаче изменять правила, security policy, CI и сам workflow автопилота.
+Автопилот имеет право записи только в GitHub-репозиторий. У него нет SSH-ключей, адресов или credentials реального Keenetic, NAS либо VPS. `scripts/ci/validate_repo.py --protect-policy` запрещает обычной Roadmap-задаче изменять правила, security policy, CI и сам workflow автопилота. Право `actions: write` изолировано в отдельном job без Codex; merge выполняется другим job и только при совпадении текущего PR head с проверенным SHA.
 
 ```text
 ROADMAP
@@ -15,7 +15,9 @@ ROADMAP
   -> Codex reviewer
   -> one automatic repair attempt
   -> validation and review
-  -> PR and squash merge, or BLOCKED issue
+  -> PR
+  -> independent Repository quality workflow
+  -> squash merge, or BLOCKED issue
 ```
 
 ## Однократное включение
@@ -39,6 +41,7 @@ API-ключ не передаётся модели напрямую: офици
 - reviewer дважды вернул `CHANGES_REQUIRED`;
 - для этого Roadmap ID уже существует открытый issue `BLOCKED` (повторный расход API останавливается);
 - обнаружена попытка изменить защищённую policy/workflow-зону;
+- отдельный workflow `Repository quality` не запустился или завершился ошибкой;
 - GitHub запретил push, создание PR или merge;
 - задача требует подключения к реальной инфраструктуре или новых секретов.
 
