@@ -32,18 +32,21 @@ metadata() {
             REPO_PATH=keenetic/aarch64-k3.10/hrneo_3.18.3-1_aarch64-3.10.ipk
             EXPECTED_SIZE=90689
             EXPECTED_BLOB=69e62156adf91868f58a85eaccc21916dc88f1c1
+            EXPECTED_SHA256=e903e8eb0fd9153d1f181b314d9591bdd5b5953ec8dc42bb9f38aff41c4aca21
             ;;
         mipsel-3.4)
             FILENAME=hrneo_3.18.3-1_mipsel-3.4.ipk
             REPO_PATH=keenetic/mipselsf-k3.4/hrneo_3.18.3-1_mipsel-3.4.ipk
             EXPECTED_SIZE=111881
             EXPECTED_BLOB=eb4b7b17c7b987da88270935de74ce59f91c7b99
+            EXPECTED_SHA256=811fe75ee6a566dc0404dfb5943f9a1f6d102459c3b9cbd4d340b5d4f1aeb450
             ;;
         mips-3.4)
             FILENAME=hrneo_3.18.3-1_mips-3.4.ipk
             REPO_PATH=keenetic/mipssf-k3.4/hrneo_3.18.3-1_mips-3.4.ipk
             EXPECTED_SIZE=112060
             EXPECTED_BLOB=3d09aa888c1375a0f2a5aa7872638c8202c44e3a
+            EXPECTED_SHA256=11c881e34d5455662c26ffb3841ba49f712c6e0d2a145a69e61f04fb22abbc62
             ;;
         *)
             printf '[FAIL] unsupported Entware architecture: %s\n' "$1" >&2
@@ -77,8 +80,9 @@ case "$MODE" in
         printf '%s\n' 'HOMEROUTE_HRNEO schema=1 mode=plan version=3.18.3-1 live_install=false'
         printf 'HOMEROUTE_HRNEO arch=%s filename=%s size_bytes=%s\n' "$ARCH" "$FILENAME" "$EXPECTED_SIZE"
         printf 'HOMEROUTE_HRNEO git_blob_sha1=%s\n' "$EXPECTED_BLOB"
+        printf 'HOMEROUTE_HRNEO sha256=%s\n' "$EXPECTED_SHA256"
         printf 'HOMEROUTE_HRNEO url=%s\n' "$URL"
-        printf '%s\n' 'HOMEROUTE_HRNEO sha256=NOT_CAPTURED gpg=NOT_VERIFIED'
+        printf '%s\n' 'HOMEROUTE_HRNEO gpg=NOT_VERIFIED'
         ;;
     verify-file)
         [ -n "$ARCH" ] && [ -n "$FILE" ] || {
@@ -92,12 +96,18 @@ case "$MODE" in
             printf '[FAIL] HRNeo artifact size mismatch: expected=%s actual=%s\n' "$EXPECTED_SIZE" "$actual_size" >&2
             exit 3
         }
+        command -v sha256sum >/dev/null 2>&1 || { printf '%s\n' '[FAIL] sha256sum is required' >&2; exit 2; }
         actual_blob=$(git_blob_sha1 "$FILE")
         [ "$actual_blob" = "$EXPECTED_BLOB" ] || {
             printf '[FAIL] HRNeo Git blob mismatch: expected=%s actual=%s\n' "$EXPECTED_BLOB" "$actual_blob" >&2
             exit 3
         }
-        printf 'HOMEROUTE_HRNEO_VERIFY schema=1 result=PASS arch=%s size_bytes=%s git_blob_sha1=%s\n'             "$ARCH" "$actual_size" "$actual_blob"
+        actual_sha256=$(sha256sum "$FILE" | awk '{print $1}')
+        [ "$actual_sha256" = "$EXPECTED_SHA256" ] || {
+            printf '[FAIL] HRNeo SHA256 mismatch: expected=%s actual=%s\n' "$EXPECTED_SHA256" "$actual_sha256" >&2
+            exit 3
+        }
+        printf 'HOMEROUTE_HRNEO_VERIFY schema=2 result=PASS arch=%s size_bytes=%s git_blob_sha1=%s sha256=%s\n' "$ARCH" "$actual_size" "$actual_blob" "$actual_sha256"
         printf '%s\n' '[PASS] pinned HRNeo artifact identity verified; package was not installed'
         ;;
     selftest-git-blob)
