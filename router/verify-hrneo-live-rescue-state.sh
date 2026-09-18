@@ -1,6 +1,7 @@
 #!/bin/sh
-# Read-only verification that the current HRNeo/opkg/runtime state matches
-# a previously captured full rescue set.
+# Read-only verification that immutable HRNeo/opkg/runtime state matches
+# a previously captured rescue set. User conffiles are mutable protected state:
+# they must exist, but their bytes are not pinned to an older rescue snapshot.
 
 set -eu
 
@@ -57,13 +58,33 @@ sh "$VERIFY_CONTROL" "$RESCUE" >/dev/null ||
 sh "$VERIFY_STATUS" "$RESCUE" >/dev/null ||
     fail 'global opkg status rescue integrity failed'
 
+is_mutable_conffile_rel() {
+    case "$1" in
+        opt/etc/HydraRoute/hrneo.conf|opt/etc/HydraRoute/domain.conf|opt/etc/HydraRoute/ip.list)
+            return 0
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+mutable_conffiles_present=0
 while read -r hash rel; do
     [ -n "$hash" ] && [ -n "$rel" ] || continue
     path="$LIVE_ROOT/$rel"
-    [ -f "$path" ] || fail "live package file missing: $rel"
+    if is_mutable_conffile_rel "$rel"; then
+        [ -f "$path" ] || fail "mutable HRNeo conffile missing: $rel"
+        mutable_conffiles_present=$((mutable_conffiles_present + 1))
+        continue
+    fi
+    [ -f "$path" ] || fail "live immutable package file missing: $rel"
     actual=$(sha256sum "$path" | awk '{print $1}')
-    [ "$actual" = "$hash" ] || fail "live package file differs from rescue: $rel"
+    [ "$actual" = "$hash" ] || fail "live immutable package file differs from rescue: $rel"
 done < "$RESCUE/FILES.sha256"
+
+[ "$mutable_conffiles_present" -eq 3 ] ||
+    fail "expected 3 mutable HRNeo conffiles in package snapshot, found: $mutable_conffiles_present"
 
 tab=$(printf '\t')
 while IFS="$tab" read -r rel target; do
@@ -132,11 +153,12 @@ printf '%s\n' "$doctor_out" | grep -F 'result=PASS' >/dev/null ||
 field schema 1
 field package hrneo
 field version 3.18.3-1
-field package_files PASS
+field immutable_package_files PASS
+field mutable_conffiles present_not_pinned
 field opkg_info PASS
 field side_effect_state PASS
 field status_database PASS
 field conffile_residue none
 field doctor PASS
 field result PASS
-printf '%s\n' '[PASS] current HRNeo/opkg/router state exactly matches the full rescue set'
+printf '%s\n' '[PASS] current immutable HRNeo/opkg/router state matches rescue; mutable conffiles are present but intentionally not pinned to the old snapshot'
