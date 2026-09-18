@@ -25,7 +25,7 @@ if sh "$TOOL" render-chur unsupported-arch >/dev/null 2>&1; then
 fi
 
 hrneo=$(sh "$TOOL" hrneo-status)
-[ "$hrneo" = 'HOMEROUTE_FEED component=hrneo status=BLOCKED reason=DETERMINISTIC_FEED_LINE_NOT_RECORDED' ] ||
-    fail 'HRNeo feed safety gate drifted'
+[ "$hrneo" = 'HOMEROUTE_FEED component=hrneo status=PINNED_ARTIFACT version=3.18.3-1 integrity=GIT_BLOB_ONLY live_install=false' ] ||
+    fail 'HRNeo pinned artifact status drifted'
 
 printf '%s\n' '[PASS] router feed renderer contract'
