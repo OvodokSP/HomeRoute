@@ -100,3 +100,21 @@ Canary не:
 На reference VPS 2026-09-18 этот validator завершился PASS: quiescent snapshot PASS, stopped restore round-trip PASS, `awg0` PASS, TCP/UDP DNS DNAT 53 PASS, validation window 6 секунд. После теста AWG2 и AdGuard были `running`.
 
 AWG-часть live restore validation теперь подтверждена. AdGuard live restore validation остаётся отдельным следующим этапом.
+
+
+## Controlled live AdGuard same-state restore validation
+
+Для AdGuard используется отдельный `vps/validate-live-adguard-restore.sh`.
+
+Он требует явного ACK, повторяет restore-readiness gate, останавливает только `adguard-home`, снимает quiescent snapshot каталогов `conf` и `work`, копирует этот же snapshot обратно в остановленный контейнер и повторно вычитывает его для полного SHA-256 manifest comparison.
+
+После запуска исходного контейнера validator проверяет:
+
+- наличие `AdGuardHome.yaml`;
+- что AWG2 остаётся running;
+- что TCP/UDP DNAT 53 внутри AWG2 сохранился;
+- что восстановленный AdGuard реально отвечает как DNS-сервер по UDP/53 и TCP/53. DNS probe проверяет только корректный DNS response envelope; конкретный ответ/rcode не важен.
+
+При любом сбое после готовности quiescent snapshot cleanup пытается снова остановить AdGuard, повторно применить snapshot и запустить контейнер. Recovery snapshot при ошибке сохраняется на диске для ручного разбора.
+
+AWG не останавливается и не изменяется; container recreate/remove и image load не выполняются. До фактического live запуска статус остаётся **LIVE PENDING**.

@@ -65,6 +65,7 @@ jobs:
           sh tests/vps-live-restore-readiness.sh
           sh tests/vps-restore-rehearsal.sh
           sh tests/vps-live-awg-restore-validation.sh
+          sh tests/vps-live-adguard-restore-validation.sh
           sh tests/vps-dns-redirect-contract.sh
           sh tests/vps-dns-persistence-preflight.sh
           sh tests/vps-dns-persistence-plan.sh
