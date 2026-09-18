@@ -22,6 +22,7 @@ for expected in \
     'HOMEROUTE_PLAN target=router' \
     'HOMEROUTE_PLAN mode=plan' \
     'HOMEROUTE_PLAN apply_available=false' \
+    'HOMEROUTE_PLAN sandbox_apply_available=true' \
     'HOMEROUTE_PLAN awg_baseline=AmneziaWG_2.x' \
     'HOMEROUTE_PLAN awg_interface=opkgtun0' \
     'HOMEROUTE_PLAN routing_mark=0x3001' \
@@ -30,8 +31,8 @@ for expected in \
     'HOMEROUTE_PLAN dependency_state=VALIDATED_REFERENCE_MANIFEST' \
     'HOMEROUTE_PLAN core_install_roots=chur-amneziawg,hrneo' \
     'HOMEROUTE_PLAN resource_thresholds=SUPPORTED_FLOOR_DEFINED' \
-    'HOMEROUTE_PLAN feed_provisioning=NOT_VALIDATED' \
-    'HOMEROUTE_PLAN backup_restore=LIVE_NOT_VALIDATED' \
+    'HOMEROUTE_PLAN feed_provisioning=PARTIAL_UPSTREAM_EVIDENCE' \
+    'HOMEROUTE_PLAN backup_restore=SANDBOX_TRANSACTION_TESTED' \
     'HOMEROUTE_PLAN clean_device_validation=NOT_VALIDATED'
 do
     grep -Fx "$expected" "$OUT" >/dev/null || fail "missing plan contract field: $expected"
@@ -47,4 +48,4 @@ if sh "$INSTALLER" definitely-not-a-mode >"$OUT" 2>"$ERR"; then
 fi
 grep -F '[FAIL] unknown mode:' "$ERR" >/dev/null || fail 'unknown-mode failure marker missing'
 
-printf '%s\n' '[PASS] router installer plan-only contract'
+printf '%s\n' '[PASS] router installer plan/live-gate contract'
