@@ -44,11 +44,11 @@ Upstream README описывает `SHA256SUMS`, detached GPG signatures и `Neo
 - `Neo/RELEASE_SIGNING_KEY.asc` не найден ни в текущем `main`, ни в закреплённом source commit `984ec135dbc3e9fb54e0c8c63a0e2fd829538772`;
 - release-repository commit `4811c8d13fa4bd6eaed5080fd49788f5aee20883`, содержащий нужные `.ipk`, GitHub помечает как unsigned;
 - README upstream при этом описывает SHA256SUMS/GPG workflow — это документированное намерение upstream, но доступных release assets/key для фактической проверки на момент observation нет;
-- SHA-256 конкретных `.ipk` пока не захвачен.
+- SHA-256 всех трёх закреплённых `.ipk` захвачен 2026-09-18 после проверки размера и Git blob identity.
 
 Поэтому HomeRoute **не заявляет**, что GPG release verification сейчас доступен. Это не трактуется как «подпись плохая»: доступный для проверки канал подписи не подтверждён.
 
-До получения SHA-256 используется только точная Git object identity из pinned release commit. Это лучше mutable feed, но не считается финальной криптографической supply-chain проверкой.
+HomeRoute теперь фиксирует точную Git object identity **и SHA-256** каждого pinned `.ipk`. GPG остаётся `NOT_VERIFIED`, а exact binary-to-source provenance всё ещё не доказан.
 
 ## Source provenance boundary
 
