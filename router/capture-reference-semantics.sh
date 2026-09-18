@@ -73,8 +73,8 @@ hook_record() {
     printf ' masquerade=%s' "$(bool_grep 'MASQUERADE' "$path")"
     printf ' forward=%s' "$(bool_grep 'FORWARD' "$path")"
     printf ' policy_order=%s' "$(bool_grep 'PolicyOrder' "$path")"
-    printf ' service_start=%s' "$(bool_grep '(^|[[:space:]])start([[:space:]]|$)|ACTION.*start' "$path")"
-    printf ' service_stop=%s' "$(bool_grep '(^|[[:space:]])stop([[:space:]]|$)|ACTION.*stop' "$path")"
+    printf ' service_start=%s' "$(bool_grep '(^|[^[:alnum:]_])start([^[:alnum:]_]|$)|ACTION.*start' "$path")"
+    printf ' service_stop=%s' "$(bool_grep '(^|[^[:alnum:]_])stop([^[:alnum:]_]|$)|ACTION.*stop' "$path")"
     printf ' rule_delete=%s' "$(bool_grep 'iptables[^\n]*[[:space:]]-D[[:space:]]|ip[[:space:]]+rule[[:space:]]+del|ip[[:space:]]+route[[:space:]]+del|ipset[[:space:]]+destroy' "$path")"
     printf ' broad_flush=%s' "$(bool_grep 'iptables[^\n]*[[:space:]]-F([[:space:]]|$)|ipset[[:space:]]+flush' "$path")"
     printf '\n'
