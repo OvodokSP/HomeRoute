@@ -37,7 +37,7 @@
 
 ## Что ещё блокирует live-apply
 
-- live capture/verify HRNeo rescue set на reference router;
+- backup/semantic capture `/opt/lib/opkg/info/hrneo.*` maintainer/control metadata перед package transaction;
 - live-safe изменение opkg feed-файлов для Chur;
 - установка/удаление pinned HRNeo/Chur package roots с транзакционным учётом;
 - резервное копирование реальных HomeRoute-конфигов и hooks;
