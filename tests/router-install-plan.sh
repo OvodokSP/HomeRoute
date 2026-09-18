@@ -33,8 +33,8 @@ for expected in \
     'HOMEROUTE_PLAN resource_thresholds=SUPPORTED_FLOOR_DEFINED' \
     'HOMEROUTE_PLAN feed_provisioning=CHUR_SANDBOX_TESTED_HRNEO_PINNED_ARTIFACT' \
     'HOMEROUTE_PLAN hrneo_artifact=PINNED_3.18.3-1_SHA256_VERIFIED' \
-    'HOMEROUTE_PLAN hrneo_rescue=LIVE_PACKAGE_FILES_PASS_OPKG_METADATA_PENDING' \
-    'HOMEROUTE_PLAN backup_restore=LIVE_FILESYSTEM_AND_HRNEO_PACKAGE_FILES_PASS' \
+    'HOMEROUTE_PLAN hrneo_rescue=LIVE_PACKAGE_FILES_PASS_OPKG_CONTROL_GATE_READY' \
+    'HOMEROUTE_PLAN backup_restore=LIVE_FILESYSTEM_AND_HRNEO_FILES_PASS_OPKG_CONTROL_CAPTURE_PENDING' \
     'HOMEROUTE_PLAN clean_device_validation=NOT_VALIDATED'
 do
     grep -Fx "$expected" "$OUT" >/dev/null || fail "missing plan contract field: $expected"
