@@ -46,7 +46,7 @@ case "$mode" in
         render_chur "$arch"
         ;;
     hrneo-status)
-        printf '%s\n' 'HOMEROUTE_FEED component=hrneo status=BLOCKED reason=DETERMINISTIC_FEED_LINE_NOT_RECORDED'
+        printf '%s\n' 'HOMEROUTE_FEED component=hrneo status=PINNED_ARTIFACT version=3.18.3-1 integrity=GIT_BLOB_ONLY live_install=false'
         ;;
     help|--help|-h)
         show_help
