@@ -41,6 +41,8 @@ Canary не:
 
 Запуск требует явного `HOMEROUTE_LIVE_CANARY_ACK=YES`.
 
+На reference router 2026-09-18 canary завершился PASS: existing-file restore, transaction-created file removal и unrelated-file preservation прошли успешно; `/opt/tmp/homeroute-live-canary` после cleanup отсутствовал. HRNeo остался running, `opkgtun0` — present.
+
 Даже успешный canary подтверждает только файловый слой backup/restore. Он не открывает live `apply` автоматически.
 
 ## Инвентаризация feed'ов

@@ -15,13 +15,13 @@
 | Абсолютный физический минимум | НЕ ОПРЕДЕЛЯЕТСЯ ДЛЯ v1 |
 | Состав пакетов роутера | CAPTURED + CLASSIFIED |
 | Обязательные пакеты роутера | VALIDATED: `chur-amneziawg`, `hrneo` |
-| Диагностика роутера | PASS |
+| Диагностика роутера | LIVE PASS 26/26 (2026-09-18) |
 | Диагностика VPS | PASS 10/10 |
 | План установщика роутера | TESTED, READ-ONLY |
 | План установщика VPS | TESTED, READ-ONLY; RUNTIME MANIFEST WIRED |
 | Sandbox-транзакция роутера | CI PASS: APPLY / NO CHANGE / VERIFY / ROLLBACK |
 | Sandbox-транзакция VPS | CI PASS: APPLY / NO CHANGE / VERIFY / ROLLBACK |
-| Файловый backup/restore | IMPLEMENTED IN SANDBOX |
+| Файловый backup/restore | ROUTER LIVE FILESYSTEM CANARY PASS + VPS LIVE PASS |
 | Chur/AmneziaWG feed provisioning | SANDBOX APPLY / NO CHANGE / ROLLBACK PASS |
 | HydraRoute Neo package | PINNED 3.18.3-1 / 3 ARCHES / COMMIT+SIZE+GIT BLOB ID / SHA256 CAPTURED+PINNED / GPG CHANNEL NOT AVAILABLE AT OBSERVATION / LIVE INSTALL BLOCKED |
 | Реальный apply роутера | BLOCKED |
@@ -67,6 +67,6 @@
 Следующие реальные блокеры:
 
 1. live-safe package transaction/rollback для закреплённого HRNeo `.ipk`; SHA-256 уже captured/pinned, GPG остаётся NOT VERIFIED из-за отсутствия подтверждённого signing/release channel;
-2. live-safe backup/restore всех изменяемых типов объектов;
+2. live-safe backup/restore router package/config objects; filesystem transaction canary уже live PASS;
 3. контрольная live backup/restore validation — VPS filesystem/AWG/AdGuard live restore PASS; Keenetic ещё не подтверждён;
 4. первое чистое воспроизведение.
