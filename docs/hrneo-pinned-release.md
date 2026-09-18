@@ -38,13 +38,15 @@ Upstream `install-feed.sh` выбирает feed по архитектуре и 
 
 Upstream README описывает `SHA256SUMS`, detached GPG signatures и `Neo/RELEASE_SIGNING_KEY.asc`.
 
-При текущей проверке GitHub-состояния:
+При повторной проверке 2026-09-18:
 
-- GitHub Releases API не вернул опубликованных release assets;
-- файл `Neo/RELEASE_SIGNING_KEY.asc` не удалось подтвердить в закреплённом source commit;
+- GitHub Releases API для `Ground-Zerro/HydraRoute` вернул пустой список;
+- `Neo/RELEASE_SIGNING_KEY.asc` не найден ни в текущем `main`, ни в закреплённом source commit `984ec135dbc3e9fb54e0c8c63a0e2fd829538772`;
+- release-repository commit `4811c8d13fa4bd6eaed5080fd49788f5aee20883`, содержащий нужные `.ipk`, GitHub помечает как unsigned;
+- README upstream при этом описывает SHA256SUMS/GPG workflow — это документированное намерение upstream, но доступных release assets/key для фактической проверки на момент observation нет;
 - SHA-256 конкретных `.ipk` пока не захвачен.
 
-Поэтому HomeRoute **не заявляет**, что GPG/SHA256 release verification сейчас доступен.
+Поэтому HomeRoute **не заявляет**, что GPG release verification сейчас доступен. Это не трактуется как «подпись плохая»: доступный для проверки канал подписи не подтверждён.
 
 До получения SHA-256 используется только точная Git object identity из pinned release commit. Это лучше mutable feed, но не считается финальной криптографической supply-chain проверкой.
 
