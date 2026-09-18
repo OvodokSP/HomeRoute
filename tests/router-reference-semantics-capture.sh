@@ -99,24 +99,28 @@ chmod 700 "$BIN/opkg"
 cat > "$BIN/ip" <<'EOF'
 #!/bin/sh
 set -eu
-case "$1 $2 $3 $4" in
-  "link show dev opkgtun0")
+
+if [ "$1" = link ] && [ "${2:-}" = show ] && [ "${3:-}" = dev ] && [ "${4:-}" = opkgtun0 ]; then
     printf '%s\n' '7: opkgtun0: <POINTOPOINT,UP> mtu 1420 qdisc noqueue state UNKNOWN'
-    ;;
-  "-4 address show dev")
-    [ "$5" = opkgtun0 ] || exit 2
+    exit 0
+fi
+
+if [ "$1" = -4 ] && [ "${2:-}" = address ] && [ "${3:-}" = show ] && [ "${4:-}" = dev ] && [ "${5:-}" = opkgtun0 ]; then
     printf '%s\n' '    inet 10.0.0.2/32 scope global opkgtun0'
-    ;;
-  "rule show  ")
+    exit 0
+fi
+
+if [ "$1" = rule ] && [ "${2:-}" = show ]; then
     printf '%s\n' '32760: from all fwmark 0x3001 lookup 301'
-    ;;
-  "route show table 301")
+    exit 0
+fi
+
+if [ "$1" = route ] && [ "${2:-}" = show ] && [ "${3:-}" = table ] && [ "${4:-}" = 301 ]; then
     printf '%s\n' 'default dev opkgtun0 scope link'
-    ;;
-  *)
-    exit 2
-    ;;
-esac
+    exit 0
+fi
+
+exit 2
 EOF
 chmod 700 "$BIN/ip"
 
