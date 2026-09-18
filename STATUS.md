@@ -26,7 +26,7 @@
 | HydraRoute Neo feed | UPSTREAM SCRIPT ONLY / LIVE BLOCKED |
 | Реальный apply роутера | BLOCKED |
 | Реальный apply VPS | BLOCKED |
-| Live backup/restore | NOT VALIDATED |
+| Live backup/restore | CANARY READY / NOT YET RUN |
 | Протокол чистого воспроизведения | PREPARED |
 | Первое чистое воспроизведение | NOT YET TESTED |
 | AWG 3.x | NOT YET ADOPTED |
@@ -54,5 +54,5 @@
 
 1. детерминированный feed для HydraRoute Neo без скрытого `curl | sh`;
 2. live-safe backup/restore всех изменяемых типов объектов;
-3. контрольная live backup/restore validation;
+3. контрольная live backup/restore validation — canary готов, требуется запуск на эталонном роутере и VPS;
 4. первое чистое воспроизведение.
