@@ -133,13 +133,37 @@ HOMEROUTE_HRNEO_REINSTALL_ACK=YES HOMEROUTE_HRNEO_REINSTALL_FORCE_VERIFY_FAIL=1 
 validator_rc=$?
 set -e
 
-[ "$validator_rc" -ne 0 ] ||
+cp "$work/validator.out" "$rescue/rollback-rehearsal-validator.out"
+cp "$work/validator.err" "$rescue/rollback-rehearsal-validator.err"
+chmod 600 \
+    "$rescue/rollback-rehearsal-validator.out" \
+    "$rescue/rollback-rehearsal-validator.err"
+
+show_validator_diagnostics() {
+    printf '%s\n' '===== VALIDATOR STDOUT =====' >&2
+    cat "$work/validator.out" >&2 || true
+    printf '%s\n' '===== VALIDATOR STDERR =====' >&2
+    cat "$work/validator.err" >&2 || true
+    printf 'HOMEROUTE_HRNEO_ROLLBACK_REHEARSAL validator_rc=%s\n' "$validator_rc" >&2
+}
+
+[ "$validator_rc" -ne 0 ] || {
+    show_validator_diagnostics
     fail 'forced post-install failure unexpectedly returned success'
-grep -F '[FAIL] forced post-install verification failure requested' "$work/validator.err" >/dev/null ||
+}
+
+if ! grep -F '[FAIL] forced post-install verification failure requested' "$work/validator.err" >/dev/null; then
+    show_validator_diagnostics
     fail 'validator did not reach the intended forced-failure point'
-grep -F '[PASS] automatic HRNeo rollback completed' "$work/validator.err" >/dev/null ||
+fi
+
+if ! grep -F '[PASS] automatic HRNeo rollback completed' "$work/validator.err" >/dev/null; then
+    show_validator_diagnostics
     fail 'automatic rollback PASS marker missing'
+fi
+
 if grep -F '[FAIL] automatic HRNeo rollback failed' "$work/validator.err" >/dev/null; then
+    show_validator_diagnostics
     fail 'automatic rollback reported failure'
 fi
 
