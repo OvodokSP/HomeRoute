@@ -52,6 +52,7 @@ show_plan() {
     field rollback_opkg_info true
     field rollback_opkg_status true
     field rollback_side_effects true
+    field rollback_conffile_residue true
     field requires_explicit_ack true
     field result PLAN_ONLY
     printf '%s\n' '[PASS] controlled HRNeo same-version reinstall plan rendered; no state changed'
@@ -148,6 +149,38 @@ live_path() {
     printf '%s/%s\n' "$LIVE_ROOT" "$1"
 }
 
+check_conffile_residue_clean() {
+    base="$LIVE_ROOT/opt/etc/HydraRoute"
+    [ -d "$base" ] || return 1
+
+    for path in "$base"/*-opkg; do
+        [ -e "$path" ] || continue
+        return 1
+    done
+    return 0
+}
+
+remove_expected_conffile_residue() {
+    base="$LIVE_ROOT/opt/etc/HydraRoute"
+    [ -d "$base" ] || return 1
+
+    for path in "$base"/*-opkg; do
+        [ -e "$path" ] || continue
+        name=$(basename "$path")
+        case "$name" in
+            hrneo.conf-opkg|domain.conf-opkg|ip.list-opkg) ;;
+            *) return 1 ;;
+        esac
+    done
+
+    rm -f \
+        "$base/hrneo.conf-opkg" \
+        "$base/domain.conf-opkg" \
+        "$base/ip.list-opkg" || return 1
+
+    check_conffile_residue_clean
+}
+
 verify_live_managed_state() {
     while read -r hash rel; do
         [ -n "$hash" ] && [ -n "$rel" ] || continue
@@ -203,6 +236,9 @@ verify_live_against_rescue() {
 verify_live_against_rescue ||
     fail 'current HRNeo/opkg state drifted from rescue set; refusing package transaction'
 
+check_conffile_residue_clean ||
+    fail 'pre-transaction HydraRoute config directory contains *-opkg residue'
+
 doctor_before=$(sh "$DOCTOR" 2>&1) || {
     printf '%s\n' "$doctor_before" >&2
     fail 'router doctor failed immediately before package transaction'
@@ -245,6 +281,8 @@ restore_from_rescue() {
     cp -a "$RESCUE/package-side-effects/rc.unslung" "$LIVE_ROOT/opt/etc/init.d/rc.unslung" || return 1
     rm -f "$LIVE_ROOT/opt/bin/neo" || return 1
     cp -a "$RESCUE/package-side-effects/neo" "$LIVE_ROOT/opt/bin/neo" || return 1
+
+    remove_expected_conffile_residue || return 1
 
     init="$LIVE_ROOT/opt/etc/init.d/S99hrneo"
     sh "$init" start >/dev/null 2>&1 || return 1
