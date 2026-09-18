@@ -45,7 +45,12 @@
     "sha256": "NOT_CAPTURED",
     "gpg": "NOT_VERIFIED",
     "github_release_assets": "NOT_PRESENT_AT_REVIEW_TIME",
-    "signing_key_file": "README_REFERENCES_KEY_BUT_FILE_NOT_CONFIRMED_AT_PINNED_COMMIT"
+    "signing_key_file": "README_REFERENCES_KEY_BUT_FILE_NOT_AVAILABLE_AT_OBSERVATION_TIME",
+    "observation_date": "2026-09-18",
+    "release_repository_commit_signature": "UNSIGNED",
+    "github_releases_api": "EMPTY_AT_OBSERVATION_TIME",
+    "signing_key_main": "NOT_FOUND_AT_OBSERVATION_TIME",
+    "signing_key_pinned_source_commit": "NOT_FOUND"
   },
   "provenance_boundary": {
     "package_version_matches_reviewed_source_version": true,
