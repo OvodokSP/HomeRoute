@@ -23,7 +23,7 @@
 | Sandbox-транзакция VPS | CI PASS: APPLY / NO CHANGE / VERIFY / ROLLBACK |
 | Файловый backup/restore | IMPLEMENTED IN SANDBOX |
 | Chur/AmneziaWG feed provisioning | SANDBOX APPLY / NO CHANGE / ROLLBACK PASS |
-| HydraRoute Neo package | PINNED 3.18.3-1 / 3 ARCHES / COMMIT+SIZE+GIT BLOB ID / LIVE INSTALL BLOCKED |
+| HydraRoute Neo package | PINNED 3.18.3-1 / 3 ARCHES / COMMIT+SIZE+GIT BLOB ID / GPG CHANNEL NOT AVAILABLE AT OBSERVATION / SHA256 PENDING / LIVE INSTALL BLOCKED |
 | Реальный apply роутера | BLOCKED |
 | VPS runtime provisioning data | RUNTIME + CONTAINER SHAPE CAPTURED 2026-09-18 |
 | VPS provisioning parameter model | DEFINED; LOCAL IMAGE/PATH/PORT/STATE REQUIRED |
@@ -67,7 +67,7 @@
 
 Следующие реальные блокеры:
 
-1. live-safe package transaction/rollback для закреплённого HRNeo `.ipk` и фиксация более сильного SHA-256/GPG evidence;
+1. live-safe package transaction/rollback для закреплённого HRNeo `.ipk` и capture SHA-256 самих бинарников; GPG остаётся NOT VERIFIED, потому что доступный signing/release channel на дату проверки не подтверждён;
 2. live-safe backup/restore всех изменяемых типов объектов;
 3. контрольная live backup/restore validation — VPS filesystem/AWG/AdGuard backup PASS; live restore и Keenetic ещё не подтверждены;
 4. первое чистое воспроизведение.
